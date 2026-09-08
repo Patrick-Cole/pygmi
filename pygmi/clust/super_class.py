@@ -31,11 +31,14 @@ import geopandas as gpd
 import numpy as np
 import pandas as pd
 import sklearn.metrics as skm
+from matplotlib.axes import Axes
+from matplotlib.backend_bases import DrawEvent, MouseEvent
 from matplotlib.backends.backend_qt import NavigationToolbar2QT
 from matplotlib.backends.backend_qtagg import FigureCanvasQTAgg
 from matplotlib.figure import Figure
 from matplotlib.lines import Line2D
 from matplotlib.patches import Polygon as mPolygon
+from numpy.typing import NDArray
 from PIL import Image, ImageDraw
 from PySide6 import QtCore, QtWidgets
 from shapely.geometry import Polygon
@@ -57,7 +60,7 @@ class GraphMap(FigureCanvasQTAgg):
 
     Parameters
     ----------
-    parent : SuperClass, optionalparent
+    parent
         Reference to the parent routine. The default is None.
 
     """
@@ -75,10 +78,14 @@ class GraphMap(FigureCanvasQTAgg):
         self.bands = [0, 1, 2]
         self.manip = "RGB Ternary"
 
-    def polyint(self, dat):
+    def polyint(self, dat: dict):
         """
         Polygon integrator.
 
+        Parameters
+        ----------
+        dat
+            PyGMI dataset/s (pygmi.raster.datatypes.Data) in a dictionary.
         """
         dat = dat[self.bands[0]].data
 
@@ -94,13 +101,13 @@ class GraphMap(FigureCanvasQTAgg):
         pntxy = np.transpose([xmesh, ymesh])
         self.polyi = PolygonInteractor(self.ax1, pntxy)
 
-    def compute_initial_figure(self, dat):
+    def compute_initial_figure(self, dat: dict):
         """
         Compute initial figure.
 
         Parameters
         ----------
-        dat : dict
+        dat
             PyGMI dataset/s (pygmi.raster.datatypes.Data) in a dictionary.
 
         """
@@ -159,13 +166,13 @@ class GraphMap(FigureCanvasQTAgg):
         self.ax1.tick_params(axis="x", rotation=90)
         self.ax1.tick_params(axis="y", rotation=0)
 
-    def update_plot(self, dat):
+    def update_plot(self, dat: dict):
         """
         Update plot.
 
         Parameters
         ----------
-        dat : dict
+        dat
             PyGMI dataset/s (pygmi.raster.datatypes.Data) in a dictionary.
 
         """
@@ -218,14 +225,14 @@ class GraphMap(FigureCanvasQTAgg):
         self.ax1.tick_params(axis="y", rotation=0)
         self.figure.canvas.draw()
 
-    def update_class(self, dat):
+    def update_class(self, dat: np.ma.MaskedArray):
         """
         Update plot.
 
         Parameters
         ----------
-        dat : dict
-            PyGMI dataset/s (pygmi.raster.datatypes.Data) in a dictionary.
+        dat
+            PyGMI dataset in a masked array.
 
         """
         clippercu = 0
@@ -255,10 +262,10 @@ class PolygonInteractor(QtCore.QObject):
 
     Parameters
     ----------
-    axtmp : matplotlib.axes._axes.Axes
+    axtmp
         Matplotlib axis.
-    pntxy : numpy array
-        X and Y mouse coordinates in N by 2  array.
+    pntxy
+        X and Y mouse coordinates in N by 2 array.
 
     Attributes
     ----------
@@ -272,7 +279,7 @@ class PolygonInteractor(QtCore.QObject):
     epsilon = 5
     polyi_changed = QtCore.Signal(list)  #: polygon changed signal.
 
-    def __init__(self, axtmp, pntxy):
+    def __init__(self, axtmp: Axes, pntxy: NDArray):
         super().__init__()
         self.ax = axtmp
         self.poly = mPolygon([(1, 1)], animated=True)
@@ -297,13 +304,13 @@ class PolygonInteractor(QtCore.QObject):
         self.canvas.mpl_connect("button_release_event", self.button_release_callback)
         self.canvas.mpl_connect("motion_notify_event", self.motion_notify_callback)
 
-    def draw_callback(self, event=None):
+    def draw_callback(self, event: DrawEvent | None = None):
         """
         Draw callback.
 
         Parameters
         ----------
-        event : matplotlib.backend_bases.DrawEvent, optional
+        event
             Draw event object. The default is None.
 
         """
@@ -315,13 +322,13 @@ class PolygonInteractor(QtCore.QObject):
         self.ax.draw_artist(self.poly)
         self.ax.draw_artist(self.line)
 
-    def new_poly(self, npoly=None):
+    def new_poly(self, npoly: list | None = None):
         """
         Create new polygon.
 
         Parameters
         ----------
-        npoly : list or None, optional
+        npoly
             New polygon coordinates.
 
         """
@@ -333,18 +340,18 @@ class PolygonInteractor(QtCore.QObject):
         self.update_plots()
         self.canvas.draw()
 
-    def get_ind_under_point(self, event):
+    def get_ind_under_point(self, event: MouseEvent) -> int | None:
         """
         Get the index of vertex under point if within epsilon tolerance.
 
         Parameters
         ----------
-        event : matplotlib.backend_bases.MouseEvent
+        event
             Mouse event.
 
         Returns
         -------
-        ind : int or None
+        int or None
             Index of vertex under point.
 
         """
@@ -361,13 +368,13 @@ class PolygonInteractor(QtCore.QObject):
 
         return ind
 
-    def button_press_callback(self, event):
+    def button_press_callback(self, event: MouseEvent):
         """
         Button press callback.
 
         Parameters
         ----------
-        event : matplotlib.backend_bases.MouseEvent
+        event
             Mouse event.
 
         """
@@ -426,13 +433,13 @@ class PolygonInteractor(QtCore.QObject):
             self.ax.draw_artist(self.line)
             self.canvas.blit(self.ax.bbox)
 
-    def button_release_callback(self, event):
+    def button_release_callback(self, event: MouseEvent):
         """
         Button release callback.
 
         Parameters
         ----------
-        event : matplotlib.backend_bases.MouseEvent
+        event
             Mouse Event.
 
         """
@@ -444,21 +451,18 @@ class PolygonInteractor(QtCore.QObject):
         self.update_plots()
 
     def update_plots(self):
-        """
-        Update plots.
-
-        """
+        """Update plots."""
         if self.poly.xy.size < 8:
             return
         self.polyi_changed.emit(self.poly.xy.tolist())
 
-    def motion_notify_callback(self, event):
+    def motion_notify_callback(self, event: MouseEvent):
         """
         Motion notify on mouse movement.
 
         Parameters
         ----------
-        event : matplotlib.backend_bases.MouseEvent
+        event
             Mouse event.
 
         """
@@ -635,10 +639,7 @@ class SuperClass(BasicModule):
         self.cmb_band3.currentIndexChanged.connect(self.on_combo)
 
     def calculate(self):
-        """
-        Calculate new clusters.
-
-        """
+        """Calculate new clusters."""
         if self.df is None:
             return
 
@@ -677,10 +678,7 @@ class SuperClass(BasicModule):
         self.on_radio()
 
     def class_change(self):
-        """
-        Routine called when current classification choice changes.
-
-        """
+        """Routine called when current classification choice changes."""
         ctext = self.cmb_class.currentText()
 
         self.cmb_SVCkernel.setHidden(True)
@@ -702,10 +700,7 @@ class SuperClass(BasicModule):
             self.lbl_1.setText("Kernel:")
 
     def calc_metrics(self):
-        """
-        Calculate metrics.
-
-        """
+        """Calculate metrics."""
         if self.df is None:
             return
 
@@ -742,13 +737,13 @@ class SuperClass(BasicModule):
 
                 df.to_excel(filename)
 
-    def updatepoly(self, xycoords=None):
+    def updatepoly(self, xycoords: NDArray | None = None):
         """
         Update polygon.
 
         Parameters
         ----------
-        xycoords : numpy array, optional
+        xycoords
             x, y coordinates. The default is None.
 
         """
@@ -764,15 +759,15 @@ class SuperClass(BasicModule):
         else:
             self.df.loc[row, "geometry"] = Polygon(xycoords)
 
-    def oncellchange(self, row, col):
+    def oncellchange(self, row: int, col: int):
         """
         Routine activated whenever a cell is changed.
 
         Parameters
         ----------
-        row : int
+        row
             Current row.
-        col : int
+        col
             Current column.
 
         """
@@ -781,16 +776,18 @@ class SuperClass(BasicModule):
 
         self.df.loc[row, "class"] = self.tablewidget.item(row, 0).text()
 
-    def onrowchange(self, current, previous):
+    def onrowchange(
+        self, current: QtWidgets.QTableWidgetItem, previous: QtWidgets.QTableWidgetItem
+    ):
         """
         Routine activated whenever a row is changed.
 
         Parameters
         ----------
-        current : QTableWidgetItem
-            current item.
-        previous : QTableWidgetItem
-            previous item.
+        current
+            current table item.
+        previous
+            previous table item.
 
         """
         if previous is None or current is None:
@@ -808,10 +805,7 @@ class SuperClass(BasicModule):
         self.map.polyi.new_poly(coords)
 
     def on_apoly(self):
-        """
-        On add polygon.
-
-        """
+        """On add polygon."""
         if self.df is None:
             self.df = gpd.GeoDataFrame(columns=["class", "geometry"])
             self.df.set_geometry("geometry")
@@ -836,10 +830,7 @@ class SuperClass(BasicModule):
         self.map.polyi.isactive = True
 
     def on_dpoly(self):
-        """
-        On delete polygon.
-
-        """
+        """On delete polygon."""
         row = self.tablewidget.currentRow()
         self.tablewidget.removeRow(self.tablewidget.currentRow())
         self.df = self.df.drop(row)
@@ -851,10 +842,7 @@ class SuperClass(BasicModule):
             self.map.polyi.isactive = False
 
     def on_combo(self):
-        """
-        On combo to choose type of plot for data.
-
-        """
+        """On combo to choose type of plot for data."""
         maniptxt = self.cmb_manip.currentText()
 
         if "Ternary" in maniptxt:
@@ -875,10 +863,7 @@ class SuperClass(BasicModule):
             self.map.update_plot(self.data)
 
     def on_radio(self):
-        """
-        On radiobutton to choose type of plot for data.
-
-        """
+        """On radiobutton to choose type of plot for data."""
         if self.rb_data.isChecked():
             self.map.update_plot(self.data)
         elif self.zonal is not None:
@@ -952,7 +937,7 @@ class SuperClass(BasicModule):
 
         Parameters
         ----------
-        nodialog : bool, optional
+        nodialog
             Run settings without a dialog. The default is False.
 
         Returns
@@ -1182,7 +1167,7 @@ class SuperClass(BasicModule):
         self.map.figure.canvas.draw()
 
 
-def dist_point_to_segment(p, s0, s1):
+def dist_point_to_segment(p: NDArray, s0: NDArray, s1: NDArray) -> NDArray | float:
     """
     Dist point to segment.
 
@@ -1191,16 +1176,16 @@ def dist_point_to_segment(p, s0, s1):
 
     Parameters
     ----------
-    p : numpy array
+    p
         Point.
-    s0 : numpy array
+    s0
         Start of segment.
-    s1 : numpy array
+    s1
         End of segment.
 
     Returns
     -------
-    numpy array
+    ndarray
         Distance of point to segment.
 
     """

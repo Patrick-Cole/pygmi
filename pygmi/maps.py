@@ -97,32 +97,46 @@ class CanvasModule(FigureCanvasQTAgg):
             self._pending_size = None
 
 
-def tick_formatter(x: float, pos: int) -> str:
+def discrete_colorbar(
+    axes: Axes, csp, cdat: np.ma.MaskedArray | NDArray, lbls: list[str] | None = None
+):
     """
-    Format thousands separator in ticks for plots.
+    Plot colour bar using discrete colours for a small range of values.
 
     Parameters
     ----------
-    x
-        Number to be formatted.
-    pos
-        Position of tick.
-
-    Returns
-    -------
-    str
-        Formatted coordinate.
-
+    axes
+        Current axes.
+    csp
+        Handle to Matplotlib plotting routine.
+    cdat
+        Array of values.
+    lbls
+        y tick labels, by default None
     """
-    if np.ma.is_masked(x):
-        return "--"
+    vals = np.unique(cdat)
+    if np.ma.isMaskedArray(vals):
+        vals = vals.compressed()
+    vals = vals[~np.isnan(vals)]
 
-    newx = f"{x:,.5f}".rstrip("0").rstrip(".")
+    if len(vals) < 2:
+        print("Too few discrete values")
+        return
+    # bnds = (vals - 0.5).tolist() + [vals.max() + .5]
 
-    return newx
+    if hasattr(csp.norm, "boundaries"):
+        bnds = csp.norm.boundaries
+        ticks = np.diff(bnds) / 2 + vals
+        cbar = axes.figure.colorbar(csp, ticks=ticks)
+    else:
+        bnds = vals.tolist() + [vals.max() + 1]
+        ticks = np.diff(bnds) / 2 + vals
+        cbar = axes.figure.colorbar(csp, boundaries=bnds, values=vals, ticks=ticks)
 
-
-frm = FuncFormatter(tick_formatter)
+    if lbls is not None:
+        cbar.ax.set_yticklabels(lbls)
+    else:
+        cbar.ax.set_yticklabels(vals)
 
 
 def get_neat_intervals(
@@ -330,6 +344,35 @@ def set_northscale(ax: Axes, crs: CRS, showlog: Callable[..., None] = print):
             text={"fontsize": 7},
             aob={"bbox_to_anchor": (0.05, -0.05), "bbox_transform": ax.transAxes},
         )
+
+
+def tick_formatter(x: float, pos: int) -> str:
+    """
+    Format thousands separator in ticks for plots.
+
+    Parameters
+    ----------
+    x
+        Number to be formatted.
+    pos
+        Position of tick.
+
+    Returns
+    -------
+    str
+        Formatted coordinate.
+
+    """
+    if np.ma.is_masked(x):
+        return "--"
+
+    newx = f"{x:,.5f}".rstrip("0").rstrip(".")
+
+    return newx
+
+
+# This function is the tick formatter.
+frm = FuncFormatter(tick_formatter)
 
 
 def _testfn():

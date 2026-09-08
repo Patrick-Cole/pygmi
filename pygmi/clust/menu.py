@@ -47,7 +47,7 @@ class MenuWidget:
 
     Parameters
     ----------
-
+    parent
         Reference to MainWidget class found in main.py. Default is None.
 
     """

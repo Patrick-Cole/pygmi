@@ -767,8 +767,8 @@ class ExportMod3D(ContextModule):
 
         self.showlog("kmz export starting...")
 
-        # Move to 3d model tab to update the model stuff
-        self.showlog("updating 3d model...")
+        # Move to 3D model tab to update the model stuff
+        self.showlog("updating 3D model...")
 
         mvis_3d.spacing = [self.lmod.dxy, self.lmod.dxy, self.lmod.d_z]
         mvis_3d.origin = [xrng[0], yrng[0], zrng[0]]
@@ -1107,8 +1107,8 @@ class ExportMod3D(ContextModule):
 
         self.showlog("Shapefile export starting...")
 
-        # Move to 3d model tab to update the model stuff
-        self.showlog("Updating 3d model...")
+        # Move to 3D model tab to update the model stuff
+        self.showlog("Updating 3D model...")
 
         mvis_3d.spacing = [self.lmod.dxy, self.lmod.dxy, self.lmod.d_z]
         mvis_3d.origin = [xrng[0], yrng[0], zrng[0]]

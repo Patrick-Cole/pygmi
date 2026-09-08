@@ -25,7 +25,7 @@
 """
 Default set of menus for the main interface.
 
-It also includes the about box.
+It also includes the about box and help button.
 """
 
 import os

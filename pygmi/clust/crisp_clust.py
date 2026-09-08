@@ -31,6 +31,7 @@ This uses standard statistical methods, as opposed to fuzzy methods.
 from collections.abc import Callable, Iterable
 
 import numpy as np
+from numpy.typing import NDArray
 from PySide6 import QtWidgets
 from sklearn.metrics import calinski_harabasz_score, davies_bouldin_score
 
@@ -140,10 +141,7 @@ class CrispClust(BasicModule):
         vbl.addWidget(self.rb_datadriven)
 
     def combo(self):
-        """
-        Set up combo box to choose algorithm.
-
-        """
+        """Set up combo box to choose algorithm."""
         i = str(self.cmb_alg.currentText())
         if i == "w-means":
             self.lbl_7.show()
@@ -153,10 +151,7 @@ class CrispClust(BasicModule):
             self.dsb_constraincluster.hide()
 
     def initchange(self):
-        """
-        Set up radio button to choose initialisation type.
-
-        """
+        """Set up radio button to choose initialisation type."""
         if self.rb_datadriven.isChecked():
             self.sb_repeatedruns.hide()
             self.lbl_6.hide()
@@ -170,7 +165,7 @@ class CrispClust(BasicModule):
 
         Parameters
         ----------
-        nodialog : bool, optional
+        nodialog
             Run settings without a dialog. The default is False.
 
         Returns
@@ -251,10 +246,7 @@ class CrispClust(BasicModule):
         self.saveobj(self.type)
 
     def update_vars(self):
-        """
-        Update the variables.
-
-        """
+        """Update the variables."""
         self.cltype = str(self.cmb_alg.currentText())
         self.min_cluster = self.sb_minclusters.value()
         self.max_cluster = self.sb_maxclusters.value()
@@ -270,49 +262,49 @@ class CrispClust(BasicModule):
 
 
 def crispclust(
-    data,
-    cltype="k-means",
-    min_cluster=5,
-    max_cluster=5,
-    cov_constr=0.0,
-    no_runs=1,
-    max_iter=100,
-    term_thresh=0.00001,
-    init_type="random",
+    data: list[Data],
+    cltype: str = "k-means",
+    min_cluster: int = 5,
+    max_cluster: int = 5,
+    cov_constr: float = 0.0,
+    no_runs: str = 1,
+    max_iter: int = 100,
+    term_thresh: float = 0.00001,
+    init_type: str = "random",
     showlog: Callable[..., None] = print,
     piter: Iterable = iter,
-):
+) -> list[Data]:
     """
     Crisp Clustering.
 
     Parameters
     ----------
-    data : list
-        List of PyGMI data (pygmi.raster.datatypes.Data).
-    cltype : str, optional
+    data
+        List of PyGMI data.
+    cltype
         Clustering method, by default 'k-means'
-    min_cluster : int, optional
+    min_cluster
         minimum number of clusters, by default 5
-    max_cluster : int, optional
+    max_cluster
         maximum number of clusters, by default 5
-    cov_constr : _type_, optional
+    cov_constr
         scalar between [0 1], by default 0.
-    no_runs : int, optional
+    no_runs
         number of runs, used in random guess, by default 1
-    max_iter : int, optional
+    max_iter
         maximum iterations, by default 100
-    term_thresh : float, optional
+    term_thresh
         terminating threshold, by default 0.00001
-    init_type : str, optional
+    init_type
         initial guess, by default 'random'
-    showlog : function, optional
+    showlog
         Show information using a function. The default is print.
-    piter : function, optional
+    piter
         Progress bar iterator. The default is iter.
 
     Returns
     -------
-    dat_out : list
+    list of Data
         List of raster datasets of classes.
 
     """
@@ -441,72 +433,63 @@ def crispclust(
 
 
 def crisp_means(
-    data,
-    no_clust,
-    cent,
-    centfix,
-    maxit,
-    term_thresh,
-    cltype,
-    cov_constr,
+    data: NDArray,
+    no_clust: int,
+    cent: NDArray,
+    centfix: NDArray,
+    maxit: int,
+    term_thresh: float,
+    cltype: str,
+    cov_constr: float,
     showlog: Callable[..., None] = print,
     piter: Iterable = iter,
-):
+) -> tuple[NDArray, NDArray, NDArray]:
     """
     Script enables the crisp clustering of COMPLETE multi-variate datasets.
 
     Parameters
     ----------
-    data : numpy array
-        N x P matrix containing the data to be clustered, N is number of
-        samples, P is number of different attributes available for each
-        sample.
-    no_clust : int
+    data
+        N x P matrix containing the data to be clustered, N is number of samples, P is number of
+        different attributes available for each sample.
+    no_clust
         Number of clusters to be used.
-    cent : numpy array
-        cluster centre positions, either empty [] --> randomly guessed
-        center positions will be used for initialisation or NO_CLUSTxP
-        matrix
-    centfix : numpy array
-        Constrains the position of cluster centers, if CENTFIX is empty,
-        cluster centers can freely vary during cluster analysis, otherwise
-        CENTFIX is of equal size to CENT and gives an absolute deviation
-        from initial center positions that should not be exceeded during
-        clustering. Note, CETNFIX applies only if center values are
-        provided by the user.
-    maxit : int
-        number of maximal allowed iterations.
-    term_thresh : float
-        Termination threshold, either empty [] --> go for the maximum
-        number of iterations MAXIT or a scalar giving the minimum
-        reduction of the size of the objective function for two consecutive
+    cent
+        Cluster centre positions, either empty [] --> randomly guessed center positions will be used
+        for initialisation or NO_CLUSTxP matrix
+    centfix
+        Constrains the position of cluster centers, if CENTFIX is empty, cluster centers can freely
+        vary during cluster analysis, otherwise CENTFIX is of equal size to CENT and gives an absolute
+        deviation from initial center positions that should not be exceeded during clustering. Note,
+        CETNFIX applies only if center values are provided by the user.
+    maxit
+        Number of maximal allowed iterations.
+    term_thresh
+        Termination threshold, either empty [] --> go for the maximum number of iterations MAXIT or a
+        scalar giving the minimum reduction of the size of the objective function for two consecutive
         iterations in Percent.
-    cltype : str
-        either 'kmeans' --> kmeans cluster analysis (spherically shaped
-        cluster), 'det' --> uses the determinant criterion of Spath, H.,
-        "Cluster-Formation and Analyse, chapter3" (ellipsoidal clusters,
-        all cluster use the same ellipsoid), or 'vardet' --> Spath, H.,
-        chapter 4 (each cluster uses its individual ellipsoid). Note: the
-        latter is the crisp version of the Gustafson-Kessel algorithm
-    cov_constr : float
-        scalar between [0 1], values > 0 trim the covariance matrix
-        to avoid needle-like ellipsoids for the clusters, applies only for
-        cltype='vardet', but must always be provided.
-    showlog : function, optional
+    cltype
+        Either 'kmeans' --> kmeans cluster analysis (spherically shaped cluster), 'det' --> uses the
+        determinant criterion of Spath, H., "Cluster-Formation and Analyse, chapter3" (ellipsoidal
+        clusters, all cluster use the same ellipsoid), or 'vardet' --> Spath, H., chapter 4 (each
+        cluster uses its individual ellipsoid). Note: the latter is the crisp version of the
+        Gustafson-Kessel algorithm.
+    cov_constr
+        Scalar between [0 1], values > 0 trim the covariance matrix to avoid needle-like ellipsoids for
+        the clusters, applies only for cltype='vardet', but must always be provided.
+    showlog
         Show information using a function. The default is print.
-    piter : function, optional
+    piter
         Progress bar iterator. The default is iter.
 
     Returns
     -------
-    idx : numpy array
-        cluster index number for each sample after the last iteration,
-        column vector.
-    cent : numpy array
-        matrix with cluster centre positions after last iteration, one
-        cluster centre per row
-    obj_fcn : numpy array
-        Vector, size of the objective function after each iteration
+    idx : ndarray
+        cluster index number for each sample after the last iteration, column vector.
+    cent : ndarray
+        matrix with cluster centre positions after last iteration, one cluster centre per row.
+    obj_fcn : ndarray
+        Vector, size of the objective function after each iteration.
     """
     showlog(" ")
 
@@ -587,26 +570,28 @@ def crisp_means(
     return idx, cent, obj_fcn
 
 
-def gcentroids(data, index, no_clust, mindist):
+def gcentroids(
+    data: NDArray, index: NDArray, no_clust: int, mindist: NDArray
+) -> tuple[NDArray, NDArray]:
     """
     G Centroids.
 
     Parameters
     ----------
-    data : numpy array
+    data
         Input data.
-    index : numpy array
+    index
         Cluster index number for each sample.
-    no_clust : int
+    no_clust
         Number of clusters to be used.
-    mindist : numpy array
+    mindist
         Minimum distances.
 
     Returns
     -------
-    centroids : numpy array
+    centroids : ndarray
         Centroids
-    index : numpy array
+    index : ndarray
         Index
 
     """
@@ -628,28 +613,35 @@ def gcentroids(data, index, no_clust, mindist):
     return centroids, index
 
 
-def gdist(data, center, index, no_clust, cltype, cov_constr):
+def gdist(
+    data: NDArray,
+    center: NDArray,
+    index: NDArray,
+    no_clust: int,
+    cltype: str,
+    cov_constr: float,
+) -> NDArray:
     """
     G Dist routine.
 
     Parameters
     ----------
-    data : numpy array
+    data
         Input data.
-    center : numpy array
+    center
         center of each class.
-    index : numpy array
+    index
         Cluster index number for each sample.
-    no_clust : int
+    no_clust
         Number of clusters to be used.
-    cltype : str
+    cltype
         Clustering type.
-    cov_constr : float
+    cov_constr
         scalar between [0 1].
 
     Returns
     -------
-    bigd : numpy array
+    ndarray
         Output data.
 
     """

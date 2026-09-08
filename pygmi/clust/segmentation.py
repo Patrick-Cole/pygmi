@@ -30,6 +30,7 @@ import numpy as np
 import skimage
 import sklearn.preprocessing as skp
 from numba import jit
+from numpy.typing import NDArray
 from PySide6 import QtCore, QtGui, QtWidgets
 from sklearn.cluster import KMeans
 
@@ -105,7 +106,7 @@ class ImageSeg(BasicModule):
 
         Parameters
         ----------
-        nodialog : bool, optional
+        nodialog
             Run settings without a dialog. The default is False.
 
         Returns
@@ -204,33 +205,33 @@ class ImageSeg(BasicModule):
 
 
 def segment1(
-    data,
+    data: NDArray,
     *,
-    scale=500,
-    wcolor=0.5,
-    wcompact=0.5,
-    doshape=True,
+    scale: int = 500,
+    wcolor: float = 0.5,
+    wcompact: float = 0.5,
+    doshape: float = True,
     showlog: Callable[..., None] = print,
     piter: Iterable = iter,
-):
+) -> NDArray:
     """
     Perform image segmentation.
 
     Parameters
     ----------
-    data : numpy array
+    data
         Input data.
-    scale : int, optional
+    scale
         Scale. The default is 500.
-    wcolor : float, optional
+    wcolor
         Colour weight. The default is 0.5.
-    wcompact : float, optional
+    wcompact
         Compactness weight. The default is 0.5.
-    doshape : bool, optional
+    doshape
         Perform shape segmentation. The default is True.
-    showlog : function, optional
+    showlog
         Display information. The default is print.
-    piter : function, optional
+    piter
         Progress bar iterator. The default is iter.
 
     Returns
@@ -291,50 +292,53 @@ def segment1(
 
 
 def _segment2(
-    omap,
-    olist,
-    slist,
-    mlist,
-    nlist,
-    bands,
+    omap: NDArray,
+    olist: dict,
+    slist: dict,
+    mlist: dict,
+    nlist: dict,
+    bands: int,
     *,
-    doshape=True,
-    wcompact=0.5,
-    wcolor=0.5,
-    scale=500,
+    doshape: bool = True,
+    wcompact: float = 0.5,
+    wcolor: float = 0.5,
+    scale: int = 500,
     showlog: Callable[..., None] = print,
     piter: Iterable = iter,
-):
+) -> NDArray:
     """
     Segment Part 2.
 
     Parameters
     ----------
-    omap : numpy array
+    omap
         output data from segment1.
-    olist : dictionary
+    olist
         olist from segment1.
-    slist : dictionary
+    slist
         slist from segment1.
-    mlist : dictionary
+    mlist
         mlist from segment1.
-    nlist : dictionary
+    nlist
         nlist from segment1.
-    bands : int
+    bands
         Number of bands in data.
-    doshape : bool, optional
+    doshape
         Perform shape segmentation. The default is True.
-    wcompact : float, optional
+    wcompact
         Compactness weight. The default is 0.5.
-    wcolor : float, optional
+    wcolor
         Colour weight. The default is 0.5.
-    scale : int, optional
+    scale
         Scale. The default is 500.
-
+    showlog
+        Display information. The default is print.
+    piter
+        Progress bar iterator. The default is iter.
 
     Returns
     -------
-    omap : numpy array
+    ndarray
         output data.
 
     """
@@ -514,18 +518,18 @@ def _segment2(
 
 
 @jit(nopython=True, fastmath=True)
-def get_l(data):
+def get_l(data: NDArray) -> float:
     """
     Get bounding box length.
 
     Parameters
     ----------
-    data : numpy array
+    data
         Input data.
 
     Returns
     -------
-    ltmp : int
+    float
         Bounding box length.
 
     """

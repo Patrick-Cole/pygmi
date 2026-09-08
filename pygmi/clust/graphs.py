@@ -27,13 +27,13 @@
 import numpy as np
 from matplotlib import colormaps
 from matplotlib.backends.backend_qt import NavigationToolbar2QT
-from matplotlib.backends.backend_qtagg import FigureCanvasQTAgg
-from matplotlib.figure import Figure
 from matplotlib.ticker import MaxNLocator
+from numpy.typing import NDArray
 from PySide6 import QtCore, QtWidgets
 
-from pygmi.maps import CanvasModule, frm, set_axes, set_northscale
+from pygmi.maps import CanvasModule, set_axes, set_northscale
 from pygmi.misc import ContextModule
+from pygmi.raster.datatypes import Data
 from pygmi.raster.modest_image import imshow
 
 
@@ -45,13 +45,13 @@ class MyMplCanvas(CanvasModule):
         self.line = None
         self.ind = None
 
-    def update_classes(self, data1):
+    def update_classes(self, data1: Data):
         """
         Update the class plot.
 
         Parameters
         ----------
-        data1 : pygmi.raster.datatypes.Data
+        data1
             Input raster dataset.
 
         """
@@ -60,8 +60,6 @@ class MyMplCanvas(CanvasModule):
         self.axes = self.figure.add_subplot(111, label="map")
 
         cdat = data1.data
-        # csp = imshow(self.axes, cdat, cmap=colormaps['jet'],
-        #              extent=data1.extent)
 
         # cannot use modestimage when changing colorbar labels
         csp = self.axes.imshow(cdat, cmap=colormaps["jet"], extent=data1.extent)
@@ -87,15 +85,15 @@ class MyMplCanvas(CanvasModule):
 
         self.draw()
 
-    def update_bars(self, data1, rdata):
+    def update_bars(self, data1: Data, rdata: Data):
         """
         Update the class plot.
 
         Parameters
         ----------
-        data1 : pygmi.raster.datatypes.Data
+        data1
             Input raster dataset containing classes.
-        rdata : pygmi.raster.datatypes.Data
+        rdata
             Input raster dataset containing data.
 
         """
@@ -141,15 +139,15 @@ class MyMplCanvas(CanvasModule):
 
         self.figure.canvas.draw()
 
-    def update_scatter(self, x, y):
+    def update_scatter(self, x: NDArray, y: NDArray):
         """
         Update the scatter plot.
 
         Parameters
         ----------
-        x : numpy array
+        x
             X coordinates (Number of classes).
-        y : numpy array
+        y
             Y Coordinates.
 
         """
@@ -167,17 +165,17 @@ class MyMplCanvas(CanvasModule):
         self.axes.xaxis.set_ticks(x)
         self.figure.canvas.draw()
 
-    def update_wireframe(self, x, y, z):
+    def update_wireframe(self, x: NDArray, y: NDArray, z: NDArray):
         """
         Update the wireframe plot.
 
         Parameters
         ----------
-        x : numpy array
+        x
             Iteration number.
-        y : numpy array
+        y
             Number of classes.
-        z : numpy array
+        z
             z coordinate.
 
         """
@@ -192,24 +190,21 @@ class MyMplCanvas(CanvasModule):
 
         self.figure.canvas.draw()
 
-    def update_membership(self, data1, mem):
+    def update_membership(self, data1: Data, mem: int):
         """
         Update membership plot.
 
         Parameters
         ----------
-        data1 : pygmi.raster.datatypes.Data
+        data1
             Raster dataset.
-        mem : int
+        mem
             Membership.
 
         """
         self.custom_resize = True
         self.figure.clear()
         self.axes = self.figure.add_subplot(111)
-
-        # self.axes.tick_params(axis="x", rotation=90)
-        # self.axes.tick_params(axis="y", rotation=0)
 
         rdata = imshow(
             self.axes,
@@ -222,17 +217,6 @@ class MyMplCanvas(CanvasModule):
 
         self.figure.colorbar(rdata)
 
-        # self.axes.xaxis.set_major_formatter(frm)
-        # self.axes.yaxis.set_major_formatter(frm)
-
-        # if data1.crs.is_geographic:
-        #     self.axes.set_xlabel("Longitude")
-        #     self.axes.set_ylabel("Latitude")
-        # else:
-        #     self.axes.set_xlabel("Eastings")
-        #     self.axes.set_ylabel("Northings")
-
-        # self.figure.canvas.draw()
         set_axes(self.axes, data1.crs)
         set_northscale(self.axes, data1.crs, self.showlog)
 
@@ -289,16 +273,9 @@ class PlotRaster(ContextModule):
         """Entry point into the routine, used to run context menu item."""
         data = self.indata["Cluster"]
 
-        # self.cmb_1.currentIndexChanged.disconnect()
-        # for i in data:
-        #     self.cmb_1.addItem(i.dataid)
-
-        # self.cmb_1.currentIndexChanged.connect(self.change_band)
-
         cols = [i.dataid for i in data]
         self.cmb_update(self.cmb_1, cols)
 
-        # self.show()
         self.change_band()
         self.show()
 
@@ -344,10 +321,7 @@ class PlotBars(ContextModule):
         self.cmb_1.currentIndexChanged.connect(self.change_band)
 
     def change_band(self):
-        """
-        Combo to change band.
-
-        """
+        """Combo to change band."""
         i = self.cmb_1.currentIndex()
         data = self.indata["Cluster"]
         self.mmc.update_bars(data[i], self.indata["Raster"])
@@ -412,10 +386,7 @@ class PlotMembership(ContextModule):
         self.cmb_2.currentIndexChanged.connect(self.change_band_two)
 
     def change_band(self):
-        """
-        Combo to change band.
-
-        """
+        """Combo to change band."""
         data = self.indata["Cluster"]
         i = self.cmb_1.currentIndex()
 
@@ -425,13 +396,6 @@ class PlotMembership(ContextModule):
         ]
         self.cmb_update(self.cmb_2, cols)
 
-        # self.cmb_2.clear()
-        # self.cmb_2.currentIndexChanged.disconnect()
-
-        # for j in range(data[i].metadata["Cluster"]["no_clusters"]):
-        #     self.cmb_2.addItem("Membership Map for Cluster " + str(j + 1))
-
-        # self.cmb_2.currentIndexChanged.connect(self.change_band_two)
         self.change_band_two()
 
     def run(self):
@@ -501,10 +465,7 @@ class PlotVRCetc(ContextModule):
         self.cmb_1.currentIndexChanged.connect(self.change_band)
 
     def change_band(self):
-        """
-        Combo to change band.
-
-        """
+        """Combo to change band."""
         data = self.indata["Cluster"]
 
         j = str(self.cmb_1.currentText())

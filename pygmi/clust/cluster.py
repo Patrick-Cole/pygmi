@@ -166,10 +166,7 @@ class Cluster(BasicModule):
         gl_1.addWidget(self.buttonbox, 10, 0, 1, 2)
 
     def combo(self):
-        """
-        Set up combo box, used to choose clustering algorithm.
-
-        """
+        """Set up combo box, used to choose clustering algorithm."""
         i = str(self.cmb_alg.currentText())
 
         self.lbl_minclusters.hide()
@@ -226,7 +223,7 @@ class Cluster(BasicModule):
 
         Parameters
         ----------
-        nodialog : bool, optional
+        nodialog
             Run settings without a dialog. The default is False.
 
         Returns
@@ -321,10 +318,7 @@ class Cluster(BasicModule):
         self.saveobj(self.runs)
 
     def update_vars(self):
-        """
-        Update the variables.
-
-        """
+        """Update the variables."""
         self.cltype = str(self.cmb_alg.currentText())
         self.min_cluster = self.sb_minclusters.value()
         self.max_cluster = self.sb_maxclusters.value()
@@ -338,22 +332,22 @@ class Cluster(BasicModule):
 
 
 def cluster(
-    data,
-    cltype="K-Means",
-    sscale=True,
-    rscale=False,
-    min_cluster=5,
-    max_cluster=5,
-    tol=0.0001,
-    max_iter=300,
-    eps=0.5,
-    bthres=0.5,
-    branchfac=50,
-    xi=0.05,
-    min_samples=5,
+    data: list[Data],
+    cltype: str = "K-Means",
+    sscale: bool = True,
+    rscale: bool = False,
+    min_cluster: int = 5,
+    max_cluster: int = 5,
+    tol: float = 0.0001,
+    max_iter: int = 300,
+    eps: float = 0.5,
+    bthres: float = 0.5,
+    branchfac: int = 50,
+    xi: float = 0.05,
+    min_samples: int = 5,
     showlog: Callable[..., None] = print,
     piter: Iterable = iter,
-):
+) -> list[Data] | bool:
     """
     Run the cluster analysis.
 
@@ -361,43 +355,41 @@ def cluster(
 
     Parameters
     ----------
-    data : list
-        List of PyGMI data (pygmi.raster.datatypes.Data).
-    cltype : str, optional
-        Cluster analysis type. Can be one of 'K-Means',
-        'Mini Batch K-Means (fast)', 'Bisecting K-Means', 'DBSCAN', 'OPTICS',
-        'Birch'. The default is 'K-Means'.
-    sscale : bool, optional
+    data
+        List of PyGMI data.
+    cltype
+        Cluster analysis type. Can be one of 'K-Means', 'Mini Batch K-Means (fast)', 'Bisecting K-Means',
+        'DBSCAN', 'OPTICS', 'Birch'. The default is 'K-Means'.
+    sscale
         Use standard scaling. The default is True.
-    rscale : bool, optional
+    rscale
         Use robust scaling. The default is False.
-    min_cluster : int, optional
+    min_cluster
         Minimum number of clusters to find. The default is 5.
-    max_cluster : int, optional
+    max_cluster
         Maximum number of clusters to find. The default is 5.
-    tol : float, optional
+    tol
         Tolerance (K-Means only). The default is 0.0001.
-    max_iter : int, optional
+    max_iter
         Maximum number of iterations (K-Means only). The default is 300.
-    eps : float, optional
+    eps
         Epsilon factor (DBSCAN only). The default is 0.5.
-    bthres : float, optional
+    bthres
         Threshold for Birch. The default is 0.5.
-    branchfac : float, optional
+    branchfac
         Branching factor for Birch. The default is 50.
-    xi : float, optional
-        Minimum steepness on the reachability plot for OPTICS.
-        The default is 0.05.
-    min_samples : int, optional
+    xi
+        Minimum steepness on the reachability plot for OPTICS. The default is 0.05.
+    min_samples
         Minimum samples for DBSCAN. The default is 5.
-    showlog : function, optional
+    showlog
         Show information using a function. The default is print.
-    piter : function, optional
+    piter
         Progress bar iterator. The default is iter.
 
     Returns
     -------
-    list
+    list of Data
         List of raster datasets of classes.
 
     """

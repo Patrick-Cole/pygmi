@@ -31,6 +31,7 @@ This makes use of fuzzy logic.
 from collections.abc import Callable, Iterable
 
 import numpy as np
+from numpy.typing import NDArray
 from PySide6 import QtWidgets
 from sklearn.metrics import calinski_harabasz_score, davies_bouldin_score
 
@@ -151,10 +152,7 @@ class FuzzyClust(BasicModule):
         vbl.addWidget(self.rb_datadriven)
 
     def combo(self):
-        """
-        Set up combo box to choose algorithm.
-
-        """
+        """Set up combo box to choose algorithm."""
         i = str(self.cmb_alg.currentText())
         if i in ("Gath-Geva", "Gustafson-Kessel"):
             self.lbl_7.show()
@@ -164,10 +162,7 @@ class FuzzyClust(BasicModule):
             self.dsb_constraincluster.hide()
 
     def initchange(self):
-        """
-        Set up radio button to choose initialisation type.
-
-        """
+        """Set up radio button to choose initialisation type."""
         if self.rb_datadriven.isChecked():
             self.sb_repeatedruns.hide()
             self.lbl_6.hide()
@@ -181,7 +176,7 @@ class FuzzyClust(BasicModule):
 
         Parameters
         ----------
-        nodialog : bool, optional
+        nodialog
             Run settings without a dialog. The default is False.
 
         Returns
@@ -266,10 +261,7 @@ class FuzzyClust(BasicModule):
         self.saveobj(self.fexp)
 
     def update_vars(self):
-        """
-        Update the variables.
-
-        """
+        """Update the variables."""
         self.cltype = str(self.cmb_alg.currentText())
         self.min_cluster = self.sb_minclusters.value()
         self.max_cluster = self.sb_maxclusters.value()
@@ -286,52 +278,52 @@ class FuzzyClust(BasicModule):
 
 
 def fuzzyclust(
-    data,
-    cltype="fuzzy c-means",
-    min_cluster=5,
-    max_cluster=5,
-    cov_constr=0.0,
-    no_runs=1,
-    max_iter=100,
-    expo=1.5,
-    term_thresh=0.00001,
-    init_type="random",
+    data: list[Data],
+    cltype: str = "fuzzy c-means",
+    min_cluster: int = 5,
+    max_cluster: int = 5,
+    cov_constr: float = 0.0,
+    no_runs: str = 1,
+    max_iter: str = 100,
+    expo: float = 1.5,
+    term_thresh: float = 0.00001,
+    init_type: str = "random",
     showlog: Callable[..., None] = print,
     piter: Iterable = iter,
-):
+) -> list[Data]:
     """
     Fuzzy Clustering.
 
     Parameters
     ----------
-    data : list
-        List of PyGMI data (pygmi.raster.datatypes.Data).
-    cltype : str, optional
+    data
+        List of PyGMI data.
+    cltype
         Clustering method, by default 'k-means'
-    min_cluster : int, optional
-        minimum number of clusters, by default 5
-    max_cluster : int, optional
-        maximum number of clusters, by default 5
-    cov_constr : _type_, optional
-        scalar between [0 1], by default 0.
-    no_runs : int, optional
-        number of runs, by default 1
-    max_iter : int, optional
-        maximum iterations, by default 100
-    expo : float, optional
+    min_cluster
+        Minimum number of clusters, by default 5
+    max_cluster
+        Maximum number of clusters, by default 5
+    cov_constr
+        Scalar between [0 1], by default 0.
+    no_runs
+        Number of runs, by default 1
+    max_iter
+        Maximum iterations, by default 100
+    expo
         Fuzzification exponent, by default 1.5
-    term_thresh : float, optional
-        terminating threshold, by default 0.00001
-    init_type : str, optional
-        initial guess, by default 'random'
-    showlog : function, optional
+    term_thresh
+        Terminating threshold, by default 0.00001
+    init_type
+        Initial guess, by default 'random'
+    showlog
         Show information using a function. The default is print.
-    piter : function, optional
+    piter
         Progress bar iterator. The default is iter.
 
     Returns
     -------
-    dat_out : list
+    list of Data
         List of raster datasets of classes.
 
     """
@@ -480,77 +472,70 @@ def fuzzyclust(
 
 
 def fuzzy_means(
-    data,
-    no_clust,
-    init,
-    centfix,
-    maxit,
-    term_thresh,
-    expo,
-    cltype,
-    cov_constr,
+    data: NDArray,
+    no_clust: int,
+    init: NDArray,
+    centfix: NDArray,
+    maxit: int,
+    term_thresh: float,
+    expo: float,
+    cltype: str,
+    cov_constr: NDArray,
     showlog: Callable[..., None] = print,
     piter: Iterable = iter,
-):
+) -> tuple[NDArray | list, NDArray | None, NDArray, NDArray]:
     """
     Fuzzy clustering.
 
-    Finds NO_CLUST clusters in the data set DATA.. Supported algorithms are
-    fuzzy c-means, Gustafson-Kessel, advanced fuzzy c-means.
-
+    Finds NO_CLUST clusters in the data set DATA.. Supported algorithms are fuzzy c-means,
+    Gustafson-Kessel, advanced fuzzy c-means.
 
     Parameters
     ----------
-    data : numpy array
-        DATA is size M-by-N, where M is the number of samples
-        and N is the number of coordinates (attributes) for each sample.
-    no_clust : int
+    data
+        DATA is size M-by-N, where M is the number of samples and N is the number of coordinates
+        (attributes) for each sample.
+    no_clust
         Number of clusters.
-    init : numpy array
-        INIT may be set to [], in this case the FCM generates random
-        initial center locations to start the algorithm. Alternatively,
-        INIT can be of matrix type, either containing a user-given
-        membership matrix [NO_CLUST M] or a cluster center matrix
-        [NO_CLUST, N].
-    centfix : numpy array
+    init
+        INIT may be set to [], in this case the FCM generates random initial center locations to start
+        the algorithm. Alternatively, INIT can be of matrix type, either containing a user-given
+        membership matrix [NO_CLUST M] or a cluster center matrix [NO_CLUST, N].
+    centfix
         Constrains the position of cluster centers.
-    maxit : int
-        MAXIT give the maximum number of iterations..
-    term_thresh : float
+    maxit
+        MAXIT give the maximum number of iterations.
+    term_thresh
         Gives the required minimum improvement in per cent per
         iteration. (termination threshold)
-    expo : float
+    expo
         Fuzzification exponent.
-    cltype : str
+    cltype
         either 'FCM' for fuzzy c-means (spherically shaped clusters),
-        'DET' for advanced fuzzy c-means (ellipsoidal clusters, all
-        clusters use the same ellipsoid), or 'GK' for Gustafson-Kessel
-        clustering (ellipsoidal clusters, each cluster uses its own
+        'DET' for advanced fuzzy c-means (ellipsoidal clusters, all  clusters use the same ellipsoid),
+        or 'GK' for Gustafson-Kessel clustering (ellipsoidal clusters, each cluster uses its own
         ellipsoid).
-    cov_constr : float
-        COV_CONSTR applies only to the GK algorithm. constrains the cluster
-        shape towards spherical clusters to avoid needle-like clusters.
+    cov_constr
+        COV_CONSTR applies only to the GK algorithm. constrains the cluster shape towards spherical
+        clusters to avoid needle-like clusters.
         COV_CONSTR = 1 make the GK algorithm equal to the FCM algorithm,
-        COV_CONSTR = 0 results in no constraining of the covariance
-        matrices of the clusters.
+        COV_CONSTR = 0 results in no constraining of the covariance matrices of the clusters.
+    showlog
+        Display information. The default is print.
+    piter
+        Progress bar iterator. The default is iter.
 
     Returns
     -------
-    uuu : numpy array
-        This membership function matrix contains the grade of
-        membership of each data sample to each cluster.
-    cent : numpy array
-        The coordinates for each cluster center are returned in the rows
-        of the matrix CENT.
-    obj_fcn : numpy array
-        At each iteration, an objective function is minimized to find the
-        best location for the clusters and its values are returned in
-        OBJ_FCN.
-    vrc : numpy array
-        Variance ration criterion.
-    nce :
-        Normalised class entropy.
-    xbi : numpy array
+    uuu
+        This membership function matrix contains the grade of membership of each data sample to each
+        cluster.
+    cent
+        The coordinates for each cluster center are returned in the rows of the matrix CENT.
+    obj_fcn
+        At each iteration, an objective function is minimized to find the best location for the
+        clusters and its values are returned in OBJ_FCN.
+    xbi
         Xie beni index.
     """
     showlog(" ")
@@ -654,29 +639,35 @@ def fuzzy_means(
     return uuu, cent, obj_fcn, xbi
 
 
-def fuzzy_dist(cent, data, uuu, expo, cltype, cov_constr):
+def fuzzy_dist(
+    cent: NDArray,
+    data: NDArray,
+    uuu: NDArray,
+    expo: float,
+    cltype: str,
+    cov_constr: float,
+) -> NDArray:
     """
     Fuzzy distance calculation.
 
     Parameters
     ----------
-    cent : numpy array
+    cent
         Class centers.
-    data : numpy array
+    data
         Input data.
-    uuu : numpy array
+    uuu
         Membership function matrix.
-    expo : float
+    expo
         Fuzzification exponent.
-    cltype : str
+    cltype
         Clustering type.
-    cov_constr : float
-        Applies only to the GK algorithm. constrains the cluster shape towards
-        spherical clusters.
+    cov_constr
+        Applies only to the GK algorithm. constrains the cluster shape towards spherical clusters.
 
     Returns
     -------
-    ddd : numpy array
+    ndarray
         Output data.
 
     """
@@ -798,7 +789,9 @@ def fuzzy_dist(cent, data, uuu, expo, cltype, cov_constr):
     return ddd
 
 
-def xie_beni(data, expo, uuu, center, edist):
+def xie_beni(
+    data: NDArray, expo: float, uuu: NDArray, center: NDArray, edist: NDArray
+) -> NDArray:
     """
     Calculate the Xie-Beni index.
 
@@ -807,19 +800,21 @@ def xie_beni(data, expo, uuu, center, edist):
 
     Parameters
     ----------
-    data : numpy array
-        input dataset
-    expo : float
-    uuu : numpy array
-        membership matrix (FCM) or cluster index values (k-means)
-    center : numpy array
-        cluster centers
-    edist : numpy array
+    data
+        Input dataset
+    expo
+        Fuzzification exponent.
+    uuu
+        Membership matrix (FCM) or cluster index values (k-means)
+    center
+        Cluster centers
+    edist
+        Euclidean distances/
 
     Returns
     -------
-    xbi : numpy array
-        xie beni index
+    ndarray
+        Xie beni index
 
     """
     if edist.size == 0:  # calc euclidian distances if no distances are

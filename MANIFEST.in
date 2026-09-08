@@ -1,7 +1,7 @@
 exclude pygmi_pypi.py
 exclude findlibs.py
 exclude builddocs.py
-include pygmi/mag/IGRF13.COF
+include pygmi/maggrv/IGRF14.COF
 include pygmi/seis/descriptions.txt
 include pygmi/mt/mtpy/LICENSE.txt
 include pygmi/mt/mtpy/README.rst

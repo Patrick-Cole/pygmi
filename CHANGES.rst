@@ -402,7 +402,7 @@ v3.2.7.16, 24 July 2023
 * Changed tilt depth plot and made RTP optional
 * Created GXYZ function.
 * Made trim_raster more robust
-* Bugfix - fixed a bug where saving 3d model caused a crash.
+* Bugfix - fixed a bug where saving 3D model caused a crash.
 * Improved RasterFileList code.
 * Sentinel-2 data will be imported as float32 to save space.
 * Cut raster now uses multiple polygons in a shapefile.
@@ -969,7 +969,7 @@ v2.4.3, 7 March 2019
 v2.4.1.2, 1 March 2018
 ----------------------
 * Added updated IGRF coefficients
-* Bug fixes in saving of 3d model, when it is used by another process, and in reading csv vector data.
+* Bug fixes in saving of 3D model, when it is used by another process, and in reading csv vector data.
 * IGRF bugfix: fixed a bug relating to newer numpy
 * Maintenance: Cleaned code in the equation editor.
 * Add more control to Anaglyphs
@@ -1013,8 +1013,8 @@ v2.3.0, 11 May 2017
 v2.2.15, 6 March 2017
 ---------------------
 * Fixed incorrect calculation of remanence.
-* 3d import fix.
-* Fix for 3d import from text files.
+* 3D import fix.
+* Fix for 3D import from text files.
 * Anaglyph tests.
 * Minor maintenence.
 * Seismology Focmec format update.
@@ -1053,7 +1053,7 @@ v2.2.11, 12 July 2016
 * Fixed a bug when resizing a model
 * Bugfix in kmz export and in quarry event removal algorithm
 * Fixes to shapefile 3D export
-* Update to beachball, vertical gradient and export 3d model to shapefile
+* Update to beachball, vertical gradient and export 3D model to shapefile
 * Update to picture overlay on 3D modelling
 * Fault plane solutions
 * Update readme taking into account anaconda bug

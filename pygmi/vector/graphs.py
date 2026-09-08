@@ -43,8 +43,8 @@ from PySide6 import QtCore, QtWidgets
 from scipy.stats import median_abs_deviation
 from sklearn.cluster import KMeans
 
-from pygmi.maps import CanvasModule, frm, set_axes, set_northscale
-from pygmi.misc import ContextModule, discrete_colorbar
+from pygmi.maps import CanvasModule, discrete_colorbar, frm, set_axes, set_northscale
+from pygmi.misc import ContextModule
 from pygmi.raster.colormaps import colormaps
 
 rcParams["savefig.dpi"] = 300

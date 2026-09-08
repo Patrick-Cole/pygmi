@@ -47,15 +47,24 @@ class MyMplCanvas(FigureCanvasQTAgg):
         fig = Figure()
         super().__init__(fig)
 
-    def update_legend(self, df, hatch, clith, col, stratcol):
+    def update_legend(
+        self, df: pd.DataFrame, hatch: dict, clith: dict, col: dict, stratcol: dict
+    ):
         """
         Update the plot legend.
 
         Parameters
         ----------
-        df : Pandas DataFrame
+        df
             Dataframe containing the data.
-
+        hatch
+            Hatchings.
+        clith
+            Lithology text.
+        col
+            Colours.
+        stratcol
+            Stratigraphy colour.
         """
         fig = self.figure
         fig.clear()
@@ -140,14 +149,20 @@ class MyMplCanvas(FigureCanvasQTAgg):
 
         self.figure.canvas.draw()
 
-    def update_log(self, df, hatch, col, stratcol):
+    def update_log(self, df: pd.DataFrame, hatch: dict, col: dict, stratcol: dict):
         """
         Update the borehole log plot.
 
         Parameters
         ----------
-        df : Pandas DataFrame
+        df
             Dataframe containing the data.
+        hatch
+            Hatchings.
+        col
+            Colours.
+        stratcol
+            Stratigraphy colour.
 
         """
         fig = self.figure
@@ -322,10 +337,7 @@ class PlotLog(ContextModule):
         self.cmb_1.currentIndexChanged.connect(self.change_band)
 
     def change_band(self):
-        """
-        Combo box to choose the borehole to display.
-
-        """
+        """Combo box to choose the borehole to display."""
         i = self.cmb_1.currentText()
 
         data = self.indata["Borehole"]
@@ -361,10 +373,7 @@ class PlotLog(ContextModule):
         self.mmc.update_log(data, self.hatch, self.col, self.stratcol)
 
     def load_hatch(self):
-        """
-        Load all hatchings.
-
-        """
+        """Load all hatchings."""
         idir = __file__.rpartition("\\")[0]
         logfile = idir + "\\logplot.xlsx"
 
@@ -418,7 +427,7 @@ class PlotLog(ContextModule):
         self.change_band()
 
 
-def gethatch(svgfile):
+def gethatch(svgfile: str) -> tuple[dict, dict]:
     """
     Get hatching from an SVG file, to be used on the log.
 
@@ -429,7 +438,10 @@ def gethatch(svgfile):
 
     Returns
     -------
-    None.
+    pverts : dict
+        Vertices.
+    pcodes : dict
+        Codes.
 
     """
     tree = xml.etree.ElementTree.parse(svgfile)
@@ -530,20 +542,20 @@ def gethatch(svgfile):
     return pverts, pcodes
 
 
-def commentprep(mystring, slen=50):
+def commentprep(mystring: str, slen: int = 50) -> str:
     """
     Create the correct case for a string and inserts carriage returns.
 
     Parameters
     ----------
-    mystring : str
+    mystring
         String to correct.
-    slen : int, optional
+    slen
         String length. The default is 50.
 
     Returns
     -------
-    finstring : str
+    str
         Output string.
 
     """
@@ -563,18 +575,18 @@ def commentprep(mystring, slen=50):
     return finstring
 
 
-def chkname(iname):
+def chkname(iname: str) -> str:
     """
     Check a filename for illegal characters.
 
     Parameters
     ----------
-    iname : str
+    iname
         Input filename.
 
     Returns
     -------
-    iname : str
+    str
         Corrected filename.
 
     """

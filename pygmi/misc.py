@@ -30,15 +30,12 @@ import textwrap
 import time
 import types
 import webbrowser
-from collections.abc import Generator, Iterable
+from collections.abc import Callable, Generator, Iterable
 
 import geopandas as gpd
 import numpy as np
 import psutil
 import requests
-from matplotlib import cm, colors
-from matplotlib.axes import Axes
-from numpy.typing import NDArray
 from PySide6 import QtCore, QtGui, QtWidgets
 from PySide6.QtCore import QRegularExpression
 from PySide6.QtGui import QRegularExpressionValidator
@@ -73,11 +70,11 @@ class EmittingStream(QtCore.QObject):
     Parameters
     ----------
     textwritten
-        Text written to stdout.
+        Function to write text to.
 
     """
 
-    def __init__(self, textWritten):
+    def __init__(self, textWritten: Callable[..., None]):
         self.textWritten = textWritten
 
     def write(self, text: str):
@@ -570,7 +567,9 @@ class QVStack2Layout(QtWidgets.QGridLayout):
         self.setSizeConstraint(QtWidgets.QLayout.SizeConstraint.SetFixedSize)
         self.indx = 0
 
-    def addWidget(self, widget1: str | QtWidgets.QWidget, widget2: QtWidgets.QWidget):
+    def addWidget(
+        self, widget1: str | QtWidgets.QWidget, widget2: QtWidgets.QWidget | str
+    ):
         """
         Add two widgets on a row, widget can also be text.
 
@@ -676,9 +675,8 @@ class ProgressBar(QtWidgets.QProgressBar):
     """
     Qt custom progress bar.
 
-    Progress Bar routine which expands the QProgressBar class slightly so that
-    there is a time function as well as a convenient of calling it via an
-    iterable.
+    Progress Bar routine which expands the QProgressBar class slightly so that there is a time function
+    as well as a convenient of calling it via an iterable.
 
     Parameters
     ----------
@@ -911,48 +909,6 @@ def check_for_updates() -> str:
     return verpath
 
 
-def discrete_colorbar(
-    axes: Axes, csp, cdat: np.ma.MaskedArray | NDArray, lbls: list[str] | None = None
-):
-    """
-    Plot colour bar using discrete colours for a small range of values.
-
-    Parameters
-    ----------
-    axes
-        Current axes.
-    csp
-        Handle to Matplotlib plotting routine.
-    cdat
-        Array of values.
-    lbls
-        y tick labels, by default None
-    """
-    vals = np.unique(cdat)
-    if np.ma.isMaskedArray(vals):
-        vals = vals.compressed()
-    vals = vals[~np.isnan(vals)]
-
-    if len(vals) < 2:
-        print("Too few discrete values")
-        return
-    # bnds = (vals - 0.5).tolist() + [vals.max() + .5]
-
-    if hasattr(csp.norm, "boundaries"):
-        bnds = csp.norm.boundaries
-        ticks = np.diff(bnds) / 2 + vals
-        cbar = axes.figure.colorbar(csp, ticks=ticks)
-    else:
-        bnds = vals.tolist() + [vals.max() + 1]
-        ticks = np.diff(bnds) / 2 + vals
-        cbar = axes.figure.colorbar(csp, boundaries=bnds, values=vals, ticks=ticks)
-
-    if lbls is not None:
-        cbar.ax.set_yticklabels(lbls)
-    else:
-        cbar.ax.set_yticklabels(vals)
-
-
 def getinfo(txt: str | float | None = None, reset: bool = False, hide: bool = False):
     """
     Get time and memory info.
@@ -1055,40 +1011,5 @@ def textwrap2(
     return text2
 
 
-def _testfn():
-    """Test function."""
-    # _ = QtWidgets.QApplication(sys.argv)
-
-    # tmp = BasicModule()
-    # tmp.ifile = QtWidgets.QLineEdit('test')
-    # tmp.saveobj(tmp.ifile)
-
-    # print(tmp.projdata)
-
-    import matplotlib.pyplot as plt
-
-    data = [[0, 45, 50], [0, 45, 50], [0, 44, 50]]
-
-    lbls = ["a", "b", "c", "d"]
-
-    vals = np.unique(data)
-    if np.ma.isMaskedArray(vals):
-        vals = vals.compressed()
-    vals = vals[~np.isnan(vals)]
-
-    bnds = vals.tolist() + [vals.max() + 1]
-
-    cmap = cm.viridis
-    norm = colors.BoundaryNorm(bnds, cmap.N)
-
-    fig = plt.figure(dpi=200)
-    ax = fig.gca()
-    cax = ax.imshow(data, norm=norm)
-
-    discrete_colorbar(ax, cax, data, lbls)
-    plt.show()
-
-
 if __name__ == "__main__":
-    # _testfn()
     check_for_updates()

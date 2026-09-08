@@ -682,7 +682,7 @@ class PlotSurface(ContextModule):
         self.show()
 
     def slider(self):
-        """Vertical slider used to scale 3d view."""
+        """Vertical slider used to scale 3D view."""
         self.plotter.set_scale(zscale=self.vslider.value())
 
 

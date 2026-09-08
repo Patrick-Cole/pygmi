@@ -26,15 +26,19 @@
 
 import numpy as np
 from matplotlib import colormaps
+from matplotlib.axes import Axes
+from matplotlib.backend_bases import MouseEvent
 from matplotlib.backends.backend_qtagg import FigureCanvasQTAgg
 from matplotlib.figure import Figure
 from matplotlib.lines import Line2D
 from matplotlib.patches import Polygon
 from matplotlib.path import Path
 from matplotlib.ticker import NullFormatter
+from numpy.typing import NDArray
 from PySide6 import QtCore, QtWidgets
 
 from pygmi.misc import BasicModule
+from pygmi.raster.datatypes import Data
 
 
 class GraphHist(FigureCanvasQTAgg):
@@ -61,18 +65,18 @@ class GraphHist(FigureCanvasQTAgg):
         self.csp = None
         self.nbins = 100
 
-    def get_hist(self, bins):
+    def get_hist(self, bins: int) -> NDArray:
         """
         Routine to get the scattergram with histogram overlay.
 
         Parameters
         ----------
-        bins : int
+        bins
             Number of bins.
 
         Returns
         -------
-        xymahist : numpy array
+        ndarray
             Output data.
 
         """
@@ -85,22 +89,22 @@ class GraphHist(FigureCanvasQTAgg):
         xymahist = np.ma.masked_equal(xyhist[0], 0)
         return xymahist
 
-    def get_clust_scat(self, bins, dattmp, ctmp):
+    def get_clust_scat(self, bins: int, dattmp: list[Data], ctmp: list):
         """
         Routine to get the scattergram with cluster overlay.
 
         Parameters
         ----------
-        bins : int
+        bins
             Number of bins.
-        dattmp : list
-            List of PyGMI raster data (pygmi.raster.datatypes.Data).
-        ctmp : list
+        dattmp
+            List of PyGMI raster data.
+        ctmp
             Cluster indices.
 
         Returns
         -------
-        xymahist : numpy array
+        ndarray
             Output data.
 
         """
@@ -117,10 +121,7 @@ class GraphHist(FigureCanvasQTAgg):
         return xymahist
 
     def init_graph(self):
-        """
-        Initialize the Graph.
-
-        """
+        """Initialize the Graph."""
         self.figure.clf()
 
         left, width = 0.1, 0.65
@@ -158,19 +159,13 @@ class GraphHist(FigureCanvasQTAgg):
         self.figure.canvas.draw()
 
     def polyint(self):
-        """
-        Polygon Interactor routine.
-
-        """
+        """Polygon Interactor routine."""
         pntxy = np.transpose([self.xcoord, self.ycoord])
         self.polyi = PolygonInteractor(self.axscatter, pntxy)
         self.polyi.ishist = True
 
     def setup_coords(self):
-        """
-        Routine to setup the coordinates for the scattergram.
-
-        """
+        """Routine to setup the coordinates for the scattergram."""
         self.xcoord = self.data[self.cindx[0]].data.flatten()
         self.ycoord = self.data[self.cindx[1]].data.flatten()
         self.xcoord -= self.xcoord.min()
@@ -186,10 +181,7 @@ class GraphHist(FigureCanvasQTAgg):
         self.ycoord = np.trunc(self.ycoord)
 
     def setup_hist(self):
-        """
-        Routine to setup the 1D histograms.
-
-        """
+        """Routine to setup the 1D histograms."""
         self.axhistx.xaxis.set_major_formatter(self.nullfmt)
         self.axhisty.yaxis.set_major_formatter(self.nullfmt)
         self.axhistx.yaxis.set_major_formatter(self.nullfmt)
@@ -203,13 +195,13 @@ class GraphHist(FigureCanvasQTAgg):
         self.axhistx.set_xlim(xrng)
         self.axhisty.set_ylim(yrng[::-1])
 
-    def update_graph(self, clearaxis=False):
+    def update_graph(self, clearaxis: bool = False):
         """
         Draw Routine.
 
         Parameters
         ----------
-        clearaxis : bool, optional
+        clearaxis
             True to clear the axis. The default is False.
 
         """
@@ -253,10 +245,7 @@ class GraphMap(FigureCanvasQTAgg):
         self.subplot = None
 
     def init_graph(self):
-        """
-        Initialize the Graph.
-
-        """
+        """Initialize the Graph."""
         mtmp = self.mindx
         dat = self.data[mtmp[0]]
 
@@ -271,10 +260,7 @@ class GraphMap(FigureCanvasQTAgg):
         self.figure.canvas.draw()
 
     def polyint(self):
-        """
-        Polygon Integrator.
-
-        """
+        """Polygon Integrator."""
         mtmp = self.mindx
         dat = self.data[mtmp[0]].data
 
@@ -292,10 +278,7 @@ class GraphMap(FigureCanvasQTAgg):
         self.polyi.ishist = False
 
     def update_graph(self):
-        """
-        Draw routine.
-
-        """
+        """Draw routine."""
         mtmp = self.mindx
         dat = self.data[mtmp[0]]
 
@@ -330,6 +313,13 @@ class PolygonInteractor(QtCore.QObject):
     """
     Polygon Interactor for the graph tool.
 
+    Parameters
+    ----------
+    axtmp
+        Matplotlib axis.
+    pntxy
+        X and Y mouse coordinates in N by 2 array.
+
     Attributes
     ----------
     epsilon : int
@@ -342,7 +332,7 @@ class PolygonInteractor(QtCore.QObject):
     epsilon = 5
     polyi_changed = QtCore.Signal()  #: polygon changed signal.
 
-    def __init__(self, axtmp, pntxy):
+    def __init__(self, axtmp: Axes, pntxy: NDArray):
         super().__init__()
         self.ax = axtmp
         self.poly = Polygon([(1, 1)], animated=True)
@@ -368,10 +358,7 @@ class PolygonInteractor(QtCore.QObject):
         self.canvas.mpl_connect("motion_notify_event", self.motion_notify_callback)
 
     def draw_callback(self):
-        """
-        Draw callback.
-
-        """
+        """Draw callback."""
         self.background = self.canvas.copy_from_bbox(self.ax.bbox)
         QtWidgets.QApplication.processEvents()
 
@@ -380,13 +367,13 @@ class PolygonInteractor(QtCore.QObject):
         self.ax.draw_artist(self.line)
         self.canvas.update()
 
-    def new_poly(self, npoly):
+    def new_poly(self, npoly: list):
         """
         Create new Polygon.
 
         Parameters
         ----------
-        npoly : list
+        npoly
             New polygon coordinates.
 
         """
@@ -396,13 +383,13 @@ class PolygonInteractor(QtCore.QObject):
         self.canvas.draw()
         self.update_plots()
 
-    def get_ind_under_point(self, event):
+    def get_ind_under_point(self, event: MouseEvent):
         """
         Get the index of vertex under point if within epsilon tolerance.
 
         Parameters
         ----------
-        event : matplotlib.backend_bases.MouseEvent
+        event
             Mouse event.
 
         Returns
@@ -424,13 +411,13 @@ class PolygonInteractor(QtCore.QObject):
 
         return ind
 
-    def button_press_callback(self, event):
+    def button_press_callback(self, event: MouseEvent):
         """
         Button press callback.
 
         Parameters
         ----------
-        event : matplotlib.backend_bases.MouseEvent
+        event
             Mouse event.
 
         """
@@ -488,13 +475,13 @@ class PolygonInteractor(QtCore.QObject):
             self.ax.draw_artist(self.line)
             self.canvas.update()
 
-    def button_release_callback(self, event):
+    def button_release_callback(self, event: MouseEvent):
         """
         Button release callback.
 
         Parameters
         ----------
-        event : matplotlib.backend_bases.MouseEvent
+        event
             Mouse event.
 
         """
@@ -504,20 +491,17 @@ class PolygonInteractor(QtCore.QObject):
         self.update_plots()
 
     def update_plots(self):
-        """
-        Update plots.
-
-        """
+        """Update plots."""
         self.polymask = Path(self.poly.xy).contains_points(self.pntxy)
         self.polyi_changed.emit()
 
-    def motion_notify_callback(self, event):
+    def motion_notify_callback(self, event: MouseEvent):
         """
         Mouse notify callback.
 
         Parameters
         ----------
-        event : matplotlib.backend_bases.MouseEvent
+        event
             Mouse event.
 
         """
@@ -618,10 +602,7 @@ class ScatterPlot(BasicModule):
         self.map_combo2.currentIndexChanged.connect(self.on_map_combo2)
 
     def on_cp_dpoly(self):
-        """
-        On cross plot, delete polygon.
-
-        """
+        """On cross plot, delete polygon."""
         self.hist.polyi.new_poly([[1, 1]])
 
         mtmp = self.map_combo.currentIndex()
@@ -633,10 +614,7 @@ class ScatterPlot(BasicModule):
         self.map.figure.canvas.draw()
 
     def on_map_dpoly(self):
-        """
-        On map delete polygon.
-
-        """
+        """On map delete polygon."""
         self.map.polyi.new_poly([[1, 1]])
         dattmp = self.hist.csp.get_array()
         dattmp.mask = np.ma.getmaskarray(np.ma.masked_equal(dattmp.data, 0.0))
@@ -644,10 +622,7 @@ class ScatterPlot(BasicModule):
         self.hist.figure.canvas.draw()
 
     def on_cp_combo(self):
-        """
-        On cross plot, combo.
-
-        """
+        """On cross plot, combo."""
         gstmp = self.cp_combo.currentIndex()
         if gstmp != self.c[0]:
             self.c[0] = gstmp
@@ -656,10 +631,7 @@ class ScatterPlot(BasicModule):
             self.update_hist()
 
     def on_cp_combo2(self):
-        """
-        On cross plot, combo 2.
-
-        """
+        """On cross plot, combo 2."""
         gstmp = self.cp_combo2.currentIndex()
         if gstmp != self.c[1]:
             self.c[1] = gstmp
@@ -668,28 +640,19 @@ class ScatterPlot(BasicModule):
             self.update_hist()
 
     def on_cp_combo3(self):
-        """
-        On cross plot, combo 3.
-
-        """
+        """On cross plot, combo 3."""
         self.c[2] = self.cp_combo3.currentIndex()
         self.hist.update_graph()
         self.on_cp_dpoly()
 
     def on_map_combo(self):
-        """
-        On map combo.
-
-        """
+        """On map combo."""
         self.m[0] = self.map_combo.currentIndex()
         self.map.update_graph()
         self.update_map()
 
     def on_map_combo2(self):
-        """
-        On map combo 2.
-
-        """
+        """On map combo 2."""
         self.m[1] = self.map_combo2.currentIndex()
         self.map.update_graph()
 
@@ -699,7 +662,7 @@ class ScatterPlot(BasicModule):
 
         Parameters
         ----------
-        nodialog : bool, optional
+        nodialog
             Run settings without a dialog. The default is False.
 
         Returns
@@ -773,10 +736,7 @@ class ScatterPlot(BasicModule):
         self.saveobj(self.map_combo2)
 
     def update_map(self):
-        """
-        Update map.
-
-        """
+        """Update map."""
         polymask = self.hist.polyi.polymask
         if polymask is None:
             return
@@ -795,10 +755,7 @@ class ScatterPlot(BasicModule):
         self.map.figure.canvas.draw()
 
     def update_hist(self):
-        """
-        Update histogram.
-
-        """
+        """Update histogram."""
         polymask = self.map.polyi.polymask
         if polymask is None:
             return
@@ -814,7 +771,7 @@ class ScatterPlot(BasicModule):
         self.hist.figure.canvas.draw()
 
 
-def dist_point_to_segment(p, s0, s1):
+def dist_point_to_segment(p: NDArray, s0: NDArray, s1: NDArray) -> NDArray | float:
     """
     Distance of a point to a line segment.
 
@@ -823,16 +780,16 @@ def dist_point_to_segment(p, s0, s1):
 
     Parameters
     ----------
-    p : numpy array
+    p
         Point.
-    s0 : numpy array
+    s0
         Start of segment.
-    s1 : numpy array
+    s1
         End of segment.
 
     Returns
     -------
-    numpy array
+    ndarray
         Distance of point to segment.
 
     """

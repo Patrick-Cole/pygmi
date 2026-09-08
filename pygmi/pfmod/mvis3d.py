@@ -22,7 +22,7 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 # -----------------------------------------------------------------------------
-"""Code for the 3d potential field model visualisation."""
+"""Code for the 3D potential field model visualisation."""
 
 import os
 import sys
@@ -275,7 +275,7 @@ class Mod3dDisplay(ContextModule):
         self.sliths = np.intersect1d(self.gdata, lith3d)
 
     def mod3d_vs(self):
-        """Vertical slider used to scale 3d view."""
+        """Vertical slider used to scale 3D view."""
         self.plotter.set_scale(zscale=self.vslider_3dmodel.value())
 
     def resetlight(self):
@@ -443,7 +443,7 @@ class Mod3dDisplay(ContextModule):
 
     def update_model(self, issmooth: bool | None = None):
         """
-        Update the 3d model.
+        Update the 3D model.
 
         Faces, nodes and face normals are calculated here, from the voxel
         model.
@@ -563,7 +563,7 @@ class Mod3dDisplay(ContextModule):
             self.norms[lno] = calc_norms(self.faces[lno], self.corners[lno])
 
     def update_model2(self):
-        """Update the 3d model part 2."""
+        """Update the 3D model part 2."""
         liths = np.unique(self.gdata)
         liths = np.array(liths).astype(int)  # needed for use in faces array
         liths = liths[liths < 900]
@@ -873,8 +873,8 @@ def MarchingCubes(
 
     n = np.array(c.shape) - 1  # number of cubes along each direction of image
 
-    # for each cube, assign which edges are intersected by the isosurface
-    # 3d array of 8-bit vertex codes
+    # For each cube, assign which edges are intersected by the isosurface
+    # 3D array of 8-bit vertex codes
     cc = np.zeros(n, dtype=np.uint16)
 
     n1 = np.arange(n[0])

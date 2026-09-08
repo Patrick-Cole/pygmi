@@ -35,6 +35,7 @@ from discretize import CylindricalMesh, TensorMesh
 from matplotlib.backends.backend_qt import NavigationToolbar2QT
 from matplotlib.backends.backend_qtagg import FigureCanvasQTAgg
 from matplotlib.figure import Figure
+from numpy.typing import NDArray
 from PySide6 import QtGui, QtWidgets
 from simpeg import (
     data_misfit,
@@ -58,21 +59,28 @@ class MyMplCanvas2(FigureCanvasQTAgg):
         fig = Figure(layout="tight")
         super().__init__(fig)
 
-    def update_line(self, sigma, z, times_off, zobs, zpred):
+    def update_line(
+        self,
+        sigma: NDArray,
+        z: NDArray,
+        times_off: NDArray,
+        zobs: NDArray,
+        zpred: NDArray,
+    ):
         """
         Update the plot from data.
 
         Parameters
         ----------
-        sigma : numpy array
+        sigma
             Conductivity values.
-        z : numpy array
+        z
             Depth values.
-        times_off : numpy array
+        times_off
             Time.
-        zobs : numpy array
+        zobs
             Observed dBz/dt.
-        zpred : numpy array
+        zpred
             Predicted dBz/dt.
 
         """
@@ -114,17 +122,17 @@ class MyMplCanvas2(FigureCanvasQTAgg):
 
         self.figure.canvas.draw()
 
-    def disp_wave(self, times, wave, title):
+    def disp_wave(self, times: NDArray, wave: NDArray, title: str):
         """
         Display waveform.
 
         Parameters
         ----------
-        times : numpy array
+        times
             Times.
-        wave : numpy array
+        wave
             Waveform amplitude.
-        title : str
+        title
             Title.
 
         """
@@ -301,10 +309,7 @@ class TDEM1D(BasicModule):
         self.disp_wave()
 
     def apply(self):
-        """
-        Invert the data.
-
-        """
+        """Invert the data."""
         if self.times is None:
             text = "You need to load window times first."
             QtWidgets.QMessageBox.warning(
@@ -517,10 +522,7 @@ class TDEM1D(BasicModule):
         self.mmc.update_line(sigma, z, times_off, zobs, zpred)
 
     def change_source(self):
-        """
-        Change Source.
-
-        """
+        """Change Source."""
         stype = self.cmb_stype.currentText()
 
         if stype == "CircularLoop":
@@ -533,10 +535,7 @@ class TDEM1D(BasicModule):
             self.le_txarea.setDisabled(True)
 
     def disp_wave(self):
-        """
-        Display the waveform.
-
-        """
+        """Display the waveform."""
         offtime = float(self.le_txofftime.text())
         times = np.linspace(0, offtime, 1000)
         wtype = self.cmb_wtype.currentText()
@@ -564,14 +563,14 @@ class TDEM1D(BasicModule):
 
         self.mmc1.disp_wave(times, wave, title)
 
-    def update_wave(self):
+    def update_wave(self) -> object:
         """
         Update the waveform.
 
         Returns
         -------
-        wform : tdem waveform.
-            Waveform.
+        object
+            TDEM Waveform.
 
         """
         starttime = 0.0
@@ -611,13 +610,13 @@ class TDEM1D(BasicModule):
 
         return wform
 
-    def get_wfile(self, filename=""):
+    def get_wfile(self, filename: str = ""):
         """
         Get the window time filename.
 
         Parameters
         ----------
-        filename : str, optional
+        filename
             filename (txt). The default is ''.
 
         """
@@ -636,10 +635,7 @@ class TDEM1D(BasicModule):
         self.le_wfile.setText(filename)
 
     def change_line(self):
-        """
-        Combo to change line.
-
-        """
+        """Combo to change line."""
         self.cmb_fid.clear()
 
         line = self.cmb_line.currentText()
@@ -653,7 +649,7 @@ class TDEM1D(BasicModule):
 
         Parameters
         ----------
-        nodialog : bool, optional
+        nodialog
             Run settings without a dialog. The default is False.
 
         Returns
@@ -737,15 +733,15 @@ class TDEM1D(BasicModule):
         self.saveobj(self.le_maxiter)
 
 
-def tonumber(test, alttext=None):
+def tonumber(test: str, alttext: str | None = None) -> str | float:
     """
     Check if something is a number or matches alttext.
 
     Parameters
     ----------
-    test : str
+    test
         Text to test.
-    alttext : str, optional
+    alttext
         Alternate text to test. The default is None.
 
     Returns

@@ -480,7 +480,8 @@ def _testfn():
     import matplotlib.pyplot as plt
     from matplotlib import cm, colors
 
-    from pygmi.misc import discrete_colorbar, getinfo
+    from pygmi.maps import discrete_colorbar
+    from pygmi.misc import getinfo
 
     # ifile = r"D:/EMIT/EMIT_L1B_OBS_001_20240430T101307_2412107_042.nc"
     # ifile = r"D:/EMIT/EMIT_L1B_RAD_001_20240430T101307_2412107_042.nc"
