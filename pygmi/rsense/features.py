@@ -25,6 +25,7 @@
 """List of features for hyperspectral interpretation."""
 
 feature = {}
+feature[" None"] = [None, None]
 feature["f580"] = [565, 605]
 feature["f740"] = [720, 778]
 feature["f800"] = [770, 825]

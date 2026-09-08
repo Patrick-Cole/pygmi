@@ -72,7 +72,10 @@ class GraphMap(FigureCanvasQTAgg):
         self.feature = None
         self.row = 20
         self.col = 20
+        self.orow = 20
+        self.ocol = 20
         self.remhull = False
+        self.overlay = False
         self.currentspectra = "None"
         self.spectra = None
         self.refl = 1.0
@@ -119,7 +122,17 @@ class GraphMap(FigureCanvasQTAgg):
         else:
             ax2.plot(self.wvl, prof)
 
-        ax2.axvline(self.feature[0], ls="--", c="r")
+        if not self.overlay:
+            self.orow = self.row
+            self.ocol = self.col
+        else:
+            prof = [i.data[self.orow, self.ocol] for i in self.datarr]
+            prof = np.ma.stack(prof).filled(0) / self.refl
+            if self.remhull is True:
+                hull = phull(prof)
+                ax2.plot(self.wvl, prof / hull)
+            else:
+                ax2.plot(self.wvl, prof)
 
         ax2.xaxis.set_major_formatter(frm)
         ax2.yaxis.set_major_formatter(frm)
@@ -134,20 +147,22 @@ class GraphMap(FigureCanvasQTAgg):
 
             if self.remhull is True:
                 hull = phull(prof2)
-                ax2.plot(wvl, prof2 / hull)
+                ax2.plot(wvl, prof2 / hull, color="black")
                 ax2.set_ylim(top=1.01)
             else:
-                ax2.plot(wvl, prof2)
+                ax2.plot(wvl, prof2, color="black")
 
-        zmin, zmax = ax2.get_ylim()
+        if self.feature[0] != "None":
+            ax2.axvline(int(self.feature[0]), ls="--", c="r")
+            zmin, zmax = ax2.get_ylim()
 
-        bmin = self.feature[1]
-        bmax = self.feature[2]
+            bmin = self.feature[1]
+            bmax = self.feature[2]
 
-        rect = mpatches.Rectangle((bmin, zmin), bmax - bmin, zmax - zmin)
-        rect.set_facecolor([0, 1, 0])
-        rect.set_alpha(0.5)
-        ax2.add_patch(rect)
+            rect = mpatches.Rectangle((bmin, zmin), bmax - bmin, zmax - zmin)
+            rect.set_facecolor([0, 1, 0])
+            rect.set_alpha(0.5)
+            ax2.add_patch(rect)
 
     def compute_initial_figure(self):
         """Compute initial figure."""
@@ -238,6 +253,7 @@ class AnalSpec(BasicModule):
         self.mpl_toolbar = NavigationToolbar2QT(self.map, self.parent)
         self.cb_hull = QtWidgets.QCheckBox("Remove Hull")
         self.cb_rgb = QtWidgets.QCheckBox("True Colour Ternary")
+        self.cb_overlay = QtWidgets.QCheckBox("Overlay second spectrum")
         self.lw_speclib = QtWidgets.QListWidget()
 
         self.setupui()
@@ -255,29 +271,32 @@ class AnalSpec(BasicModule):
         pb_specd = QtWidgets.QPushButton("Current Spectrum Description")
         self.cb_rgb.setChecked(True)
         self.cmb_1.setDisabled(True)
+        self.cb_overlay.setChecked(False)
 
         self.setWindowTitle("Analyse Features")
         lbl_combo = QtWidgets.QLabel("Display Band:")
         lbl_feature = QtWidgets.QLabel("Feature:")
 
         gl_main.addWidget(lbl_combo, 0, 1)
-        gl_main.addWidget(self.cmb_1, 0, 2)
+        gl_main.addWidget(self.cmb_1, 0, 2, 1, 2)
         gl_main.addWidget(lbl_feature, 1, 1)
-        gl_main.addWidget(self.cmb_feature, 1, 2)
+        gl_main.addWidget(self.cmb_feature, 1, 2, 1, 2)
         gl_main.addWidget(self.cb_rgb, 2, 1)
         gl_main.addWidget(self.cb_hull, 2, 2)
-        gl_main.addWidget(pb_speclib, 3, 1, 1, 2)
-        gl_main.addWidget(self.lw_speclib, 4, 1, 1, 2)
-        gl_main.addWidget(pb_specd, 5, 1, 1, 2)
+        gl_main.addWidget(self.cb_overlay, 2, 3)
+        gl_main.addWidget(pb_speclib, 3, 1, 1, 3)
+        gl_main.addWidget(self.lw_speclib, 4, 1, 1, 3)
+        gl_main.addWidget(pb_specd, 5, 1, 1, 3)
 
         gl_main.addWidget(self.map, 0, 0, 10, 1)
         gl_main.addWidget(self.mpl_toolbar, 11, 0)
 
-        gl_main.addWidget(self.buttonbox, 12, 0, 1, 3)
+        gl_main.addWidget(self.buttonbox, 12, 0, 1, 4)
 
         self.cmb_feature.currentIndexChanged.connect(self.feature_change)
         self.cb_hull.clicked.connect(self.hull)
         self.cb_rgb.clicked.connect(self.toggle_rgb_view)
+        self.cb_overlay.clicked.connect(self.overlay)
         pb_speclib.clicked.connect(self.load_splib)
         pb_specd.clicked.connect(self.showtext)
         self.lw_speclib.currentRowChanged.connect(self.disp_splib)
@@ -317,7 +336,7 @@ class AnalSpec(BasicModule):
     def feature_change(self):
         """Change depth marker combo."""
         txt = self.cmb_feature.currentText()
-        self.map.feature = [int(txt[1:].replace("p", ""))] + self.feature[txt]
+        self.map.feature = [txt[1:].replace("p", "")] + self.feature[txt]
 
         self.map.update_graph()
 
@@ -377,6 +396,11 @@ class AnalSpec(BasicModule):
             self.cmb_1.setDisabled(False)
 
         self.map.init_graph()
+
+    def overlay(self):
+        """Change whether hull is removed or not."""
+        self.map.overlay = self.cb_overlay.isChecked()
+        self.map.update_graph()
 
     def settings(self, nodialog: bool = False) -> bool:
         """
@@ -458,7 +482,7 @@ class AnalSpec(BasicModule):
         self.cmb_update(self.cmb_feature, ftxt)
 
         txt = self.cmb_feature.currentText()
-        self.map.feature = [int(txt[1:].replace("p", ""))] + self.feature[txt]
+        self.map.feature = [txt[1:].replace("p", "")] + self.feature[txt]
         self.map.init_graph()
 
         if self.filename != "":
@@ -1470,7 +1494,7 @@ def _testfn2():
     """Test routine."""
     from pygmi.rsense.iodefs import get_data
 
-    ifile = r"C:\Work\2817AA-E_hyperspec_utm33s.tif"
+    ifile = r"D:\Workdata\PyGMI Test Data\Remote Sensing\Import\hyperspectral\Cu-hyperspec-testarea.tif"
 
     data = get_data(ifile)
 
@@ -1483,4 +1507,4 @@ def _testfn2():
 
 
 if __name__ == "__main__":
-    _testfn()
+    _testfn2()
