@@ -43,7 +43,10 @@ class MextDisplay(QtWidgets.QDialog):
 
     """
 
-    def __init__(self, parent=None):
+    def __init__(
+        self,
+        parent=None,
+    ):
         super().__init__(parent)
         self.parent = parent
         self.lmod1 = parent.lmod1  # actual model
@@ -272,7 +275,11 @@ class MextDisplay(QtWidgets.QDialog):
 
         self.accept()
 
-    def choose_combo(self, combo: QtWidgets.QComboBox, dtxt: str):
+    def choose_combo(
+        self,
+        combo: QtWidgets.QComboBox,
+        dtxt: str,
+    ):
         """
         Combo box choice routine.
 
@@ -315,7 +322,10 @@ class MextDisplay(QtWidgets.QDialog):
                 self.update_vals()
                 self.update_combos()
 
-    def extgrid(self, gdata: np.ma.MaskedArray) -> np.ma.MaskedArray:
+    def extgrid(
+        self,
+        gdata: np.ma.MaskedArray,
+    ) -> np.ma.MaskedArray:
         """
         Extrapolates the grid to get rid of nulls.
 
@@ -517,7 +527,10 @@ class MextDisplay(QtWidgets.QDialog):
         self.dsb_zextent.setValue(zextent)
         self.dsb_zcell.setValue(self.lmod1.d_z)
 
-    def xycell(self, dxy: float):
+    def xycell(
+        self,
+        dxy: float,
+    ):
         """
         Adjust XY dimensions when cell size changes.
 
@@ -540,7 +553,10 @@ class MextDisplay(QtWidgets.QDialog):
 
         self.upd_layers()
 
-    def zcell(self, d_z: float):
+    def zcell(
+        self,
+        d_z: float,
+    ):
         """
         Adjust Z dimension when cell size changes.
 

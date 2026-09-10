@@ -51,7 +51,10 @@ class ASig(BasicModule):
 
     """
 
-    def __init__(self, parent=None):
+    def __init__(
+        self,
+        parent=None,
+    ):
         super().__init__(parent)
 
         self.setupui()
@@ -65,7 +68,10 @@ class ASig(BasicModule):
 
         gl_1.addWidget(self.buttonbox, 3, 0, 1, 2)
 
-    def settings(self, nodialog: bool = False) -> bool:
+    def settings(
+        self,
+        nodialog: bool = False,
+    ) -> bool:
         """
         Entry point into item.
 
@@ -114,7 +120,9 @@ class ASig(BasicModule):
 
 
 def asig(
-    data1: Data, showlog: Callable[..., None] = print, piter: Iterable = iter
+    data1: Data,
+    showlog: Callable[..., None] = print,
+    piter: Iterable = iter,
 ) -> np.ma.MaskedArray:
     """
     Tilt angle calculations.
@@ -163,7 +171,10 @@ class Continuation(BasicModule):
 
     """
 
-    def __init__(self, parent=None):
+    def __init__(
+        self,
+        parent=None,
+    ):
         super().__init__(parent)
         self.cmb_dataid = QtWidgets.QComboBox()
         self.cmb_cont = QtWidgets.QComboBox()
@@ -196,7 +207,10 @@ class Continuation(BasicModule):
         gl_main.addWidget(self.dsb_height, 2, 1, 1, 1)
         gl_main.addWidget(self.buttonbox, 3, 0, 1, 2)
 
-    def settings(self, nodialog: bool = False) -> bool:
+    def settings(
+        self,
+        nodialog: bool = False,
+    ) -> bool:
         """
         Entry point into item.
 
@@ -260,7 +274,10 @@ class Continuation(BasicModule):
 
 
 def fftcont(
-    data: Data, h: float, showlog: Callable[..., None] = print, piter: Iterable = iter
+    data: Data,
+    h: float,
+    showlog: Callable[..., None] = print,
+    piter: Iterable = iter,
 ) -> Data:
     """
     Continuation.
@@ -309,7 +326,10 @@ def fftcont(
 
 
 def taylorcont(
-    data: Data, h: float, showlog: Callable[..., None] = print, piter: Iterable = iter
+    data: Data,
+    h: float,
+    showlog: Callable[..., None] = print,
+    piter: Iterable = iter,
 ) -> Data:
     """
     Taylor Continuation.
@@ -362,7 +382,10 @@ class Tilt1(BasicModule):
 
     """
 
-    def __init__(self, parent=None):
+    def __init__(
+        self,
+        parent=None,
+    ):
         super().__init__(parent)
 
         self.azi = 75
@@ -407,7 +430,10 @@ class Tilt1(BasicModule):
         gl_1.addWidget(self.sb_k, 2, 1, 1, 1)
         gl_1.addWidget(self.buttonbox, 3, 0, 1, 2)
 
-    def settings(self, nodialog: bool = False) -> bool:
+    def settings(
+        self,
+        nodialog: bool = False,
+    ) -> bool:
         """
         Entry point into item.
 
@@ -637,7 +663,10 @@ class RTP(BasicModule):
 
     """
 
-    def __init__(self, parent=None):
+    def __init__(
+        self,
+        parent=None,
+    ):
         super().__init__(parent)
 
         self.cmb_dataid = QtWidgets.QComboBox()
@@ -682,7 +711,10 @@ class RTP(BasicModule):
         gl_main.addWidget(self.dsb_inca, 3, 1, 1, 1)
         gl_main.addWidget(self.buttonbox, 4, 0, 1, 4)
 
-    def settings(self, nodialog: bool = False) -> bool:
+    def settings(
+        self,
+        nodialog: bool = False,
+    ) -> bool:
         """
         Entry point into item.
 
@@ -814,7 +846,10 @@ def rtp(
 
 
 @njit(parallel=True, cache=True)
-def mlv_filter(image: NDArray, win_size: int = 5) -> NDArray:
+def mlv_filter(
+    image: NDArray,
+    win_size: int = 5,
+) -> NDArray:
     """
     Apply a 2D Mean of Least Variance (MLV) Edge Preserving Filter.
 

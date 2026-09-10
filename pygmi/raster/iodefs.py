@@ -62,7 +62,10 @@ class BandSelect(ContextModule):
 
     """
 
-    def __init__(self, parent=None):
+    def __init__(
+        self,
+        parent=None,
+    ):
         super().__init__(parent)
         self.setWindowTitle("Band Selection")
 
@@ -151,7 +154,10 @@ class ImportData(BasicModule):
         self.filt = filt
         self.is_import = True
 
-    def settings(self, nodialog: bool = False) -> bool:
+    def settings(
+        self,
+        nodialog: bool = False,
+    ) -> bool:
         """
         Entry point into item.
 
@@ -285,11 +291,17 @@ class ImportRGBData(BasicModule):
 
     """
 
-    def __init__(self, parent=None):
+    def __init__(
+        self,
+        parent=None,
+    ):
         super().__init__(parent)
         self.is_import = True
 
-    def settings(self, nodialog: bool = False) -> bool:
+    def settings(
+        self,
+        nodialog: bool = False,
+    ) -> bool:
         """
         Entry point into item.
 
@@ -1215,7 +1227,10 @@ class ExportData(ContextModule):
         output file name.
     """
 
-    def __init__(self, parent=None):
+    def __init__(
+        self,
+        parent=None,
+    ):
         super().__init__(parent)
 
         self.ofile = ""
@@ -1254,7 +1269,10 @@ class ExportData(ContextModule):
         self.buttonbox.buttonbox.accepted.connect(self.acceptall)
         pb_ofile.pressed.connect(self.get_ofile)
 
-    def run(self, option: str | None = None):
+    def run(
+        self,
+        option: str | None = None,
+    ):
         """
         Entry point into the routine, used to run context menu item.
 
@@ -1402,7 +1420,10 @@ class ExportData(ContextModule):
 
         self.accept()
 
-    def export_ubc(self, data: Data):
+    def export_ubc(
+        self,
+        data: Data,
+    ):
         """
         Export a section to a 3D UBC mesh and model.
 
@@ -1466,7 +1487,10 @@ class ExportData(ContextModule):
         smod2 = np.moveaxis(smod, [0, 1, 2], [1, 0, 2]).flatten()
         np.savetxt(ofile[:-3] + "mod", smod2)
 
-    def export_gxf(self, data: Data):
+    def export_gxf(
+        self,
+        data: Data,
+    ):
         """
         Export GXF data.
 
@@ -1527,7 +1551,10 @@ class ExportData(ContextModule):
                         fno.write(str(tmp[i, j]) + "  ")
                         kkk += 1
 
-    def export_surfer(self, data: Data):
+    def export_surfer(
+        self,
+        data: Data,
+    ):
         """
         Routine to export a surfer binary grid.
 
@@ -1555,7 +1582,10 @@ class ExportData(ContextModule):
 
             export_raster(file_out, [k], drv="GS7BG", piter=self.piter)
 
-    def export_ascii(self, data: Data):
+    def export_ascii(
+        self,
+        data: Data,
+    ):
         """
         Export ASCII file.
 
@@ -1598,7 +1628,10 @@ class ExportData(ContextModule):
                     # for i in range(kcols):
                     #     fno.write(str(tmp[j, i]) + " ")
 
-    def export_ascii_xyz(self, data: Data):
+    def export_ascii_xyz(
+        self,
+        data: Data,
+    ):
         """
         Export an ASCII xyz file.
 
@@ -1645,7 +1678,11 @@ class ExportData(ContextModule):
                         ]
                     )
 
-    def get_filename(self, data: Data, ext: str) -> str:
+    def get_filename(
+        self,
+        data: Data,
+        ext: str,
+    ) -> str:
         """
         Get a valid filename in the case of multi band image.
 
@@ -1998,7 +2035,10 @@ def export_raster(
             myfile.write(wout)
 
 
-def calccov(data: list[Data], showlog: Callable[..., None] = print) -> NDArray | None:
+def calccov(
+    data: list[Data],
+    showlog: Callable[..., None] = print,
+) -> NDArray | None:
     """
     Calculate covariance from PyGMI Data.
 

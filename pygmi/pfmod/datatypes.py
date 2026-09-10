@@ -118,7 +118,11 @@ class LithModel:
         self.onumy = None
         self.onumz = None
 
-    def lithold_to_lith(self, nodtm: bool = False, pbar: ProgressBar | None = None):
+    def lithold_to_lith(
+        self,
+        nodtm: bool = False,
+        pbar: ProgressBar | None = None,
+    ):
         """
         Transfers an old lithology to the new one, using update parameters.
 
@@ -176,7 +180,10 @@ class LithModel:
                     ) or nodtm:
                         self.lith_index[i, j, k] = self.olith_index[o_i, o_j, o_k]
 
-    def dtm_to_lith(self, pbar: ProgressBar | None = None):
+    def dtm_to_lith(
+        self,
+        pbar: ProgressBar | None = None,
+    ):
         """
         Assign the DTM to the model.
 
@@ -231,7 +238,10 @@ class LithModel:
                     k_2 = int((utlz - alt) / self.d_z)
                     self.lith_index[i, j, :k_2] = -1
 
-    def init_grid(self, data: NDArray) -> Data:
+    def init_grid(
+        self,
+        data: NDArray,
+    ) -> Data:
         """
         Initialize raster variables in the Data class.
 
@@ -268,7 +278,10 @@ class LithModel:
         self.griddata["Calculated Gravity"].dataid = "Calculated Gravity"
         self.griddata["Calculated Gravity"].units = "mGal"
 
-    def is_modified(self, modified=True):
+    def is_modified(
+        self,
+        modified=True,
+    ):
         """
         Update modified flag.
 

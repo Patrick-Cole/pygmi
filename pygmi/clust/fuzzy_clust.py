@@ -50,7 +50,10 @@ class FuzzyClust(BasicModule):
 
     """
 
-    def __init__(self, parent=None):
+    def __init__(
+        self,
+        parent=None,
+    ):
         super().__init__(parent)
         self.cmb_alg = QtWidgets.QComboBox()
         self.dsb_maxerror = QtWidgets.QDoubleSpinBox()
@@ -170,7 +173,10 @@ class FuzzyClust(BasicModule):
             self.sb_repeatedruns.show()
             self.lbl_6.show()
 
-    def settings(self, nodialog: bool = False) -> bool:
+    def settings(
+        self,
+        nodialog: bool = False,
+    ) -> bool:
         """
         Entry point into item.
 
@@ -790,7 +796,11 @@ def fuzzy_dist(
 
 
 def xie_beni(
-    data: NDArray, expo: float, uuu: NDArray, center: NDArray, edist: NDArray
+    data: NDArray,
+    expo: float,
+    uuu: NDArray,
+    center: NDArray,
+    edist: NDArray,
 ) -> NDArray:
     """
     Calculate the Xie-Beni index.

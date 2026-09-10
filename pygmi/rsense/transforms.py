@@ -52,7 +52,10 @@ class MNF(BasicModule):
 
     """
 
-    def __init__(self, parent=None):
+    def __init__(
+        self,
+        parent=None,
+    ):
         super().__init__(parent)
 
         self.ev = None
@@ -91,7 +94,10 @@ class MNF(BasicModule):
 
         gl_main.addWidget(self.buttonbox, 6, 0, 1, 2)
 
-    def settings(self, nodialog: bool = False) -> bool:
+    def settings(
+        self,
+        nodialog: bool = False,
+    ) -> bool:
         """
         Entry point into item.
 
@@ -248,7 +254,10 @@ class PCA(BasicModule):
 
     """
 
-    def __init__(self, parent=None):
+    def __init__(
+        self,
+        parent=None,
+    ):
         super().__init__(parent)
 
         self.ev = None
@@ -282,7 +291,10 @@ class PCA(BasicModule):
 
         gl_main.addWidget(self.buttonbox, 6, 0, 1, 2)
 
-    def settings(self, nodialog: bool = False) -> bool:
+    def settings(
+        self,
+        nodialog: bool = False,
+    ) -> bool:
         """
         Entry point into item.
 
@@ -431,7 +443,10 @@ class PCA(BasicModule):
 
 
 def get_noise(
-    x2d: NDArray, mask: NDArray, noisetype: str = "", piter: Iterable = iter
+    x2d: NDArray,
+    mask: NDArray,
+    noisetype: str = "",
+    piter: Iterable = iter,
 ) -> NDArray:
     """
     Calculate noise dataset from original data.
@@ -954,7 +969,10 @@ def pca_calc_fitlist(
     return odata, ev
 
 
-def _block_slices(dim_size: int, block_size: int) -> Generator:
+def _block_slices(
+    dim_size: int,
+    block_size: int,
+) -> Generator:
     """
     Generate slice objects.
 
@@ -1004,7 +1022,11 @@ def blockwise_cov(A: NDArray) -> NDArray:
     return ncov
 
 
-def blockwise_dot(A: NDArray, B: NDArray, max_elements: int = 2**27) -> NDArray:
+def blockwise_dot(
+    A: NDArray,
+    B: NDArray,
+    max_elements: int = 2**27,
+) -> NDArray:
     """
     Compute the dot product of two matrices in a block-wise fashion.
 
@@ -1056,7 +1078,10 @@ def blockwise_dot(A: NDArray, B: NDArray, max_elements: int = 2**27) -> NDArray:
     return out
 
 
-def standardise_signs(u: NDArray, vh: NDArray) -> tuple[NDArray, NDArray]:
+def standardise_signs(
+    u: NDArray,
+    vh: NDArray,
+) -> tuple[NDArray, NDArray]:
     """
     Standardize the signs of U and Vh matrices from SVD.
 

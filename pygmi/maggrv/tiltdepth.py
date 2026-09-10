@@ -67,7 +67,10 @@ class TiltDepth(BasicModule):
 
     """
 
-    def __init__(self, parent=None):
+    def __init__(
+        self,
+        parent=None,
+    ):
         super().__init__(parent)
         self.units = {}
         self.X = None
@@ -268,7 +271,10 @@ class TiltDepth(BasicModule):
         self.btn_apply.setEnabled(True)
         self.btn_apply.setText("Calculate Tilt Depth")
 
-    def settings(self, nodialog: bool = False) -> bool:
+    def settings(
+        self,
+        nodialog: bool = False,
+    ) -> bool:
         """
         Entry point into item.
 
@@ -440,7 +446,13 @@ def tiltdepth(
 
 
 @jit(nopython=True)
-def distpc(dx: NDArray, dy: NDArray, dx0: float, dy0: float, dcnt: int) -> int:
+def distpc(
+    dx: NDArray,
+    dy: NDArray,
+    dx0: float,
+    dy0: float,
+    dcnt: int,
+) -> int:
     """
     Find closest distances.
 

@@ -40,7 +40,8 @@ from shapely.geometry import Polygon, shape
 
 
 def bounds_to_transform(
-    bounds: tuple[float, float, float, float], dxy: float
+    bounds: tuple[float, float, float, float],
+    dxy: float,
 ) -> tuple[Affine, tuple[float, float]]:
     """
     Create a raster transform from vector grid bounds and dxy.
@@ -198,7 +199,11 @@ class Data:
 
         self.set_transform(1, 0, 1, 0)
 
-    def copy(self, data0: NDArray | None = None, resetmeta: bool = False):
+    def copy(
+        self,
+        data0: NDArray | None = None,
+        resetmeta: bool = False,
+    ):
         """
         Make a deepcopy of the function.
 
@@ -232,7 +237,10 @@ class Data:
 
         return data
 
-    def in_bounds(self, bounds: tuple[float, float, float, float]) -> bool:
+    def in_bounds(
+        self,
+        bounds: tuple[float, float, float, float],
+    ) -> bool:
         """
         Check if dataset is in bounds supplied.
 
@@ -256,7 +264,9 @@ class Data:
         return not (xmin1 >= xmax or xmax1 <= xmin or ymin1 >= ymax or ymax1 <= ymin)
 
     def meta_from_rasterio(
-        self, dataset, bounds: tuple[float, float, float, float] | None = None
+        self,
+        dataset,
+        bounds: tuple[float, float, float, float] | None = None,
     ):
         """
         Set transform, bounds, extent, xdim and ydim from a rasterio dataset.
@@ -284,7 +294,11 @@ class Data:
         self.extent = (left, right, bottom, top)
         self.bounds = (left, bottom, right, top)
 
-    def modify_mask(self, mask: NDArray, oper: str = "or"):
+    def modify_mask(
+        self,
+        mask: NDArray,
+        oper: str = "or",
+    ):
         """
         Modify the existing mask with a new one.
 
@@ -308,7 +322,10 @@ class Data:
         self.data = self.data.filled(self.nodata)
         self.data = np.ma.masked_equal(self.data, self.nodata)
 
-    def plot(self, ax: Axes):
+    def plot(
+        self,
+        ax: Axes,
+    ):
         """
         Plot data.
 
@@ -324,7 +341,10 @@ class Data:
         )
         return im
 
-    def set_mask(self, mask: NDArray = None):
+    def set_mask(
+        self,
+        mask: NDArray = None,
+    ):
         """
         Replace the existing mask with a new one.
 
@@ -434,7 +454,10 @@ class Data:
         raster.write(self.data, 1)
         return raster
 
-    def get_vmin_vmax(self, std: float = 2.5) -> tuple[float, float]:
+    def get_vmin_vmax(
+        self,
+        std: float = 2.5,
+    ) -> tuple[float, float]:
         """
         Get vmin and vmax for use in imshow.
 
@@ -533,7 +556,10 @@ class RasterMeta:
         self.datetime = datetime.datetime(1900, 1, 1, tzinfo=local_tz)
         self.nodata = None
 
-    def fromData(self, dat: Data):
+    def fromData(
+        self,
+        dat: Data,
+    ):
         """
         Populate class from a Data class.
 

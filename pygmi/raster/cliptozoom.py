@@ -51,7 +51,11 @@ class MyMplCanvas(FigureCanvasQTAgg):
         self.axes = fig.add_subplot(111)
         super().__init__(fig)
 
-    def update_raster(self, data1: Data, cmap: str):
+    def update_raster(
+        self,
+        data1: Data,
+        cmap: str,
+    ):
         """
         Update the raster plot.
 
@@ -104,7 +108,10 @@ class ClipToZoom(BasicModule):
 
     """
 
-    def __init__(self, parent=None):
+    def __init__(
+        self,
+        parent=None,
+    ):
         super().__init__(parent)
         self.setWindowTitle("Clip to Zoom")
 
@@ -148,7 +155,10 @@ class ClipToZoom(BasicModule):
             data = self.indata["Raster"]
             self.mmc.update_raster(data[i], cmap)
 
-    def settings(self, nodialog: bool = False) -> bool:
+    def settings(
+        self,
+        nodialog: bool = False,
+    ) -> bool:
         """
         Entry point into item.
 

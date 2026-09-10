@@ -97,7 +97,11 @@ class MyMplCanvas(FigureCanvasQTAgg):
         else:
             self.writer.finish()
 
-    def compute_initial_figure(self, dat: Data, dates: str):
+    def compute_initial_figure(
+        self,
+        dat: Data,
+        dates: str,
+    ):
         """
         Compute initial figure.
 
@@ -131,7 +135,11 @@ class MyMplCanvas(FigureCanvasQTAgg):
 
         self.fig.suptitle(dates)
 
-    def update_plot(self, dat: Data, dates: str):
+    def update_plot(
+        self,
+        dat: Data,
+        dates: str,
+    ):
         """
         Update plot.
 
@@ -180,7 +188,10 @@ class SceneViewer(BasicModule):
 
     """
 
-    def __init__(self, parent=None):
+    def __init__(
+        self,
+        parent=None,
+    ):
         super().__init__(parent)
 
         self.df = None
@@ -266,7 +277,10 @@ class SceneViewer(BasicModule):
         self.cmb_band2.currentIndexChanged.connect(self.manip_change)
         self.cmb_band3.currentIndexChanged.connect(self.manip_change)
 
-    def settings(self, nodialog: bool = False) -> bool:
+    def settings(
+        self,
+        nodialog: bool = False,
+    ) -> bool:
         """
         Entry point into item.
 
@@ -404,7 +418,10 @@ class SceneViewer(BasicModule):
         """Get previous scene."""
         self.slider.setValue(self.slider.value() - 1)
 
-    def newdata(self, indx: int):
+    def newdata(
+        self,
+        indx: int,
+    ):
         """
         Get new dataset.
 

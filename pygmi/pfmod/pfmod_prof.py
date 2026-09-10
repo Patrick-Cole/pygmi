@@ -60,7 +60,10 @@ class RangedCopy(QtWidgets.QDialog):
 
     """
 
-    def __init__(self, parent=None):
+    def __init__(
+        self,
+        parent=None,
+    ):
         super().__init__(parent)
 
         self.parent = parent
@@ -176,7 +179,10 @@ class ProfileDisplay(QtWidgets.QWidget):
 
     """
 
-    def __init__(self, parent=None):
+    def __init__(
+        self,
+        parent=None,
+    ):
         super().__init__(parent)
 
         if parent is None:
@@ -475,7 +481,10 @@ class ProfileDisplay(QtWidgets.QWidget):
                 self.hs_cprofnum.setEnabled(False)
                 self.sb_cprofnum.setEnabled(False)
 
-    def custom_prof_limits(self, curprof: int | str | None = None):
+    def custom_prof_limits(
+        self,
+        curprof: int | str | None = None,
+    ):
         """
         Calculate custom profile limits.
 
@@ -829,7 +838,10 @@ class ProfileDisplay(QtWidgets.QWidget):
         self.slayer()
         self.sprofnum()
 
-    def rcopy_layer(self, rcopy: RangedCopy):
+    def rcopy_layer(
+        self,
+        rcopy: RangedCopy,
+    ):
         """
         Do a ranged copy on a layer.
 
@@ -874,7 +886,10 @@ class ProfileDisplay(QtWidgets.QWidget):
             mlslice = np.logical_and(mslice, lslice)
             ltmp[mlslice] = mtmp[mlslice]
 
-    def rcopy_prof(self, rcopy: RangedCopy):
+    def rcopy_prof(
+        self,
+        rcopy: RangedCopy,
+    ):
         """
         Ranged copy on a profile.
 
@@ -1065,7 +1080,10 @@ class ProfileDisplay(QtWidgets.QWidget):
         self.update_plot()
         self.mpl_toolbar.update()
 
-    def setwidth(self, width: int):
+    def setwidth(
+        self,
+        width: int,
+    ):
         """
         Set the width of the edits on the profile view.
 
@@ -1118,7 +1136,10 @@ class ProfileDisplay(QtWidgets.QWidget):
         self.mmc.update_line()
         self.mmc.figure.canvas.draw()
 
-    def calc_prof_limits(self, curprof: int | None = None):
+    def calc_prof_limits(
+        self,
+        curprof: int | None = None,
+    ):
         """
         Calculate profile limits.
 
@@ -1280,7 +1301,10 @@ class ProfileDisplay(QtWidgets.QWidget):
         self.lmod1.custprofx["adhoc"] = [x1[curprof], x2[curprof]]
         self.lmod1.custprofy["adhoc"] = [y1[curprof], y2[curprof]]
 
-    def prof_dir(self, slide: bool = True):
+    def prof_dir(
+        self,
+        slide: bool = True,
+    ):
         """
         Profile direction.
 
@@ -1330,7 +1354,10 @@ class ProfileDisplay(QtWidgets.QWidget):
         self.dial_prof_dir.setValue(dirval)
         self.prof_dir()
 
-    def update_combo_overview(self, curtext: str | None = None):
+    def update_combo_overview(
+        self,
+        curtext: str | None = None,
+    ):
         """
         Update the overview combo.
 
@@ -1353,7 +1380,10 @@ class ProfileDisplay(QtWidgets.QWidget):
             cindex = 0
         self.cmb_overview.setCurrentIndex(cindex)
 
-    def update_plot(self, slide: bool = False):
+    def update_plot(
+        self,
+        slide: bool = False,
+    ):
         """
         Update the profile on the model view.
 
@@ -1517,7 +1547,10 @@ class MyMplCanvas(FigureCanvasQTAgg):
 
     """
 
-    def __init__(self, parent=None):
+    def __init__(
+        self,
+        parent=None,
+    ):
         fig = Figure(layout="tight")
         super().__init__(fig)
 
@@ -1595,7 +1628,10 @@ class MyMplCanvas(FigureCanvasQTAgg):
         self.prf = self.axes.plot([0, 0])
         self.prfc = self.axes.plot([0, 0], "b+")
 
-    def button_press(self, event: MouseEvent):
+    def button_press(
+        self,
+        event: MouseEvent,
+    ):
         """
         Button press event.
 
@@ -1617,7 +1653,10 @@ class MyMplCanvas(FigureCanvasQTAgg):
             else:
                 self.dip(event)
 
-    def button_release(self, event: MouseEvent):
+    def button_release(
+        self,
+        event: MouseEvent,
+    ):
         """
         Button release event.
 
@@ -1629,7 +1668,10 @@ class MyMplCanvas(FigureCanvasQTAgg):
         """
         self.press = False
 
-    def move(self, event: MouseEvent):
+    def move(
+        self,
+        event: MouseEvent,
+    ):
         """
         Mouse move event.
 
@@ -1725,7 +1767,10 @@ class MyMplCanvas(FigureCanvasQTAgg):
             self.slide_grid_top()
             self.figure.canvas.draw()
 
-    def dip(self, event: MouseEvent):
+    def dip(
+        self,
+        event: MouseEvent,
+    ):
         """
         Calculate dip event.
 
@@ -1755,7 +1800,12 @@ class MyMplCanvas(FigureCanvasQTAgg):
             self.dip1 = None
             self.myparent.mpl_toolbar._my_toggle_action.setChecked(False)
 
-    def set_mdata(self, xdata: float, ydata: float, mdata: NDArray):
+    def set_mdata(
+        self,
+        xdata: float,
+        ydata: float,
+        mdata: NDArray,
+    ):
         """
         Routine to 'draw' the line on mdata.
 
@@ -1789,7 +1839,10 @@ class MyMplCanvas(FigureCanvasQTAgg):
             mtmp = mdata[ystart:yend, xstart:xend]
             mtmp[np.logical_and(mtmp != -1, mtmp < 900)] = self.curmodel
 
-    def luttodat(self, dat: NDArray) -> NDArray:
+    def luttodat(
+        self,
+        dat: NDArray,
+    ) -> NDArray:
         """
         LUT to dat grid.
 
@@ -1817,7 +1870,10 @@ class MyMplCanvas(FigureCanvasQTAgg):
 
         return tmp
 
-    def on_resize(self, event: ResizeEvent):
+    def on_resize(
+        self,
+        event: ResizeEvent,
+    ):
         """
         Resize event.
 
@@ -1831,7 +1887,12 @@ class MyMplCanvas(FigureCanvasQTAgg):
         """
         self.figure.canvas.draw()
 
-    def init_grid(self, dat: NDArray, dat2: Data | None = None, opac: float = 0.0):
+    def init_grid(
+        self,
+        dat: NDArray,
+        dat2: Data | None = None,
+        opac: float = 0.0,
+    ):
         """
         Initialise grid.
 
@@ -1878,7 +1939,11 @@ class MyMplCanvas(FigureCanvasQTAgg):
 
         self.mdata = dat
 
-    def init_grid_top(self, dat2: str | None = None, opac: float = 100.0):
+    def init_grid_top(
+        self,
+        dat2: str | None = None,
+        opac: float = 100.0,
+    ):
         """
         Initialise top grid.
 
@@ -1942,7 +2007,10 @@ class MyMplCanvas(FigureCanvasQTAgg):
         self.figure.canvas.draw()
 
     def slide_grid(
-        self, dat: NDArray, dat2: NDArray | None = None, opac: float | None = None
+        self,
+        dat: NDArray,
+        dat2: NDArray | None = None,
+        opac: float | None = None,
     ):
         """
         Slide grid.
@@ -1977,7 +2045,10 @@ class MyMplCanvas(FigureCanvasQTAgg):
         self.axes.draw_artist(self.ims2)
         self.axes.draw_artist(self.prf[0])
 
-    def slide_grid_top(self, opac: float | None = None):
+    def slide_grid_top(
+        self,
+        opac: float | None = None,
+    ):
         """
         Slide top grid.
 
@@ -2135,10 +2206,16 @@ class MySlider(QtWidgets.QSlider):
 
     """
 
-    def __init__(self, parent=None):
+    def __init__(
+        self,
+        parent=None,
+    ):
         super().__init__(parent)
 
-    def mousePressEvent(self, event: QtWidgets.QGraphicsSceneMouseEvent):
+    def mousePressEvent(
+        self,
+        event: QtWidgets.QGraphicsSceneMouseEvent,
+    ):
         """
         Mouse press event.
 
@@ -2155,7 +2232,10 @@ class MySlider(QtWidgets.QSlider):
             )
         )
 
-    def mouseMoveEvent(self, event: QtWidgets.QGraphicsSceneMouseEvent):
+    def mouseMoveEvent(
+        self,
+        event: QtWidgets.QGraphicsSceneMouseEvent,
+    ):
         """
         Mouse move event.
 
@@ -2348,7 +2428,10 @@ class MyToolbar(NavigationToolbar2QT):
 
     """
 
-    def __init__(self, parent=None):
+    def __init__(
+        self,
+        parent=None,
+    ):
         super().__init__(parent.mmc, parent)
         self.pparent = parent
 
@@ -2413,7 +2496,10 @@ class GaugeWidget(QtWidgets.QDial):
         self.setFixedWidth(60)
         self.setFixedHeight(60)
 
-    def paintEvent(self, event):
+    def paintEvent(
+        self,
+        event,
+    ):
         """
         Paint event.
 
@@ -2448,7 +2534,10 @@ class ImportPicture(QtWidgets.QDialog):
 
     """
 
-    def __init__(self, parent=None):
+    def __init__(
+        self,
+        parent=None,
+    ):
         super().__init__(parent)
 
         self.parent = parent
@@ -2691,7 +2780,10 @@ class ImportPicture(QtWidgets.QDialog):
         """Save project data from class."""
 
 
-def gridmatch2(cgrv: Data, rgrv: Data) -> NDArray:
+def gridmatch2(
+    cgrv: Data,
+    rgrv: Data,
+) -> NDArray:
     """
     Grid match.
 
@@ -2721,7 +2813,11 @@ def gridmatch2(cgrv: Data, rgrv: Data) -> NDArray:
     return dat.data
 
 
-def rotate2d(pts: NDArray, cntr: NDArray, ang: float = np.pi / 4) -> NDArray:
+def rotate2d(
+    pts: NDArray,
+    cntr: NDArray,
+    ang: float = np.pi / 4,
+) -> NDArray:
     """
     Rotate 2D.
 

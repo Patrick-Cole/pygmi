@@ -57,7 +57,10 @@ class TopoCorrect(BasicModule):
 
     """
 
-    def __init__(self, parent=None):
+    def __init__(
+        self,
+        parent=None,
+    ):
         super().__init__(parent)
 
         self.cmb_dem = QtWidgets.QComboBox()
@@ -89,7 +92,10 @@ class TopoCorrect(BasicModule):
 
         gl_main.addWidget(self.buttonbox, 6, 0, 1, 2)
 
-    def settings(self, nodialog: bool = False) -> bool:
+    def settings(
+        self,
+        nodialog: bool = False,
+    ) -> bool:
         """
         Entry point into item.
 
@@ -207,7 +213,10 @@ class Sen2Cor(BasicModule):
 
     """
 
-    def __init__(self, parent=None):
+    def __init__(
+        self,
+        parent=None,
+    ):
         super().__init__(parent)
 
         self.is_import = True
@@ -243,7 +252,10 @@ class Sen2Cor(BasicModule):
         self.pb_sdir.pressed.connect(self.get_sdir)
         self.pb_sen2cor.pressed.connect(self.get_sen2cor)
 
-    def settings(self, nodialog: bool = False) -> bool:
+    def settings(
+        self,
+        nodialog: bool = False,
+    ) -> bool:
         """
         Entry point into item.
 

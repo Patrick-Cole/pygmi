@@ -46,7 +46,10 @@ class Mod3dDisplay(ContextModule):
 
     """
 
-    def __init__(self, parent=None):
+    def __init__(
+        self,
+        parent=None,
+    ):
         super().__init__(parent)
 
         self.lmod1 = None
@@ -92,7 +95,10 @@ class Mod3dDisplay(ContextModule):
         self.pb_save.clicked.connect(self.save)
         self.cb_volume.stateChanged.connect(self.update_plot)
 
-    def closeEvent(self, QCloseEvent):
+    def closeEvent(
+        self,
+        QCloseEvent,
+    ):
         """
         Close event.
 

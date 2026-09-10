@@ -43,7 +43,10 @@ class MainWidget(QtWidgets.QMainWindow):
 
     """
 
-    def __init__(self, parent=None):
+    def __init__(
+        self,
+        parent=None,
+    ):
         super().__init__(parent)
 
         if parent is None:
@@ -143,7 +146,10 @@ class MainWidget(QtWidgets.QMainWindow):
         """Help documentation."""
         menu_default.HelpDocs(self, "pygmi.pfmod.prof")
 
-    def settings(self, nodialog: bool = False) -> bool:
+    def settings(
+        self,
+        nodialog: bool = False,
+    ) -> bool:
         """
         Entry point into item.
 
@@ -192,7 +198,11 @@ class MainWidget(QtWidgets.QMainWindow):
         self.lmod1.griddata = {}
         self.lmod1.init_calc_grids()
 
-    def showtext(self, txt: str, replacelast: bool = False):
+    def showtext(
+        self,
+        txt: str,
+        replacelast: bool = False,
+    ):
         """
         Show text on the text panel of the main user interface.
 

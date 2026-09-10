@@ -42,7 +42,10 @@ class BasicStats(ContextModule):
 
     """
 
-    def __init__(self, parent=None):
+    def __init__(
+        self,
+        parent=None,
+    ):
         super().__init__(parent)
 
         self.data = None

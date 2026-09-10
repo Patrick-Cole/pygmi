@@ -54,7 +54,10 @@ class MenuWidget:
         Reference to MainWidget class found in main.py. The default is None.
     """
 
-    def __init__(self, parent=None):
+    def __init__(
+        self,
+        parent=None,
+    ):
 
         self.parent = parent
         self.parent.add_to_context("Raster")

@@ -75,7 +75,10 @@ class ImportData(BasicModule):
 
     """
 
-    def __init__(self, parent=None):
+    def __init__(
+        self,
+        parent=None,
+    ):
         super().__init__(parent)
 
         self.filt = ""
@@ -118,7 +121,10 @@ class ImportData(BasicModule):
 
         pb_sfile.pressed.connect(self.get_sfile)
 
-    def settings(self, nodialog: bool = False) -> bool:
+    def settings(
+        self,
+        nodialog: bool = False,
+    ) -> bool:
         """
         Entry point into item.
 
@@ -265,7 +271,10 @@ class ImportBatch(BasicModule):
         Input directory.
     """
 
-    def __init__(self, parent=None):
+    def __init__(
+        self,
+        parent=None,
+    ):
         super().__init__(parent)
 
         self.idir = ""
@@ -315,7 +324,10 @@ class ImportBatch(BasicModule):
         pb_sfile.pressed.connect(self.get_sfile)
         self.cmb_sensor.currentIndexChanged.connect(self.setsensor)
 
-    def settings(self, nodialog: bool = False) -> bool:
+    def settings(
+        self,
+        nodialog: bool = False,
+    ) -> bool:
         """
         Entry point into item.
 
@@ -485,7 +497,10 @@ class ImportSentinel5P(BasicModule):
 
     """
 
-    def __init__(self, parent=None):
+    def __init__(
+        self,
+        parent=None,
+    ):
         super().__init__(parent)
 
         self.sfile = ""
@@ -559,7 +574,10 @@ class ImportSentinel5P(BasicModule):
         self.rb_sclip.clicked.connect(self.clipchoice)
         self.lbl_sfile.clicked.connect(self.loadshp)
 
-    def settings(self, nodialog: bool = False) -> bool:
+    def settings(
+        self,
+        nodialog: bool = False,
+    ) -> bool:
         """
         Entry point into item.
 
@@ -712,7 +730,10 @@ class ImportSentinel5P(BasicModule):
 
         return meta
 
-    def get_5P_data(self, meta: dict) -> pd.DataFrame | None:
+    def get_5P_data(
+        self,
+        meta: dict,
+    ) -> pd.DataFrame | None:
         """
         Get 5P data.
 
@@ -824,7 +845,10 @@ class ExportBatch(ContextModule):
 
     """
 
-    def __init__(self, parent=None):
+    def __init__(
+        self,
+        parent=None,
+    ):
         super().__init__(parent)
 
         self.cmb_ofilt = QtWidgets.QComboBox()
@@ -1016,7 +1040,10 @@ class ExportBatch(ContextModule):
 
         self.accept()
 
-    def get_odir(self, odir: str = ""):
+    def get_odir(
+        self,
+        odir: str = "",
+    ):
         """
         Get output directory.
 
@@ -1037,7 +1064,10 @@ class ExportBatch(ContextModule):
         self.le_odir.setText(odir)
 
 
-def calculate_toa(dat: Data, showlog: Callable[..., None] = print) -> list[Data]:
+def calculate_toa(
+    dat: Data,
+    showlog: Callable[..., None] = print,
+) -> list[Data]:
     """
     Top of atmosphere correction.
 
@@ -1509,7 +1539,10 @@ def consolidate_aster_list(flist: list[str]) -> list[str]:
     return flist
 
 
-def convert_ll_to_utm(lon: float, lat: float) -> str:
+def convert_ll_to_utm(
+    lon: float,
+    lat: float,
+) -> str:
     """
     Convert latitude and longitude to UTM EPSG code.
 
@@ -1706,7 +1739,9 @@ def export_batch(
 
 
 def files_to_rastermeta(
-    allfiles: list[str], piter=iter, showlog: Callable[..., None] = print
+    allfiles: list[str],
+    piter=iter,
+    showlog: Callable[..., None] = print,
 ) -> tuple[dict[str, list], dict[str, list], list[str]]:
     """
     Import files to a RasterMeta item.
@@ -4648,7 +4683,11 @@ def get_ternary(
     return newimg
 
 
-def set_export_filename(dat: list[Data], odir: str, otype: str | None = None) -> str:
+def set_export_filename(
+    dat: list[Data],
+    odir: str,
+    otype: str | None = None,
+) -> str:
     """
     Set the export filename according to convention.
 

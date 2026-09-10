@@ -58,14 +58,20 @@ class ImportMod3D(BasicModule):
 
     """
 
-    def __init__(self, parent=None):
+    def __init__(
+        self,
+        parent=None,
+    ):
         super().__init__(parent)
 
         self.lmod = LithModel()
         self.filt = ""
         self.is_import = True
 
-    def settings(self, nodialog: bool = False) -> bool:
+    def settings(
+        self,
+        nodialog: bool = False,
+    ) -> bool:
         """
         Entry point into item.
 
@@ -127,7 +133,10 @@ class ImportMod3D(BasicModule):
         self.saveobj(self.ifile)
         self.saveobj(self.filt)
 
-    def import_leapfrog_csv(self, filename: str):
+    def import_leapfrog_csv(
+        self,
+        filename: str,
+    ):
         """
         Import leapfrog csv block models.
 
@@ -250,7 +259,10 @@ class ImportMod3D(BasicModule):
             else:
                 lmod.lith_index[col, row, layer] = lmod.lith_list[label[i]].lith_index
 
-    def import_ascii_xyz_model(self, filename: str):
+    def import_ascii_xyz_model(
+        self,
+        filename: str,
+    ):
         """
         Use to import ASCII XYZ Models of the form x,y,z,label.
 
@@ -345,7 +357,11 @@ class ImportMod3D(BasicModule):
             layer = int((lmod.zrange[1] - z[i]) / lmod.d_z)
             lmod.lith_index[col, row, layer] = lmod.lith_list[label[i]].lith_index
 
-    def dict2lmod(self, indict: dict, pre: str = ""):
+    def dict2lmod(
+        self,
+        indict: dict,
+        pre: str = "",
+    ):
         """
         Convert a dictionary to a LithModel.
 
@@ -541,7 +557,10 @@ class ExportMod3D(ContextModule):
         Reference to the parent routine. The default is None.
     """
 
-    def __init__(self, parent=None):
+    def __init__(
+        self,
+        parent=None,
+    ):
         super().__init__(parent)
 
         self.ofile = ""
@@ -595,7 +614,11 @@ class ExportMod3D(ContextModule):
         except Exception:
             self.showlog("ERROR! Model save failed!")
 
-    def lmod2dict(self, outdict: dict, pre: str = "") -> dict:
+    def lmod2dict(
+        self,
+        outdict: dict,
+        pre: str = "",
+    ) -> dict:
         """
         Convert LithModel to a dictionary.
 
@@ -1074,7 +1097,10 @@ class ExportMod3D(ContextModule):
 
         self.showlog("kmz export complete!")
 
-    def mod3dtoshp(self, nodialog: bool = False):
+    def mod3dtoshp(
+        self,
+        nodialog: bool = False,
+    ):
         """
         Save the 3D model and grids in a shapefile file.
 

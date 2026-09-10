@@ -63,7 +63,12 @@ class MyMplCanvas(FigureCanvasQTAgg):
 
         super().__init__(fig)
 
-    def update_ellipse(self, datd: dict, dats: list, nodepth: bool = False):
+    def update_ellipse(
+        self,
+        datd: dict,
+        dats: list,
+        nodepth: bool = False,
+    ):
         """
         Update error ellipse plot.
 
@@ -293,7 +298,11 @@ class MyMplCanvas(FigureCanvasQTAgg):
 
         self.figure.canvas.draw()
 
-    def update_bvalue(self, data1a: NDArray, bins: str | int = "doane"):
+    def update_bvalue(
+        self,
+        data1a: NDArray,
+        bins: str | int = "doane",
+    ):
         """
         Update the b value plot.
 
@@ -347,7 +356,11 @@ class MyMplCanvas(FigureCanvasQTAgg):
 
         self.figure.canvas.draw()
 
-    def update_pres(self, data1: NDArray, phase: str = "P"):
+    def update_pres(
+        self,
+        data1: NDArray,
+        phase: str = "P",
+    ):
         """
         Update the plot.
 
@@ -392,7 +405,11 @@ class MyMplCanvas(FigureCanvasQTAgg):
 
         self.figure.canvas.draw()
 
-    def update_residual(self, dat: NDArray, res: str = "ML"):
+    def update_residual(
+        self,
+        dat: NDArray,
+        res: str = "ML",
+    ):
         """
         Update the residual plot.
 
@@ -478,7 +495,11 @@ class MyMplCanvas(FigureCanvasQTAgg):
         self.figure.canvas.draw()
 
     def update_wadati(
-        self, dat: list, min_wad: int = 5, min_vps: float = 1.53, max_vps: float = 1.93
+        self,
+        dat: list,
+        min_wad: int = 5,
+        min_vps: float = 1.53,
+        max_vps: float = 1.93,
     ):
         """
         Update the wadati plot.
@@ -558,7 +579,10 @@ class MyMplCanvas(FigureCanvasQTAgg):
 
         self.figure.canvas.draw()
 
-    def update_isohull(self, datd: gpd.GeoDataFrame):
+    def update_isohull(
+        self,
+        datd: gpd.GeoDataFrame,
+    ):
         """
         Update isoseismic plot using convex hull method.
 
@@ -603,7 +627,10 @@ class MyMplCanvas(FigureCanvasQTAgg):
 
         self.isolines = gdf
 
-    def update_isocontour(self, datd: gpd.GeoDataFrame):
+    def update_isocontour(
+        self,
+        datd: gpd.GeoDataFrame,
+    ):
         """
         Update isoseismic plot using contours.
 
@@ -664,7 +691,11 @@ class MyMplCanvas(FigureCanvasQTAgg):
 
         self.isolines = gdf
 
-    def update_tempb(self, btot: NDArray, datetot: list):
+    def update_tempb(
+        self,
+        btot: NDArray,
+        datetot: list,
+    ):
         """
         Update temporal b value plot.
 
@@ -687,7 +718,12 @@ class MyMplCanvas(FigureCanvasQTAgg):
 
         self.figure.canvas.draw()
 
-    def update_spatialb(self, x: NDArray, y: NDArray, bval: NDArray):
+    def update_spatialb(
+        self,
+        x: NDArray,
+        y: NDArray,
+        bval: NDArray,
+    ):
         """
         Update spatial b value plot.
 
@@ -724,7 +760,10 @@ class PlotQC(ContextModule):
 
     """
 
-    def __init__(self, parent=None):
+    def __init__(
+        self,
+        parent=None,
+    ):
         super().__init__(parent)
 
         self.datd = None
@@ -929,7 +968,10 @@ class PlotIso(ContextModule):
 
     """
 
-    def __init__(self, parent=None):
+    def __init__(
+        self,
+        parent=None,
+    ):
         super().__init__(parent)
 
         self.datd = None
@@ -1034,7 +1076,10 @@ class PlotTempB(ContextModule):
 
     """
 
-    def __init__(self, parent=None):
+    def __init__(
+        self,
+        parent=None,
+    ):
         super().__init__(parent)
 
         self.setAttribute(QtCore.Qt.WidgetAttribute.WA_DeleteOnClose)
@@ -1137,7 +1182,10 @@ class PlotSpatialB(ContextModule):
 
     """
 
-    def __init__(self, parent=None):
+    def __init__(
+        self,
+        parent=None,
+    ):
         super().__init__(parent)
 
         self.setAttribute(QtCore.Qt.WidgetAttribute.WA_DeleteOnClose)
@@ -1537,7 +1585,10 @@ def b_mle(
     return out
 
 
-def fmd(mag: NDArray, mbin: float = 0.1) -> dict:
+def fmd(
+    mag: NDArray,
+    mbin: float = 0.1,
+) -> dict:
     """
     Frequency magnitude distribution.
 
@@ -1578,7 +1629,10 @@ def fmd(mag: NDArray, mbin: float = 0.1) -> dict:
     return res
 
 
-def maxc(mag: NDArray, mbin: float = 0.1) -> float:
+def maxc(
+    mag: NDArray,
+    mbin: float = 0.1,
+) -> float:
     """
     MAXC method to find magnitude of completeness.
 

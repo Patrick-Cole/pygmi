@@ -87,7 +87,11 @@ def fftprep(data: Data) -> tuple[Data, float]:
     return zfin, datamedian
 
 
-def fft_getkxy(fftmod: NDArray, xdim: float, ydim: float) -> tuple[NDArray, NDArray]:
+def fft_getkxy(
+    fftmod: NDArray,
+    xdim: float,
+    ydim: float,
+) -> tuple[NDArray, NDArray]:
     """
     Get KX and KY.
 

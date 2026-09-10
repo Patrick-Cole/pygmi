@@ -45,14 +45,20 @@ class DeleteRecord(BasicModule):
 
     """
 
-    def __init__(self, parent=None):
+    def __init__(
+        self,
+        parent=None,
+    ):
         super().__init__(parent)
 
         self.indata = {"tmp": True}
 
         self.settings()
 
-    def settings(self, nodialog: bool = False) -> bool:
+    def settings(
+        self,
+        nodialog: bool = False,
+    ) -> bool:
         """
         Entry point into item.
 
@@ -81,7 +87,10 @@ class DeleteRecord(BasicModule):
     def saveproj(self):
         """Save project data from class."""
 
-    def delrec(self, ifile: str):
+    def delrec(
+        self,
+        ifile: str,
+    ):
         """
         Delete record.
 
@@ -136,14 +145,20 @@ class Quarry(BasicModule):
 
     """
 
-    def __init__(self, parent=None):
+    def __init__(
+        self,
+        parent=None,
+    ):
         super().__init__(parent)
 
         self.events = []
         self.day = [10, 16]  # daytime start at 6am and ends at 7pm
         self.day = [9, 19]  # daytime start at 6am and ends at 7pm
 
-    def settings(self, nodialog: bool = False) -> bool:
+    def settings(
+        self,
+        nodialog: bool = False,
+    ) -> bool:
         """
         Entry point into item.
 
@@ -460,7 +475,10 @@ class Quarry(BasicModule):
         return rperc
 
 
-def import_for_plots(ifile: str, dind: str = "R") -> dict:
+def import_for_plots(
+    ifile: str,
+    dind: str = "R",
+) -> dict:
     """
     Import data to plot.
 

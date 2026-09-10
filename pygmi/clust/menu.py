@@ -52,7 +52,10 @@ class MenuWidget:
 
     """
 
-    def __init__(self, parent=None):
+    def __init__(
+        self,
+        parent=None,
+    ):
 
         self.parent = parent
         self.parent.add_to_context("Cluster")

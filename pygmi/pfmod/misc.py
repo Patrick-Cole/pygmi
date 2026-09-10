@@ -38,7 +38,10 @@ from pygmi.raster.datatypes import Data
 from pygmi.raster.reproj import data_reproject
 
 
-def update_lith_lw(lmod: LithModel, lwidget: QtWidgets.QListWidget):
+def update_lith_lw(
+    lmod: LithModel,
+    lwidget: QtWidgets.QListWidget,
+):
     """
     Update the lithology list widget.
 
@@ -110,7 +113,10 @@ class ProgressBar:
 
         QtCore.QCoreApplication.processEvents()
 
-    def iter(self, iterable: Iterable) -> Generator[object, None, None]:
+    def iter(
+        self,
+        iterable: Iterable,
+    ) -> Generator[object, None, None]:
         """
         Iterate routine.
 
@@ -158,7 +164,10 @@ class ProgressBar:
         self.value = 0
         QtWidgets.QApplication.processEvents()
 
-    def incrmain(self, i: int = 1):
+    def incrmain(
+        self,
+        i: int = 1,
+    ):
         """
         Increase value by i.
 
@@ -191,7 +200,11 @@ class ProgressBar:
         self.pbar.setFormat("%p%")
         self.pbarmain.setFormat("%p%")
 
-    def resetall(self, maximum: int = 1, mmax: int = 1):
+    def resetall(
+        self,
+        maximum: int = 1,
+        mmax: int = 1,
+    ):
         """
         Set min and max and resets all bars to 0.
 
@@ -218,7 +231,10 @@ class ProgressBar:
         self.pbarmain.setMaximum(self.mmax)
         self.pbarmain.setValue(self.mvalue)
 
-    def resetsub(self, maximum: int = 1):
+    def resetsub(
+        self,
+        maximum: int = 1,
+    ):
         """
         Set min and max and resets sub bar to 0.
 
@@ -254,11 +270,14 @@ class MergeMod3D(BasicModule):
 
     """
 
-    def __init__(self, parent=None):
+    def __init__(
+        self,
+        parent=None,
+    ):
         super().__init__(parent)
 
-        self.cmb_master = QtWidgets.QComboBox()
-        self.cmb_slave = QtWidgets.QComboBox()
+        self.cmb_primary = QtWidgets.QComboBox()
+        self.cmb_secondary = QtWidgets.QComboBox()
 
         self.setupui()
 
@@ -267,19 +286,22 @@ class MergeMod3D(BasicModule):
         gl_main = QtWidgets.QGridLayout(self)
         self.buttonbox.htmlfile = "pfmod.dm.merge3dmodels"
 
-        lbl_master = QtWidgets.QLabel("Primary Dataset:")
-        lbl_slave = QtWidgets.QLabel("Secondary Dataset:")
+        lbl_primary = QtWidgets.QLabel("Primary Dataset:")
+        lbl_secondary = QtWidgets.QLabel("Secondary Dataset:")
 
         self.setWindowTitle("3D Model Merge")
 
-        gl_main.addWidget(lbl_master, 0, 0, 1, 1)
-        gl_main.addWidget(self.cmb_master, 0, 1, 1, 1)
+        gl_main.addWidget(lbl_primary, 0, 0, 1, 1)
+        gl_main.addWidget(self.cmb_primary, 0, 1, 1, 1)
 
-        gl_main.addWidget(lbl_slave, 1, 0, 1, 1)
-        gl_main.addWidget(self.cmb_slave, 1, 1, 1, 1)
+        gl_main.addWidget(lbl_secondary, 1, 0, 1, 1)
+        gl_main.addWidget(self.cmb_secondary, 1, 1, 1, 1)
         gl_main.addWidget(self.buttonbox, 3, 0, 1, 4)
 
-    def settings(self, nodialog: bool = False) -> bool:
+    def settings(
+        self,
+        nodialog: bool = False,
+    ) -> bool:
         """
         Entry point into item.
 
@@ -304,14 +326,14 @@ class MergeMod3D(BasicModule):
         for i in self.indata["Model3D"]:
             tmp.append(i.name)
 
-        self.cmb_master.clear()
-        self.cmb_slave.clear()
+        self.cmb_primary.clear()
+        self.cmb_secondary.clear()
 
-        self.cmb_master.addItems(tmp)
-        self.cmb_slave.addItems(tmp)
+        self.cmb_primary.addItems(tmp)
+        self.cmb_secondary.addItems(tmp)
 
-        self.cmb_master.setCurrentIndex(0)
-        self.cmb_slave.setCurrentIndex(1)
+        self.cmb_primary.setCurrentIndex(0)
+        self.cmb_secondary.setCurrentIndex(1)
 
         tmp = self.exec()
 
@@ -324,8 +346,8 @@ class MergeMod3D(BasicModule):
 
     def saveproj(self):
         """Save project data from class."""
-        self.saveobj(self.cmb_master)
-        self.saveobj(self.cmb_slave)
+        self.saveobj(self.cmb_primary)
+        self.saveobj(self.cmb_secondary)
 
     def acceptall(self) -> bool:
         """
@@ -339,31 +361,33 @@ class MergeMod3D(BasicModule):
             True if successful, False otherwise
 
         """
-        if self.cmb_master.currentText() == self.cmb_slave.currentText():
-            self.showlog("Your master dataset must be different to the slave dataset!")
+        if self.cmb_primary.currentText() == self.cmb_secondary.currentText():
+            self.showlog(
+                "Your primary dataset must be different to the secondary dataset!"
+            )
             return False
 
-        datmaster = self.indata["Model3D"][0]
-        datslave = self.indata["Model3D"][1]
+        datprimary = self.indata["Model3D"][0]
+        datsecondary = self.indata["Model3D"][1]
 
         for data in self.indata["Model3D"]:
-            if data.name == self.cmb_master.currentText():
-                datmaster = data
-            if data.name == self.cmb_slave.currentText():
-                datslave = data
+            if data.name == self.cmb_primary.currentText():
+                datprimary = data
+            if data.name == self.cmb_secondary.currentText():
+                datsecondary = data
 
-        xrange = list(datmaster.xrange) + list(datslave.xrange)
+        xrange = list(datprimary.xrange) + list(datsecondary.xrange)
         xrange.sort()
         xrange = [xrange[0], xrange[-1]]
-        yrange = list(datmaster.yrange) + list(datslave.yrange)
+        yrange = list(datprimary.yrange) + list(datsecondary.yrange)
         yrange.sort()
         yrange = [yrange[0], yrange[-1]]
-        zrange = list(datmaster.zrange) + list(datslave.zrange)
+        zrange = list(datprimary.zrange) + list(datsecondary.zrange)
         zrange.sort()
         zrange = [zrange[0], zrange[-1]]
 
-        dxy = datmaster.dxy
-        d_z = datmaster.d_z
+        dxy = datprimary.dxy
+        d_z = datprimary.d_z
 
         utlx = xrange[0]
         utly = yrange[-1]
@@ -379,7 +403,7 @@ class MergeMod3D(BasicModule):
 
         self.outdata["Raster"] = []
 
-        for i in datmaster.griddata:
+        for i in datprimary.griddata:
             if i in (
                 "DTM Dataset",
                 "Magnetic Dataset",
@@ -387,59 +411,61 @@ class MergeMod3D(BasicModule):
                 "Study Area Dataset",
                 "Gravity Regional",
             ):
-                if i in datslave.griddata:
-                    datmaster.griddata[i] = gmerge(
-                        datmaster.griddata[i], datslave.griddata[i], xrange, yrange
+                if i in datsecondary.griddata:
+                    datprimary.griddata[i] = gmerge(
+                        datprimary.griddata[i], datsecondary.griddata[i], xrange, yrange
                     )
-                self.outdata["Raster"].append(datmaster.griddata[i])
+                self.outdata["Raster"].append(datprimary.griddata[i])
             if i == "Other":
-                self.outdata["Raster"].append(datmaster.griddata[i])
+                self.outdata["Raster"].append(datprimary.griddata[i])
 
-        datmaster.update(cols, rows, layers, utlx, utly, utlz, dxy, d_z, usedtm=False)
-        datslave.update(cols, rows, layers, utlx, utly, utlz, dxy, d_z, usedtm=False)
+        datprimary.update(cols, rows, layers, utlx, utly, utlz, dxy, d_z, usedtm=False)
+        datsecondary.update(
+            cols, rows, layers, utlx, utly, utlz, dxy, d_z, usedtm=False
+        )
 
         lithcnt = 0
-        newmlut = {0: datmaster.mlut[0]}
-        newslut = {0: datslave.mlut[0]}
-        all_liths = list(set(datmaster.lith_list) | set(datslave.lith_list))
+        newmlut = {0: datprimary.mlut[0]}
+        newslut = {0: datsecondary.mlut[0]}
+        all_liths = list(set(datprimary.lith_list) | set(datsecondary.lith_list))
 
         for lith in all_liths:
             if lith == "Background":
                 continue
             lithcnt += 1
-            if lith in datslave.lith_list:
-                oldlithindex = datslave.lith_list[lith].lith_index
-                newslut[lithcnt] = datslave.mlut[oldlithindex]
-                tmp = datslave.lith_index == oldlithindex
-                datslave.lith_index[tmp] = lithcnt
-                datslave.lith_list[lith].lith_index = lithcnt
+            if lith in datsecondary.lith_list:
+                oldlithindex = datsecondary.lith_list[lith].lith_index
+                newslut[lithcnt] = datsecondary.mlut[oldlithindex]
+                tmp = datsecondary.lith_index == oldlithindex
+                datsecondary.lith_index[tmp] = lithcnt
+                datsecondary.lith_list[lith].lith_index = lithcnt
 
-            if lith in datmaster.lith_list:
-                oldlithindex = datmaster.lith_list[lith].lith_index
-                newmlut[lithcnt] = datmaster.mlut[oldlithindex]
-                tmp = datmaster.lith_index == oldlithindex
-                datmaster.lith_index[tmp] = lithcnt
-                datmaster.lith_list[lith].lith_index = lithcnt
+            if lith in datprimary.lith_list:
+                oldlithindex = datprimary.lith_list[lith].lith_index
+                newmlut[lithcnt] = datprimary.mlut[oldlithindex]
+                tmp = datprimary.lith_index == oldlithindex
+                datprimary.lith_index[tmp] = lithcnt
+                datprimary.lith_list[lith].lith_index = lithcnt
 
-        datslave.mlut = newslut
-        datmaster.mlut = newmlut
-        datmaster.lith_index[datmaster.lith_index == 0] = datslave.lith_index[
-            datmaster.lith_index == 0
+        datsecondary.mlut = newslut
+        datprimary.mlut = newmlut
+        datprimary.lith_index[datprimary.lith_index == 0] = datsecondary.lith_index[
+            datprimary.lith_index == 0
         ]
 
-        for lith in datslave.lith_list:
-            if lith not in datmaster.lith_list:
-                datmaster.lith_list[lith] = datslave.lith_list[lith]
-                lithnum = datmaster.lith_list[lith].lith_index
-                datmaster.mlut[lithnum] = datslave.mlut[lithnum]
+        for lith in datsecondary.lith_list:
+            if lith not in datprimary.lith_list:
+                datprimary.lith_list[lith] = datsecondary.lith_list[lith]
+                lithnum = datprimary.lith_list[lith].lith_index
+                datprimary.mlut[lithnum] = datsecondary.mlut[lithnum]
 
-        self.outdata["Model3D"] = [datmaster]
+        self.outdata["Model3D"] = [datprimary]
         return True
 
 
 def gmerge(
-    master: Data,
-    slave: Data,
+    primary: Data,
+    secondary: Data,
     xrange: list[float] | None = None,
     yrange: list[float] | None = None,
 ) -> Data:
@@ -448,9 +474,9 @@ def gmerge(
 
     Parameters
     ----------
-    master
+    primary
         PyGMI raster dataset.
-    slave
+    secondary
         PyGMI raster dataset.
     xrange
         List containing range of minimum and maximum X. The default is None.
@@ -464,10 +490,10 @@ def gmerge(
 
     """
     if xrange is None or yrange is None:
-        return master
+        return primary
 
-    xdim = master.xdim
-    ydim = master.ydim
+    xdim = primary.xdim
+    ydim = primary.ydim
 
     xmin = xrange[0]
     xmax = xrange[-1]
@@ -480,7 +506,7 @@ def gmerge(
 
     dat = []
 
-    for data in [master, slave]:
+    for data in [primary, secondary]:
         dat.append(data_reproject(data, data.crs, otransform, rows, cols))
 
     imask = np.logical_and(dat[0].data.mask, np.logical_not(dat[1].data.mask))

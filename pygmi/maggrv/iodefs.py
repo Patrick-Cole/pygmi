@@ -124,7 +124,10 @@ class ImportCG5(BasicModule):
         pb_cg5.pressed.connect(self.get_cg5)
         pb_gps.pressed.connect(self.get_gps)
 
-    def settings(self, nodialog: bool = False) -> bool:
+    def settings(
+        self,
+        nodialog: bool = False,
+    ) -> bool:
         """
         Entry point into item.
 
@@ -214,7 +217,10 @@ class ImportCG5(BasicModule):
         self.saveobj(self.le_gpsfile)
         self.saveobj(self.le_basethres)
 
-    def get_cg5(self, filename: str = ""):
+    def get_cg5(
+        self,
+        filename: str = "",
+    ):
         """
         Get CG-5 filename and load data.
 
@@ -235,7 +241,10 @@ class ImportCG5(BasicModule):
 
         self.le_cg5file.setText(filename)
 
-    def get_gps(self, filename: str = ""):
+    def get_gps(
+        self,
+        filename: str = "",
+    ):
         """
         Get GPS filename and load data.
 

@@ -247,7 +247,13 @@ class DiagramItem(QtWidgets.QGraphicsPolygonItem):
         Class name being referenced
     """
 
-    def __init__(self, diagram_type: str, context_menu: dict, my_class: object, parent):
+    def __init__(
+        self,
+        diagram_type: str,
+        context_menu: dict,
+        my_class: object,
+        parent,
+    ):
         super().__init__()
 
         self.arrows = []
@@ -324,7 +330,10 @@ class DiagramItem(QtWidgets.QGraphicsPolygonItem):
         self.setFlag(QtWidgets.QGraphicsItem.GraphicsItemFlag.ItemIsMovable, True)
         self.setFlag(QtWidgets.QGraphicsItem.GraphicsItemFlag.ItemIsSelectable, True)
 
-    def add_arrow(self, arrow: Arrow):
+    def add_arrow(
+        self,
+        arrow: Arrow,
+    ):
         """Add Arrow.
 
         Parameters
@@ -352,7 +361,10 @@ class DiagramItem(QtWidgets.QGraphicsPolygonItem):
         if hasattr(self.my_class, "data_init"):
             self.my_class.data_init()
 
-    def contextMenuEvent(self, event):
+    def contextMenuEvent(
+        self,
+        event,
+    ):
         """
         Overloaded context menu event.
 
@@ -411,7 +423,10 @@ class DiagramItem(QtWidgets.QGraphicsPolygonItem):
         local_menu.addActions(tmp2)
         local_menu.exec(event.screenPos())
 
-    def mouseDoubleClickEvent(self, event):
+    def mouseDoubleClickEvent(
+        self,
+        event,
+    ):
         """
         Mouse double click event.
 
@@ -434,7 +449,10 @@ class DiagramItem(QtWidgets.QGraphicsPolygonItem):
         else:
             self.setBrush(self.scene().my_item_color)
 
-    def remove_arrow(self, arrow: Arrow):
+    def remove_arrow(
+        self,
+        arrow: Arrow,
+    ):
         """
         Remove a single Arrow.
 
@@ -455,7 +473,10 @@ class DiagramItem(QtWidgets.QGraphicsPolygonItem):
             arrow.my_end_item.remove_arrow(arrow)
             self.scene().removeItem(arrow)
 
-    def settings(self, nodialog: bool = False) -> bool:
+    def settings(
+        self,
+        nodialog: bool = False,
+    ) -> bool:
         """
         Routine Settings.
 
@@ -514,7 +535,11 @@ class DiagramScene(QtWidgets.QGraphicsScene):
         Item menu.
     """
 
-    def __init__(self, item_menu: QtWidgets.QMenu, parent=None):
+    def __init__(
+        self,
+        item_menu: QtWidgets.QMenu,
+        parent=None,
+    ):
         super().__init__(parent)
         app = QtWidgets.QApplication.instance()
         isdark = app.styleHints().colorScheme() == QtCore.Qt.ColorScheme.Dark
@@ -535,7 +560,10 @@ class DiagramScene(QtWidgets.QGraphicsScene):
         self.my_font = QtGui.QFont()
         self.parent = parent
 
-    def mousePressEvent(self, mouse_event: QtWidgets.QGraphicsSceneMouseEvent):
+    def mousePressEvent(
+        self,
+        mouse_event: QtWidgets.QGraphicsSceneMouseEvent,
+    ):
         """
         Overloaded Mouse Press Event.
 
@@ -625,7 +653,10 @@ class DiagramScene(QtWidgets.QGraphicsScene):
 
         self.parent.showdatainfo(text)
 
-    def mouseMoveEvent(self, mouse_event: QtWidgets.QGraphicsSceneMouseEvent):
+    def mouseMoveEvent(
+        self,
+        mouse_event: QtWidgets.QGraphicsSceneMouseEvent,
+    ):
         """
         Overloaded Mouse Move Event.
 
@@ -640,7 +671,10 @@ class DiagramScene(QtWidgets.QGraphicsScene):
         elif self.my_mode == "MoveItem":
             super().mouseMoveEvent(mouse_event)
 
-    def mouseReleaseEvent(self, mouse_event: QtWidgets.QGraphicsSceneMouseEvent):
+    def mouseReleaseEvent(
+        self,
+        mouse_event: QtWidgets.QGraphicsSceneMouseEvent,
+    ):
         """
         Overloaded Mouse Release Event.
 
@@ -865,7 +899,10 @@ class MainWidget(QtWidgets.QMainWindow):
         item_menu.addAction(self.action_bring_to_front)
         item_menu.addAction(self.action_send_to_back)
 
-    def add_to_context(self, txt: str):
+    def add_to_context(
+        self,
+        txt: str,
+    ):
         """
         Add to a context menu.
 
@@ -915,7 +952,10 @@ class MainWidget(QtWidgets.QMainWindow):
                     item.setBrush(self.scene.my_item_color)
         gc.collect()
 
-    def keyPressEvent(self, event: QtGui.QKeyEvent):
+    def keyPressEvent(
+        self,
+        event: QtGui.QKeyEvent,
+    ):
         """
         Intercept key press for custom key presses.
 
@@ -1070,7 +1110,11 @@ class MainWidget(QtWidgets.QMainWindow):
         self.scene.my_mode = "MoveItem"
         return item
 
-    def launch_context_item(self, newitem, option: str | None = None):
+    def launch_context_item(
+        self,
+        newitem,
+        option: str | None = None,
+    ):
         """
         Launch a context menu item, using output data.
 
@@ -1096,7 +1140,10 @@ class MainWidget(QtWidgets.QMainWindow):
                 self.update_pdlg(dlg)
         self.process_is_active(False)
 
-    def launch_context_item_indata(self, newitem):
+    def launch_context_item_indata(
+        self,
+        newitem,
+    ):
         """
         Launch a context menu item, using input data.
 
@@ -1124,7 +1171,10 @@ class MainWidget(QtWidgets.QMainWindow):
         """Select pointer."""
         self.scene.my_mode = "MoveItem"
 
-    def process_is_active(self, isactive: bool = True):
+    def process_is_active(
+        self,
+        isactive: bool = True,
+    ):
         """
         Change process log colour when a process is active.
 
@@ -1343,7 +1393,10 @@ class MainWidget(QtWidgets.QMainWindow):
                 zvalue = item.zValue() - 0.1
         selected_item.setZValue(zvalue)
 
-    def showdatainfo(self, txt: str):
+    def showdatainfo(
+        self,
+        txt: str,
+    ):
         """
         Show text in the dataset information panel.
 
@@ -1357,7 +1410,11 @@ class MainWidget(QtWidgets.QMainWindow):
         tmp.setValue(tmp.maximumHeight())
         self.repaint()
 
-    def showlog(self, txt: str, replacelast: bool = False):
+    def showlog(
+        self,
+        txt: str,
+        replacelast: bool = False,
+    ):
         """
         Show text on the process log.
 
@@ -1393,7 +1450,10 @@ class MainWidget(QtWidgets.QMainWindow):
             msg.setTextInteractionFlags(Qt.TextBrowserInteraction)
             msg.exec()
 
-    def update_pdlg(self, dlg: object):
+    def update_pdlg(
+        self,
+        dlg: object,
+    ):
         """
         Clean deleted objects in self.pdlg and appends a new object.
 
@@ -1428,7 +1488,10 @@ class Startup(QtWidgets.QDialog):
 
     """
 
-    def __init__(self, pbarmax: int):
+    def __init__(
+        self,
+        pbarmax: int,
+    ):
         super().__init__()
         self.setWindowFlags(QtCore.Qt.WindowType.ToolTip)
 
@@ -1465,7 +1528,9 @@ class Startup(QtWidgets.QDialog):
         QtWidgets.QApplication.processEvents()
 
 
-def get_crs_label(crs_input: str | int | CRS) -> str:
+def get_crs_label(
+    crs_input: str | int | CRS,
+) -> str:
     """
     Get CRS label.
 

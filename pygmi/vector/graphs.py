@@ -57,7 +57,10 @@ class MyMplCanvas(CanvasModule):
     This routine will also allow the picking and movement of nodes of data.
     """
 
-    def __init__(self, parent=None):
+    def __init__(
+        self,
+        parent=None,
+    ):
         super().__init__(parent)
 
         self.line = None
@@ -70,7 +73,10 @@ class MyMplCanvas(CanvasModule):
         self.dmat = np.array([])
         self.texts = None
 
-    def button_release_callback(self, event: MouseEvent):
+    def button_release_callback(
+        self,
+        event: MouseEvent,
+    ):
         """
         Mouse button release callback.
 
@@ -86,7 +92,11 @@ class MyMplCanvas(CanvasModule):
             return
         self.ind = None
 
-    def format_coord(self, x: float, y: float) -> str | None:
+    def format_coord(
+        self,
+        x: float,
+        y: float,
+    ) -> str | None:
         """
         Set format coordinate for correlation coefficient plot.
 
@@ -117,7 +127,10 @@ class MyMplCanvas(CanvasModule):
 
             return f"{xlbl}, {ylbl} correlation: {z}%"
 
-    def motion_notify_callback(self, event: MouseEvent):
+    def motion_notify_callback(
+        self,
+        event: MouseEvent,
+    ):
         """
         Move mouse callback.
 
@@ -142,7 +155,10 @@ class MyMplCanvas(CanvasModule):
         self.axes.draw_artist(self.line)
         self.figure.canvas.update()
 
-    def onpick(self, event: PickEvent) -> bool:
+    def onpick(
+        self,
+        event: PickEvent,
+    ) -> bool:
         """
         Picker event.
 
@@ -169,7 +185,10 @@ class MyMplCanvas(CanvasModule):
 
         return True
 
-    def resizeline(self, event: ResizeEvent):
+    def resizeline(
+        self,
+        event: ResizeEvent,
+    ):
         """
         Resize event.
 
@@ -182,7 +201,10 @@ class MyMplCanvas(CanvasModule):
         r, data = self.line.get_data()
         self.update_lines(r, data)
 
-    def textresize(self, axes: Axes):
+    def textresize(
+        self,
+        axes: Axes,
+    ):
         """
         Resize the text on a correlation plot when zooming.
 
@@ -210,7 +232,11 @@ class MyMplCanvas(CanvasModule):
             else:
                 i.set_visible(False)
 
-    def update_ccoef(self, data: GeoDataFrame, style: str = "Normal"):
+    def update_ccoef(
+        self,
+        data: GeoDataFrame,
+        style: str = "Normal",
+    ):
         """
         Update the plot from point data.
 
@@ -278,7 +304,11 @@ class MyMplCanvas(CanvasModule):
 
         self.figure.canvas.draw()
 
-    def update_lines(self, r: NDArray, data: NDArray):
+    def update_lines(
+        self,
+        r: NDArray,
+        data: NDArray,
+    ):
         """
         Update the plot from point data.
 
@@ -324,7 +354,11 @@ class MyMplCanvas(CanvasModule):
         self.figure.canvas.draw()
 
     def update_lmap(
-        self, data: pd.DataFrame, ival: str | float, scale: float, uselabels: bool
+        self,
+        data: pd.DataFrame,
+        ival: str | float,
+        scale: float,
+        uselabels: bool,
     ):
         """
         Update the plot from line data.
@@ -411,7 +445,12 @@ class MyMplCanvas(CanvasModule):
         set_northscale(self.axes, data.crs, self.showlog)
         self.figure.canvas.draw()
 
-    def update_vector(self, data: GeoDataFrame, col: str, style: bool | None = None):
+    def update_vector(
+        self,
+        data: GeoDataFrame,
+        col: str,
+        style: bool | None = None,
+    ):
         """
         Update the plot from vector data.
 
@@ -624,7 +663,13 @@ class MyMplCanvas(CanvasModule):
 
         self.figure.canvas.draw()
 
-    def update_hist(self, data: GeoDataFrame, col: str, ylog: bool, iscum: bool):
+    def update_hist(
+        self,
+        data: GeoDataFrame,
+        col: str,
+        ylog: bool,
+        iscum: bool,
+    ):
         """
         Update the histogram plot.
 
@@ -674,7 +719,10 @@ class PlotCCoef(ContextModule):
 
     """
 
-    def __init__(self, parent=None):
+    def __init__(
+        self,
+        parent=None,
+    ):
         super().__init__(parent)
         self.setAttribute(QtCore.Qt.WidgetAttribute.WA_DeleteOnClose)
         self.setWindowTitle("Vector Plot")
@@ -733,7 +781,10 @@ class PlotHist(ContextModule):
 
     """
 
-    def __init__(self, parent=None):
+    def __init__(
+        self,
+        parent=None,
+    ):
         super().__init__(parent)
         self.setAttribute(QtCore.Qt.WidgetAttribute.WA_DeleteOnClose)
         self.setWindowTitle("Histogram")
@@ -801,7 +852,10 @@ class PlotLines(ContextModule):
 
     """
 
-    def __init__(self, parent=None):
+    def __init__(
+        self,
+        parent=None,
+    ):
         super().__init__(parent)
         self.setAttribute(QtCore.Qt.WidgetAttribute.WA_DeleteOnClose)
         self.setWindowTitle("Plot Profiles")
@@ -907,7 +961,10 @@ class PlotLineMap(ContextModule):
 
     """
 
-    def __init__(self, parent=None):
+    def __init__(
+        self,
+        parent=None,
+    ):
         super().__init__(parent)
         self.setWindowTitle("Profile Map")
         self.setAttribute(QtCore.Qt.WidgetAttribute.WA_DeleteOnClose)
@@ -1005,7 +1062,10 @@ class PlotRose(ContextModule):
 
     """
 
-    def __init__(self, parent=None):
+    def __init__(
+        self,
+        parent=None,
+    ):
         super().__init__(parent)
         self.setAttribute(QtCore.Qt.WidgetAttribute.WA_DeleteOnClose)
 
@@ -1096,7 +1156,10 @@ class PlotVector(ContextModule):
 
     """
 
-    def __init__(self, parent=None):
+    def __init__(
+        self,
+        parent=None,
+    ):
         super().__init__(parent)
         self.setAttribute(QtCore.Qt.WidgetAttribute.WA_DeleteOnClose)
 
@@ -1413,7 +1476,9 @@ def histogram(
 
 
 def rotate(
-    origin: list[float], point: list[float], angle: float
+    origin: list[float],
+    point: list[float],
+    angle: float,
 ) -> tuple[float, float]:
     """
     Rotate a point counterclockwise by a given angle around a given origin.

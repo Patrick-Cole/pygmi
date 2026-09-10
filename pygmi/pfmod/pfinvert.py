@@ -63,7 +63,10 @@ class MagInvert(BasicModule):
 
     """
 
-    def __init__(self, parent=None):
+    def __init__(
+        self,
+        parent=None,
+    ):
         super().__init__(parent)
         self.lmod1 = LithModel()
         self.lmod2 = LithModel()
@@ -305,7 +308,11 @@ class MagInvert(BasicModule):
 
         self.accept()
 
-    def choose_combo(self, combo: QtWidgets.QComboBox, dtxt: str):
+    def choose_combo(
+        self,
+        combo: QtWidgets.QComboBox,
+        dtxt: str,
+    ):
         """
         Combo box choice routine.
 
@@ -347,7 +354,10 @@ class MagInvert(BasicModule):
                 self.update_vals()
                 self.update_combos()
 
-    def extgrid(self, gdata: np.ma.MaskedArray) -> np.ma.MaskedArray:
+    def extgrid(
+        self,
+        gdata: np.ma.MaskedArray,
+    ) -> np.ma.MaskedArray:
         """
         Extrapolates the grid to get rid of nulls.
 
@@ -534,7 +544,10 @@ class MagInvert(BasicModule):
         self.dsb_zextent.setValue(zextent)
         self.dsb_zcell.setValue(self.lmod1.d_z)
 
-    def xycell(self, dxy: float):
+    def xycell(
+        self,
+        dxy: float,
+    ):
         """
         Adjust XY dimensions when cell size changes.
 
@@ -575,7 +588,10 @@ class MagInvert(BasicModule):
 
         self.upd_layers()
 
-    def settings(self, nodialog: bool = False) -> bool:
+    def settings(
+        self,
+        nodialog: bool = False,
+    ) -> bool:
         """
         Entry point.
 

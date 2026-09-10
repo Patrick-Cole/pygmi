@@ -51,7 +51,10 @@ class CalculateChange(BasicModule):
 
     """
 
-    def __init__(self, parent=None):
+    def __init__(
+        self,
+        parent=None,
+    ):
         super().__init__(parent)
 
         self.lw_indices = QtWidgets.QListWidget()
@@ -90,7 +93,10 @@ class CalculateChange(BasicModule):
         # self.lw_indices.clicked.connect(self.set_selected_indices)
         btn_invert.clicked.connect(self.invert_selection)
 
-    def settings(self, nodialog: bool = False) -> bool:
+    def settings(
+        self,
+        nodialog: bool = False,
+    ) -> bool:
         """
         Entry point into item.
 
@@ -396,7 +402,10 @@ def calc_sam(
     return angle
 
 
-def coefv(mean: NDArray, std: NDArray) -> NDArray:
+def coefv(
+    mean: NDArray,
+    std: NDArray,
+) -> NDArray:
     """
     Calculate coefficient of variation.
 
@@ -427,7 +436,10 @@ def coefv(mean: NDArray, std: NDArray) -> NDArray:
 
 
 def imean(
-    mean: NDArray, newdat: NDArray, cnt: NDArray | None = None, M: NDArray | None = None
+    mean: NDArray,
+    newdat: NDArray,
+    cnt: NDArray | None = None,
+    M: NDArray | None = None,
 ) -> tuple[NDArray, NDArray, NDArray]:
     """
     Calculate mean and variance parameters.
@@ -531,7 +543,10 @@ def match_data(
 
 
 @jit(nopython=True)
-def sam(s1: NDArray, s2: NDArray) -> float:
+def sam(
+    s1: NDArray,
+    s2: NDArray,
+) -> float:
     """
     Calculate Spectral Angle Mapper (SAM).
 
@@ -562,7 +577,10 @@ def sam(s1: NDArray, s2: NDArray) -> float:
     return result
 
 
-def scm(s1: NDArray, s2: NDArray) -> float:
+def scm(
+    s1: NDArray,
+    s2: NDArray,
+) -> float:
     """
     SCM or MSAM.
 
@@ -596,7 +614,10 @@ def scm(s1: NDArray, s2: NDArray) -> float:
     return result
 
 
-def stddev(M: NDArray, cnt: NDArray) -> NDArray:
+def stddev(
+    M: NDArray,
+    cnt: NDArray,
+) -> NDArray:
     """
     Calculate std deviation.
 

@@ -61,11 +61,17 @@ class PointCut(BasicModule):
 
     """
 
-    def __init__(self, parent=None):
+    def __init__(
+        self,
+        parent=None,
+    ):
         super().__init__(parent)
         self.is_import = True
 
-    def settings(self, nodialog: bool = False) -> bool:
+    def settings(
+        self,
+        nodialog: bool = False,
+    ) -> bool:
         """
         Entry point into item.
 
@@ -124,7 +130,10 @@ class DataGrid(BasicModule):
 
     """
 
-    def __init__(self, parent=None):
+    def __init__(
+        self,
+        parent=None,
+    ):
         super().__init__(parent)
         self.dxy = None
 
@@ -300,7 +309,10 @@ class DataGrid(BasicModule):
 
         self.dxy_change()
 
-    def settings(self, nodialog: bool = False) -> bool:
+    def settings(
+        self,
+        nodialog: bool = False,
+    ) -> bool:
         """
         Entry point into item.
 
@@ -499,7 +511,10 @@ class DataReproj(BasicModule):
 
     """
 
-    def __init__(self, parent=None):
+    def __init__(
+        self,
+        parent=None,
+    ):
         super().__init__(parent)
         self.orig_wkt = None
         self.targ_wkt = None
@@ -520,7 +535,10 @@ class DataReproj(BasicModule):
         gl_main.addWidget(self.out_proj, 0, 1, 1, 1)
         gl_main.addWidget(self.buttonbox, 1, 0, 1, 2)
 
-    def settings(self, nodialog: bool = False) -> bool:
+    def settings(
+        self,
+        nodialog: bool = False,
+    ) -> bool:
         """
         Entry point into item.
 
@@ -590,7 +608,10 @@ class Metadata(ContextModule):
         Reference to the parent routine. The default is None.
     """
 
-    def __init__(self, parent=None):
+    def __init__(
+        self,
+        parent=None,
+    ):
         super().__init__(parent)
 
         self.cmb_bandid = QtWidgets.QComboBox()
@@ -657,7 +678,10 @@ class TextFileSplit(BasicModule):
 
     """
 
-    def __init__(self, parent=None):
+    def __init__(
+        self,
+        parent=None,
+    ):
         super().__init__(parent)
         self.is_import = True
 
@@ -795,7 +819,10 @@ class TextFileSplit(BasicModule):
 
         self.change_method()
 
-    def settings(self, nodialog: bool = False) -> bool:
+    def settings(
+        self,
+        nodialog: bool = False,
+    ) -> bool:
         """
         Entry point into item.
 
@@ -923,7 +950,9 @@ def blanking(
 
 
 def cut_point(
-    data: gpd.GeoDataFrame, ifile: str, showlog: Callable[..., None] = print
+    data: gpd.GeoDataFrame,
+    ifile: str,
+    showlog: Callable[..., None] = print,
 ) -> gpd.GeoDataFrame | None:
     """
     Cut a point dataset using a shapefile.
@@ -1218,7 +1247,10 @@ def gridvolume(
     return out
 
 
-def lltomap(lat: float, lon: float) -> str:
+def lltomap(
+    lat: float,
+    lon: float,
+) -> str:
     """
     Convert a latitude and longitude to a 1:50,000 map sheet name.
 
@@ -1261,7 +1293,9 @@ def lltomap(lat: float, lon: float) -> str:
 
 
 def maptobounds(
-    mapsheet: str, crs_to: CRS = None, showlog: Callable[..., None] = print
+    mapsheet: str,
+    crs_to: CRS = None,
+    showlog: Callable[..., None] = print,
 ) -> tuple[float, float, float, float] | None:
     """
     Convert a South African map sheet name to bounds.
@@ -1513,7 +1547,11 @@ def reprojxy(
     return xout, yout
 
 
-def xy_to_r(x: NDArray | float, y: NDArray | float, piter: Iterable = iter) -> NDArray:
+def xy_to_r(
+    x: NDArray | float,
+    y: NDArray | float,
+    piter: Iterable = iter,
+) -> NDArray:
     """
     Convert x an y values on a section to r.
 
@@ -1575,7 +1613,10 @@ def xy_to_r(x: NDArray | float, y: NDArray | float, piter: Iterable = iter) -> N
     return r
 
 
-def fast_sort(pointsin: NDArray, piter: Iterable = iter) -> list:
+def fast_sort(
+    pointsin: NDArray,
+    piter: Iterable = iter,
+) -> list:
     """
     Fast sort of coordinate pairs.
 

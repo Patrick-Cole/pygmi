@@ -48,7 +48,12 @@ class MyMplCanvas(FigureCanvasQTAgg):
         super().__init__(fig)
 
     def update_legend(
-        self, df: pd.DataFrame, hatch: dict, clith: dict, col: dict, stratcol: dict
+        self,
+        df: pd.DataFrame,
+        hatch: dict,
+        clith: dict,
+        col: dict,
+        stratcol: dict,
     ):
         """
         Update the plot legend.
@@ -149,7 +154,13 @@ class MyMplCanvas(FigureCanvasQTAgg):
 
         self.figure.canvas.draw()
 
-    def update_log(self, df: pd.DataFrame, hatch: dict, col: dict, stratcol: dict):
+    def update_log(
+        self,
+        df: pd.DataFrame,
+        hatch: dict,
+        col: dict,
+        stratcol: dict,
+    ):
         """
         Update the borehole log plot.
 
@@ -278,7 +289,10 @@ class PlotLog(ContextModule):
 
     """
 
-    def __init__(self, parent=None):
+    def __init__(
+        self,
+        parent=None,
+    ):
         super().__init__(parent)
 
         self.hatch = None
@@ -542,7 +556,10 @@ def gethatch(svgfile: str) -> tuple[dict, dict]:
     return pverts, pcodes
 
 
-def commentprep(mystring: str, slen: int = 50) -> str:
+def commentprep(
+    mystring: str,
+    slen: int = 50,
+) -> str:
     """
     Create the correct case for a string and inserts carriage returns.
 

@@ -196,7 +196,10 @@ class MyMplCanvas(FigureCanvasQTAgg):
         # cmyk stuff
         self.kval = 0.01
 
-    def revent(self, event: ResizeEvent):
+    def revent(
+        self,
+        event: ResizeEvent,
+    ):
         """
         Resize event.
 
@@ -208,7 +211,10 @@ class MyMplCanvas(FigureCanvasQTAgg):
         """
         self.flagresize = True
 
-    def init_graph(self, interp="auto"):
+    def init_graph(
+        self,
+        interp="auto",
+    ):
         """Initialize the graph."""
         if self.ccbar is not None:
             self.ccbar.remove()
@@ -259,7 +265,10 @@ class MyMplCanvas(FigureCanvasQTAgg):
 
         self.cid = self.figure.canvas.mpl_connect("resize_event", self.revent)
 
-    def move(self, event: MouseEvent):
+    def move(
+        self,
+        event: MouseEvent,
+    ):
         """
         Mouse is moving over canvas.
 
@@ -400,7 +409,10 @@ class MyMplCanvas(FigureCanvasQTAgg):
         if "Ternary" in self.gmode:
             self.update_rgb()
 
-    def update_hist_rgb(self, zval: NDArray) -> list:
+    def update_hist_rgb(
+        self,
+        zval: NDArray,
+    ) -> list:
         """
         Update the rgb histograms.
 
@@ -442,7 +454,11 @@ class MyMplCanvas(FigureCanvasQTAgg):
             self.update_hist_text(self.htxt[i], zval[i])
         return bnum
 
-    def update_hist_single(self, zval: float | None = None, hno: int = 0) -> int:
+    def update_hist_single(
+        self,
+        zval: float | None = None,
+        hno: int = 0,
+    ) -> int:
         """
         Update the colour on a single histogram.
 
@@ -488,7 +504,11 @@ class MyMplCanvas(FigureCanvasQTAgg):
 
         return binnum
 
-    def update_hist_text(self, hst, zval: float):
+    def update_hist_text(
+        self,
+        hst,
+        zval: float,
+    ):
         """
         Update the value on the histogram.
 
@@ -843,7 +863,10 @@ class PlotInterp(BasicModule):
         Small canvas containing the sunshading control.
     """
 
-    def __init__(self, parent=None):
+    def __init__(
+        self,
+        parent=None,
+    ):
         super().__init__(parent)
         self.units = {}
         self.clippercu = {}
@@ -1439,7 +1462,10 @@ class PlotInterp(BasicModule):
         self.dsb_linemin.setValue(lmin)
         self.dsb_linemax.setValue(lmax)
 
-    def move(self, event: MouseEvent):
+    def move(
+        self,
+        event: MouseEvent,
+    ):
         """
         Move event is used to track changes to the sunshading.
 
@@ -2094,7 +2120,10 @@ class PlotInterp(BasicModule):
 
         return True
 
-    def settings(self, nodialog: bool = False) -> bool:
+    def settings(
+        self,
+        nodialog: bool = False,
+    ) -> bool:
         """
         Entry point into item.
 

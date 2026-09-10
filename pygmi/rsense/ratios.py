@@ -51,7 +51,10 @@ class SatRatios(BasicModule):
 
     """
 
-    def __init__(self, parent=None):
+    def __init__(
+        self,
+        parent=None,
+    ):
         super().__init__(parent)
 
         self.cmb_sensor = QtWidgets.QComboBox()
@@ -98,7 +101,10 @@ class SatRatios(BasicModule):
         self.cmb_sensor.currentIndexChanged.connect(self.setratios)
         btn_invert.clicked.connect(self.invert_selection)
 
-    def settings(self, nodialog: bool = False) -> bool:
+    def settings(
+        self,
+        nodialog: bool = False,
+    ) -> bool:
         """
         Entry point into item.
 
@@ -362,7 +368,10 @@ class ConditionIndices(BasicModule):
 
     """
 
-    def __init__(self, parent=None):
+    def __init__(
+        self,
+        parent=None,
+    ):
         super().__init__(parent)
 
         self.bfile = None
@@ -417,7 +426,10 @@ class ConditionIndices(BasicModule):
         self.cmb_sensor.currentIndexChanged.connect(self.setratios)
         btn_invert.clicked.connect(self.invert_selection)
 
-    def settings(self, nodialog: bool = False) -> bool:
+    def settings(
+        self,
+        nodialog: bool = False,
+    ) -> bool:
         """
         Entry point into item.
 
@@ -866,7 +878,11 @@ def calc_ratios(
     return datfin
 
 
-def correct_bands(rlist: list[str], sensor: str, bfile: str | None = None) -> list[str]:
+def correct_bands(
+    rlist: list[str],
+    sensor: str,
+    bfile: str | None = None,
+) -> list[str]:
     """
     Correct the band designations.
 
@@ -1005,7 +1021,10 @@ def correct_bands(rlist: list[str], sensor: str, bfile: str | None = None) -> li
     return rlist2
 
 
-def correct_EMIT_bands(rlist: list[str], dat: list[Data]) -> list[Data]:
+def correct_EMIT_bands(
+    rlist: list[str],
+    dat: list[Data],
+) -> list[Data]:
     """
     Correct EMIT band names.
 
@@ -1101,7 +1120,9 @@ def get_EMIT_list(flist: list[str]) -> list[str]:
 
 
 def get_landsat_list(
-    flist: list[str], sensor: str | None = None, allsats: bool = False
+    flist: list[str],
+    sensor: str | None = None,
+    allsats: bool = False,
 ) -> list[str] | None:
     """
     Get Landsat files from a file list.
@@ -1211,7 +1232,10 @@ def get_TCI(lst: list[Data]) -> list[Data]:
     return tci
 
 
-def get_VCI(evi: list[Data], index: str) -> list[Data]:
+def get_VCI(
+    evi: list[Data],
+    index: str,
+) -> list[Data]:
     """
     Calculate VCI.
 
@@ -1249,7 +1273,11 @@ def get_VCI(evi: list[Data], index: str) -> list[Data]:
     return vci
 
 
-def get_VHI(tci: list[Data], vci: list[Data], alpha: float = 0.5) -> list[Data]:
+def get_VHI(
+    tci: list[Data],
+    vci: list[Data],
+    alpha: float = 0.5,
+) -> list[Data]:
     """
     Calculate VHI.
 

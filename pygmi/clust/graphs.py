@@ -40,12 +40,18 @@ from pygmi.raster.modest_image import imshow
 class MyMplCanvas(CanvasModule):
     """Matplotlib canvas widget for the actual plot."""
 
-    def __init__(self, parent=None):
+    def __init__(
+        self,
+        parent=None,
+    ):
         super().__init__(parent)
         self.line = None
         self.ind = None
 
-    def update_classes(self, data1: Data):
+    def update_classes(
+        self,
+        data1: Data,
+    ):
         """
         Update the class plot.
 
@@ -85,7 +91,11 @@ class MyMplCanvas(CanvasModule):
 
         self.draw()
 
-    def update_bars(self, data1: Data, rdata: Data):
+    def update_bars(
+        self,
+        data1: Data,
+        rdata: Data,
+    ):
         """
         Update the class plot.
 
@@ -139,7 +149,11 @@ class MyMplCanvas(CanvasModule):
 
         self.figure.canvas.draw()
 
-    def update_scatter(self, x: NDArray, y: NDArray):
+    def update_scatter(
+        self,
+        x: NDArray,
+        y: NDArray,
+    ):
         """
         Update the scatter plot.
 
@@ -165,7 +179,12 @@ class MyMplCanvas(CanvasModule):
         self.axes.xaxis.set_ticks(x)
         self.figure.canvas.draw()
 
-    def update_wireframe(self, x: NDArray, y: NDArray, z: NDArray):
+    def update_wireframe(
+        self,
+        x: NDArray,
+        y: NDArray,
+        z: NDArray,
+    ):
         """
         Update the wireframe plot.
 
@@ -190,7 +209,11 @@ class MyMplCanvas(CanvasModule):
 
         self.figure.canvas.draw()
 
-    def update_membership(self, data1: Data, mem: int):
+    def update_membership(
+        self,
+        data1: Data,
+        mem: int,
+    ):
         """
         Update membership plot.
 
@@ -234,7 +257,10 @@ class PlotRaster(ContextModule):
 
     """
 
-    def __init__(self, parent=None):
+    def __init__(
+        self,
+        parent=None,
+    ):
         super().__init__(parent)
 
         self.setAttribute(QtCore.Qt.WidgetAttribute.WA_DeleteOnClose)
@@ -291,7 +317,10 @@ class PlotBars(ContextModule):
 
     """
 
-    def __init__(self, parent=None):
+    def __init__(
+        self,
+        parent=None,
+    ):
         super().__init__(parent)
 
         self.setAttribute(QtCore.Qt.WidgetAttribute.WA_DeleteOnClose)
@@ -351,7 +380,10 @@ class PlotMembership(ContextModule):
 
     """
 
-    def __init__(self, parent=None):
+    def __init__(
+        self,
+        parent=None,
+    ):
         super().__init__(parent)
 
         self.setAttribute(QtCore.Qt.WidgetAttribute.WA_DeleteOnClose)
@@ -435,7 +467,10 @@ class PlotVRCetc(ContextModule):
 
     """
 
-    def __init__(self, parent=None):
+    def __init__(
+        self,
+        parent=None,
+    ):
         super().__init__(parent)
 
         self.setAttribute(QtCore.Qt.WidgetAttribute.WA_DeleteOnClose)

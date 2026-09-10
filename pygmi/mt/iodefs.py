@@ -48,12 +48,18 @@ class ImportEDI(BasicModule):
 
     """
 
-    def __init__(self, parent=None):
+    def __init__(
+        self,
+        parent=None,
+    ):
         super().__init__(parent)
         self.ifilelist = []
         self.is_import = True
 
-    def settings(self, nodialog: bool = False) -> bool:
+    def settings(
+        self,
+        nodialog: bool = False,
+    ) -> bool:
         """
         Entry point into item.
 
@@ -140,7 +146,10 @@ class ExportEDI(ContextModule):
 
     """
 
-    def __init__(self, parent=None):
+    def __init__(
+        self,
+        parent=None,
+    ):
         super().__init__(parent)
 
         self.ofile = ""
@@ -191,7 +200,10 @@ class ExportEDI(ContextModule):
         self.parent.process_is_active(False)
         return True
 
-    def export_edi(self, dat: dict):
+    def export_edi(
+        self,
+        dat: dict,
+    ):
         """
         Export to EDI format.
 

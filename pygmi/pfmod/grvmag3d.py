@@ -64,7 +64,10 @@ class MyMplCanvas(FigureCanvasQTAgg):
         self.axes = fig.add_subplot(111)
         super().__init__(fig)
 
-    def update_raster(self, lmod2: LithModel):
+    def update_raster(
+        self,
+        lmod2: LithModel,
+    ):
         """
         Update the raster plot.
 
@@ -151,7 +154,10 @@ class GravMag:
 
     """
 
-    def __init__(self, parent=None):
+    def __init__(
+        self,
+        parent=None,
+    ):
 
         self.parent = parent
         self.lmod2 = LithModel()
@@ -245,7 +251,11 @@ class GravMag:
         self.calc_field2(True)
         self.parent.profile.update_plot()
 
-    def calc_field2(self, showreports: bool = False, magcalc: bool = False):
+    def calc_field2(
+        self,
+        showreports: bool = False,
+        magcalc: bool = False,
+    ):
         """
         Calculate magnetic and gravity field.
 
@@ -377,7 +387,12 @@ class GravMag:
         ptest = PlotTest(data=self.lmod2)
         ptest.exec()
 
-    def update_graph(self, grvval: NDArray, magval: NDArray, modind: NDArray):
+    def update_graph(
+        self,
+        grvval: NDArray,
+        magval: NDArray,
+        modind: NDArray,
+    ):
         """
         Update the graph.
 
@@ -497,7 +512,10 @@ class GeoData:
 
         self.set_xyz(ncols, nrows, numz, dxy, mht, ght, d_z)
 
-    def calc_origin_grav(self, hcor: NDArray = None):
+    def calc_origin_grav(
+        self,
+        hcor: NDArray = None,
+    ):
         """
         Calculate the field values for the lithologies.
 
@@ -530,7 +548,11 @@ class GeoData:
 
             self.modified = False
 
-    def calc_origin_mag(self, hcor: NDArray = None, demag: bool = False):
+    def calc_origin_mag(
+        self,
+        hcor: NDArray = None,
+        demag: bool = False,
+    ):
         """
         Calculate the field values for the lithologies.
 
@@ -648,7 +670,13 @@ class GeoData:
         self.y12 = np.array([numy / 2 - dxy / 2, numy / 2 + dxy / 2])
         self.z12 = np.arange(-numz, numz + d_z, d_z)
 
-    def gboxmain(self, xobs: NDArray, yobs: NDArray, zobs: float, hcor: NDArray):
+    def gboxmain(
+        self,
+        xobs: NDArray,
+        yobs: NDArray,
+        zobs: float,
+        hcor: NDArray,
+    ):
         """
         Gbox routine by Blakely.
 
@@ -871,7 +899,12 @@ class GeoData:
         self.mlayers = self.mlayers[:-1] - self.mlayers[1:]
 
 
-def calc_demag(mvec: NDArray, k: float, dxy: float, dz: float) -> NDArray:
+def calc_demag(
+    mvec: NDArray,
+    k: float,
+    dxy: float,
+    dz: float,
+) -> NDArray:
     """
     Calculate demagnetisation correction.
 
@@ -928,7 +961,9 @@ def calc_demag(mvec: NDArray, k: float, dxy: float, dz: float) -> NDArray:
     return outvec
 
 
-def save_layer(mlist: tuple[str, LithModel]) -> IO[bytes]:
+def save_layer(
+    mlist: tuple[str, LithModel],
+) -> IO[bytes]:
     """
     Routine to save the mlayer and glayer to a file.
 
@@ -959,7 +994,11 @@ def save_layer(mlist: tuple[str, LithModel]) -> IO[bytes]:
     return outfile
 
 
-def gridmatch(lmod: LithModel, ctxt: str, rtxt: str) -> NDArray:
+def gridmatch(
+    lmod: LithModel,
+    ctxt: str,
+    rtxt: str,
+) -> NDArray:
     """
     Match the rows and columns of the second grid to the first grid.
 
@@ -1695,7 +1734,11 @@ def _gbox(
     return gval
 
 
-def dircos(incl: float, decl: float, azim: float) -> tuple[float, float, float]:
+def dircos(
+    incl: float,
+    decl: float,
+    azim: float,
+) -> tuple[float, float, float]:
     """
     Compute direction cosines from inclination and declination.
 
@@ -1729,7 +1772,10 @@ def dircos(incl: float, decl: float, azim: float) -> tuple[float, float, float]:
     return aaa, bbb, ccc
 
 
-def dat_extent(dat: Data, axes: Axes) -> tuple[float, float, float, float]:
+def dat_extent(
+    dat: Data,
+    axes: Axes,
+) -> tuple[float, float, float, float]:
     """
     Get the extent of the dat variable.
 

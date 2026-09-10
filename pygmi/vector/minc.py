@@ -222,7 +222,11 @@ def minc(
 
 
 @jit(nopython=True)
-def u_normal(u: NDArray, i: int, j: int) -> float:
+def u_normal(
+    u: NDArray,
+    i: int,
+    j: int,
+) -> float:
     """
     Minimum curvature smoothing for normal cases.
 
@@ -263,7 +267,10 @@ def u_normal(u: NDArray, i: int, j: int) -> float:
 
 
 @jit(nopython=True)
-def u_edge(u: NDArray, i: int) -> float:
+def u_edge(
+    u: NDArray,
+    i: int,
+) -> float:
     """
     Minimum curvature smoothing for edges.
 
@@ -300,7 +307,10 @@ def u_edge(u: NDArray, i: int) -> float:
 
 
 @jit(nopython=True)
-def u_one_row_from_edge(u: NDArray, i: int) -> float:
+def u_one_row_from_edge(
+    u: NDArray,
+    i: int,
+) -> float:
     """
     Minimum curvature smoothing for one row from edge.
 
@@ -427,7 +437,13 @@ def u_edge_next_to_corner(u: NDArray) -> float:
     return uij
 
 
-def off_grid(u: NDArray, i: int, j: int, wn: float, b: list) -> float:
+def off_grid(
+    u: NDArray,
+    i: int,
+    j: int,
+    wn: float,
+    b: list,
+) -> float:
     """
     Node value calculation when data value is too far from node.
 
@@ -508,7 +524,10 @@ def off_grid(u: NDArray, i: int, j: int, wn: float, b: list) -> float:
 
 
 @jit(nopython=True)
-def get_b(e5: float, n5: float) -> tuple[float, float, float, float, float] | None:
+def get_b(
+    e5: float,
+    n5: float,
+) -> tuple[float, float, float, float, float] | None:
     """
     Get b values for input data.
 
@@ -552,7 +571,10 @@ def get_b(e5: float, n5: float) -> tuple[float, float, float, float, float] | No
 
 
 @jit(nopython=True)
-def mcurv(u: NDArray, ufixed: NDArray) -> NDArray:
+def mcurv(
+    u: NDArray,
+    ufixed: NDArray,
+) -> NDArray:
     """
     Minimum curvature smoothing.
 

@@ -32,18 +32,27 @@ import webbrowser
 class BrowserNotFoundException(Exception):
     """Browser not found Exception."""
 
-    def __init__(self, browser: str):
+    def __init__(
+        self,
+        browser: str,
+    ):
         super().__init__(f"Browser not found: {browser}")
 
 
 class UnknownBrowserException(Exception):
     """Unknown browser exception."""
 
-    def __init__(self, e: Exception):
+    def __init__(
+        self,
+        e: Exception,
+    ):
         super().__init__(f"Unknown webbrowser exception: {e!r}")
 
 
-def _open_in_browser(file_path: str, browser: str | None = None) -> None:
+def _open_in_browser(
+    file_path: str,
+    browser: str | None = None,
+) -> None:
     """
     Open the specified file path in a web browser.
 
@@ -77,7 +86,10 @@ def _open_in_browser(file_path: str, browser: str | None = None) -> None:
     client.open_new(file_path)
 
 
-def _handle_open_from_temp(html_string: str, browser: str | None = None) -> None:
+def _handle_open_from_temp(
+    html_string: str,
+    browser: str | None = None,
+) -> None:
     """
     Handle opening HTML content from a temporary file in a web browser.
 
@@ -110,7 +122,9 @@ def _handle_open_from_temp(html_string: str, browser: str | None = None) -> None
 
 
 def _handle_open_from_regular_file(
-    html_string: str, save_path: str, browser: str | None = None
+    html_string: str,
+    save_path: str,
+    browser: str | None = None,
 ) -> None:
     """
     Handle opening HTML content from a regular file in a web browser.
@@ -132,7 +146,9 @@ def _handle_open_from_regular_file(
 
 
 def render_in_browser(
-    html_string: str, save_path: str | None = None, browser: str | None = None
+    html_string: str,
+    save_path: str | None = None,
+    browser: str | None = None,
 ) -> None:
     """
     Render the HTML content in a web browser.

@@ -234,7 +234,9 @@ def coord_vects(ds: xr.Dataset) -> tuple[NDArray, NDArray]:
 
 
 def ortho_xr(
-    ds: xr.Dataset, GLT_NODATA_VALUE: int = 0, fill_value: int = -9999
+    ds: xr.Dataset,
+    GLT_NODATA_VALUE: int = 0,
+    fill_value: int = -9999,
 ) -> xr.Dataset:
     """
     Use `apply_glt` to create an orthorectified xarray dataset.

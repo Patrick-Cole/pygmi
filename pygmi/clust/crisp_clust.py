@@ -50,7 +50,10 @@ class CrispClust(BasicModule):
 
     """
 
-    def __init__(self, parent=None):
+    def __init__(
+        self,
+        parent=None,
+    ):
         super().__init__(parent)
         self.sb_maxclusters = QtWidgets.QSpinBox()
         self.cmb_alg = QtWidgets.QComboBox()
@@ -159,7 +162,10 @@ class CrispClust(BasicModule):
             self.sb_repeatedruns.show()
             self.lbl_6.show()
 
-    def settings(self, nodialog: bool = False) -> bool:
+    def settings(
+        self,
+        nodialog: bool = False,
+    ) -> bool:
         """
         Entry point into item.
 
@@ -571,7 +577,10 @@ def crisp_means(
 
 
 def gcentroids(
-    data: NDArray, index: NDArray, no_clust: int, mindist: NDArray
+    data: NDArray,
+    index: NDArray,
+    no_clust: int,
+    mindist: NDArray,
 ) -> tuple[NDArray, NDArray]:
     """
     G Centroids.

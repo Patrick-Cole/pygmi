@@ -71,7 +71,12 @@ class MyMplCanvas(FigureCanvasQTAgg):
         )
         FigureCanvasQTAgg.updateGeometry(self)
 
-    def update_contours(self, data1: Data, scale: float = 7, rotang: float = 10):
+    def update_contours(
+        self,
+        data1: Data,
+        scale: float = 7,
+        rotang: float = 10,
+    ):
         """
         Update the contour plot.
 
@@ -256,7 +261,10 @@ class MyMplCanvas(FigureCanvasQTAgg):
 
         self.update_atype(atype)
 
-    def update_atype(self, atype: str = "dubois"):
+    def update_atype(
+        self,
+        atype: str = "dubois",
+    ):
         """
         Update anaglyph type.
 
@@ -295,7 +303,10 @@ class PlotAnaglyph(ContextModule):
 
     """
 
-    def __init__(self, parent=None):
+    def __init__(
+        self,
+        parent=None,
+    ):
         super().__init__(parent)
 
         self.setAttribute(QtCore.Qt.WidgetAttribute.WA_DeleteOnClose)
@@ -533,7 +544,11 @@ def sunshade(
     return colormap
 
 
-def anaglyph(red: NDArray, blue: NDArray, atype: str = "dubois") -> NDArray:
+def anaglyph(
+    red: NDArray,
+    blue: NDArray,
+    atype: str = "dubois",
+) -> NDArray:
     """
     Colour Anaglyph.
 
@@ -646,7 +661,11 @@ def anaglyph(red: NDArray, blue: NDArray, atype: str = "dubois") -> NDArray:
 
 
 def rot_and_clean(
-    x: NDArray, y: NDArray, z: NDArray, rotang: float = 5, rtype: str = "red"
+    x: NDArray,
+    y: NDArray,
+    z: NDArray,
+    rotang: float = 5,
+    rtype: str = "red",
 ) -> NDArray:
     """
     Rotate and clean rotated data for 2d view.

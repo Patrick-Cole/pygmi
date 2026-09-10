@@ -71,7 +71,10 @@ from pygmi.misc import BasicModule
 class BIRRP(BasicModule):
     """Class to export config file for BIRRP."""
 
-    def __init__(self, parent=None):
+    def __init__(
+        self,
+        parent=None,
+    ):
         super().__init__(parent)
 
         self.indata = {"tmp": True}
@@ -680,7 +683,10 @@ class BIRRP(BasicModule):
             lay.labelForField(widget).hide()
             lay.takeRow(widget)
 
-    def settings(self, nodialog: bool = False) -> bool:
+    def settings(
+        self,
+        nodialog: bool = False,
+    ) -> bool:
         """
         Entry point into item.
 

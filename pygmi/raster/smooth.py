@@ -46,7 +46,10 @@ class Smooth(BasicModule):
 
     """
 
-    def __init__(self, parent=None):
+    def __init__(
+        self,
+        parent=None,
+    ):
         super().__init__(parent)
 
         self.lbl_1 = QtWidgets.QLabel("X:")
@@ -134,7 +137,10 @@ class Smooth(BasicModule):
         self.sb_radius.valueChanged.connect(self.choosefilter)
         self.sb_stddev.valueChanged.connect(self.choosefilter)
 
-    def settings(self, nodialog: bool = False) -> bool:
+    def settings(
+        self,
+        nodialog: bool = False,
+    ) -> bool:
         """
         Entry point into item.
 
@@ -307,7 +313,11 @@ class Smooth(BasicModule):
 
         self.tablewidget.resizeColumnsToContents()
 
-    def msgbox(self, title: str, message: str):
+    def msgbox(
+        self,
+        title: str,
+        message: str,
+    ):
         """
         Message box.
 
@@ -426,7 +436,11 @@ def mov_win_filt(
     return out
 
 
-def filters2d(filtertype: str, sze: list | int, *sigma: NDArray) -> NDArray:
+def filters2d(
+    filtertype: str,
+    sze: list | int,
+    *sigma: NDArray,
+) -> NDArray:
     """
     Filter 2D.
 

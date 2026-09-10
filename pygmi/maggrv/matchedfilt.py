@@ -50,7 +50,10 @@ class MatchedFilt(BasicModule):
 
     """
 
-    def __init__(self, parent=None):
+    def __init__(
+        self,
+        parent=None,
+    ):
         super().__init__(parent)
         self.data = None
         self.datapad = None
@@ -112,7 +115,10 @@ class MatchedFilt(BasicModule):
         self.cmb_band1.currentIndexChanged.connect(self.fftprep)
         pb_calculate.pressed.connect(self.calculate)
 
-    def settings(self, nodialog: bool = False) -> bool:
+    def settings(
+        self,
+        nodialog: bool = False,
+    ) -> bool:
         """
         Entry point into item.
 
@@ -276,7 +282,10 @@ class MatchedFilt(BasicModule):
 
 
 def getbutter(
-    lowcut: list[float], highcut: list[float], f: NDArray, order: int = 5
+    lowcut: list[float],
+    highcut: list[float],
+    f: NDArray,
+    order: int = 5,
 ) -> list:
     """
     Create Butterworth bandpass filter.

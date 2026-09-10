@@ -65,10 +65,16 @@ class DataCut(BasicModule):
 
     """
 
-    def __init__(self, parent=None):
+    def __init__(
+        self,
+        parent=None,
+    ):
         super().__init__(parent)
 
-    def settings(self, nodialog: bool = False) -> bool:
+    def settings(
+        self,
+        nodialog: bool = False,
+    ) -> bool:
         """
         Entry point into item.
 
@@ -161,7 +167,10 @@ class DataLayerStack(BasicModule):
 
     """
 
-    def __init__(self, parent=None):
+    def __init__(
+        self,
+        parent=None,
+    ):
         super().__init__(parent)
         self.dxy = None
         self.cb_cmask = QtWidgets.QCheckBox("Common mask for all bands")
@@ -239,7 +248,10 @@ class DataLayerStack(BasicModule):
         self.lbl_rows.setText("Rows: " + str(rows))
         self.lbl_cols.setText("Columns: " + str(cols))
 
-    def settings(self, nodialog: bool = False) -> bool:
+    def settings(
+        self,
+        nodialog: bool = False,
+    ) -> bool:
         """
         Entry point into item.
 
@@ -333,7 +345,10 @@ class DataMerge(BasicModule):
 
     """
 
-    def __init__(self, parent=None):
+    def __init__(
+        self,
+        parent=None,
+    ):
         super().__init__(parent)
         self.idir = None
         self.tmpdir = None
@@ -494,7 +509,10 @@ class DataMerge(BasicModule):
 
         return True
 
-    def settings(self, nodialog: bool = False) -> bool:
+    def settings(
+        self,
+        nodialog: bool = False,
+    ) -> bool:
         """
         Entry point into item.
 
@@ -602,7 +620,10 @@ class DataReproj(BasicModule):
 
     """
 
-    def __init__(self, parent=None):
+    def __init__(
+        self,
+        parent=None,
+    ):
         super().__init__(parent)
         self.orig_wkt = None
         self.targ_wkt = None
@@ -673,7 +694,10 @@ class DataReproj(BasicModule):
         self.targ_wkt = self.out_proj.wkt
         self.outdata["Raster"] = dat
 
-    def settings(self, nodialog: bool = False) -> bool:
+    def settings(
+        self,
+        nodialog: bool = False,
+    ) -> bool:
         """
         Entry point into item.
 
@@ -734,10 +758,16 @@ class GetProf(BasicModule):
 
     """
 
-    def __init__(self, parent=None):
+    def __init__(
+        self,
+        parent=None,
+    ):
         super().__init__(parent)
 
-    def settings(self, nodialog: bool = False) -> bool:
+    def settings(
+        self,
+        nodialog: bool = False,
+    ) -> bool:
         """
         Entry point into item.
 
@@ -841,7 +871,10 @@ class Metadata(ContextModule):
         dictionary of strings containing band names.
     """
 
-    def __init__(self, parent=None):
+    def __init__(
+        self,
+        parent=None,
+    ):
         super().__init__(parent)
         self.banddata = {}
         self.dataid = {}
@@ -1107,7 +1140,10 @@ class RasterToVector(BasicModule):
 
     """
 
-    def __init__(self, parent=None):
+    def __init__(
+        self,
+        parent=None,
+    ):
         super().__init__(parent)
 
         self.setupui()
@@ -1122,7 +1158,10 @@ class RasterToVector(BasicModule):
 
         gl_main.addWidget(self.buttonbox, 4, 0, 1, 2)
 
-    def settings(self, nodialog: bool = False) -> bool:
+    def settings(
+        self,
+        nodialog: bool = False,
+    ) -> bool:
         """
         Entry point into item.
 
@@ -1192,7 +1231,10 @@ class RasterToVectorBoundary(BasicModule):
 
     """
 
-    def __init__(self, parent=None):
+    def __init__(
+        self,
+        parent=None,
+    ):
         super().__init__(parent)
 
         self.setupui()
@@ -1207,7 +1249,10 @@ class RasterToVectorBoundary(BasicModule):
 
         gl_main.addWidget(self.buttonbox, 4, 0, 1, 2)
 
-    def settings(self, nodialog: bool = False) -> bool:
+    def settings(
+        self,
+        nodialog: bool = False,
+    ) -> bool:
         """
         Entry point into item.
 
@@ -1285,7 +1330,9 @@ def cluster_to_raster(indata: dict) -> dict:
 
 
 def get_shape_bounds(
-    sfile: str, crs: int | str | CRS | None = None, showlog: Callable[..., None] = print
+    sfile: str,
+    crs: int | str | CRS | None = None,
+    showlog: Callable[..., None] = print,
 ) -> tuple[float, float, float, float] | None:
     """
     Get bounds from a shape file.
@@ -1427,7 +1474,10 @@ def merge_median_first(
     merged_data[:] = tmp1
 
 
-def merge_order(ifiles: list[str], igeoms: list[BaseGeometry]) -> list[str]:
+def merge_order(
+    ifiles: list[str],
+    igeoms: list[BaseGeometry],
+) -> list[str]:
     """
     Sort data in an order which ensures overlaps.
 
@@ -1809,7 +1859,10 @@ def mosaic(
     return outdat
 
 
-def redistribute_vertices(geom: BaseGeometry, distance: float) -> BaseGeometry:
+def redistribute_vertices(
+    geom: BaseGeometry,
+    distance: float,
+) -> BaseGeometry:
     """
     Redistribute vertices in a geometry.
 

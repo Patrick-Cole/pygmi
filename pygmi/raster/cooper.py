@@ -60,7 +60,10 @@ class Gradients(BasicModule):
         Order of DR filter - see paper. Try 1 first.
     """
 
-    def __init__(self, parent=None):
+    def __init__(
+        self,
+        parent=None,
+    ):
         super().__init__(parent)
         self.azi = 45
         self.order = 1
@@ -109,7 +112,10 @@ class Gradients(BasicModule):
         self.rb_vgrad.clicked.connect(self.radiochange)
         self.rb_thg.clicked.connect(self.radiochange)
 
-    def settings(self, nodialog: bool = False) -> bool:
+    def settings(
+        self,
+        nodialog: bool = False,
+    ) -> bool:
         """
         Entry point into item.
 
@@ -195,7 +201,12 @@ class Gradients(BasicModule):
             self.lbl_az.show()
 
 
-def gradients(data: NDArray, azi: float, xint: float, yint: float) -> float:
+def gradients(
+    data: NDArray,
+    azi: float,
+    xint: float,
+    yint: float,
+) -> float:
     """
     Gradients.
 
@@ -224,7 +235,11 @@ def gradients(data: NDArray, azi: float, xint: float, yint: float) -> float:
     return dt1
 
 
-def thgrad(data: NDArray, xint: float, yint: float) -> float:
+def thgrad(
+    data: NDArray,
+    xint: float,
+    yint: float,
+) -> float:
     """
     Gradients.
 
@@ -250,7 +265,11 @@ def thgrad(data: NDArray, xint: float, yint: float) -> float:
     return dt1
 
 
-def derivative_ratio(data: NDArray, azi: float, order: float) -> float:
+def derivative_ratio(
+    data: NDArray,
+    azi: float,
+    order: float,
+) -> float:
     """
     Compute derivative ratio of image data. Based on code by Gordon Cooper.
 
@@ -300,7 +319,10 @@ class Visibility2d(BasicModule):
         height of observer above surface
     """
 
-    def __init__(self, parent=None):
+    def __init__(
+        self,
+        parent=None,
+    ):
         super().__init__(parent)
         self.wsize = 11
         self.dh = 10
@@ -335,7 +357,10 @@ class Visibility2d(BasicModule):
         gl_1.addWidget(self.sb_dh, 1, 1, 1, 1)
         gl_1.addWidget(self.buttonbox, 2, 0, 1, 2)
 
-    def settings(self, nodialog: bool = False) -> bool:
+    def settings(
+        self,
+        nodialog: bool = False,
+    ) -> bool:
         """
         Entry point into item.
 
@@ -408,7 +433,10 @@ class Visibility2d(BasicModule):
 
 
 def visibility2d(
-    idata: np.ma.MaskedArray, wsize: int, dh: float, piter: Iterable = iter
+    idata: np.ma.MaskedArray,
+    wsize: int,
+    dh: float,
+    piter: Iterable = iter,
 ) -> tuple[np.ma.MaskedArray, np.ma.MaskedArray, np.ma.MaskedArray]:
     """
     Compute visibility as a textural measure.
@@ -520,7 +548,11 @@ def visibility2d(
 
 
 @jit(nopython=True)
-def visibilitytot(data: NDArray, wsize: int, dh: float) -> NDArray:
+def visibilitytot(
+    data: NDArray,
+    wsize: int,
+    dh: float,
+) -> NDArray:
     """
     Compute visibility as a textural measure.
 
@@ -578,7 +610,12 @@ def visibilitytot(data: NDArray, wsize: int, dh: float) -> NDArray:
 
 
 @jit(nopython=True, fastmath=True)
-def __visible1(dat: NDArray, nr: int, cp: int, dh: float) -> int:
+def __visible1(
+    dat: NDArray,
+    nr: int,
+    cp: int,
+    dh: float,
+) -> int:
     """
     Visible 1.
 
@@ -615,7 +652,11 @@ def __visible1(dat: NDArray, nr: int, cp: int, dh: float) -> int:
 
 
 @jit(nopython=True, fastmath=True)
-def __visible2(dat: NDArray, cp: int, dh: float) -> int:
+def __visible2(
+    dat: NDArray,
+    cp: int,
+    dh: float,
+) -> int:
     """
     Visible 2.
 
@@ -682,7 +723,10 @@ class AGC(BasicModule):
         window size, must be odd
     """
 
-    def __init__(self, parent=None):
+    def __init__(
+        self,
+        parent=None,
+    ):
         super().__init__(parent)
         self.wsize = 11
 
@@ -717,7 +761,10 @@ class AGC(BasicModule):
         gl_1.addWidget(self.sb_wsize, 3, 1, 1, 1)
         gl_1.addWidget(self.buttonbox, 4, 0, 1, 2)
 
-    def settings(self, nodialog: bool = False) -> bool:
+    def settings(
+        self,
+        nodialog: bool = False,
+    ) -> bool:
         """
         Entry point into item.
 

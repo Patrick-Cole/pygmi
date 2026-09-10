@@ -84,7 +84,10 @@ class IGRF(BasicModule):
 
     """
 
-    def __init__(self, parent=None):
+    def __init__(
+        self,
+        parent=None,
+    ):
         super().__init__(parent)
         self.wkt = None
 
@@ -121,7 +124,10 @@ class IGRF(BasicModule):
         gl_1.addWidget(self.cmb_mag, 5, 1, 1, 1)
         gl_1.addWidget(self.buttonbox, 6, 0, 1, 2)
 
-    def settings(self, nodialog: bool = False) -> bool:
+    def settings(
+        self,
+        nodialog: bool = False,
+    ) -> bool:
         """
         Entry point into item.
 
@@ -461,7 +467,12 @@ def calc_igrf(
 
 
 def getshc(
-    file: list, iflag: int, strec: int, nmax_of_gh: int, igh: int, gh: NDArray
+    file: list,
+    iflag: int,
+    strec: int,
+    nmax_of_gh: int,
+    igh: int,
+    gh: NDArray,
 ) -> NDArray:
     """
     Read spherical harmonic coefficients from the specified model.
@@ -523,7 +534,12 @@ def getshc(
 
 @jit(nopython=True)
 def extrapsh(
-    date: float, dte1: float, nmax1: int, nmax2: int, igh: int, gh: NDArray
+    date: float,
+    dte1: float,
+    nmax1: int,
+    nmax2: int,
+    igh: int,
+    gh: NDArray,
 ) -> tuple[int, NDArray]:
     """
     Extrapolate a spherical harmonic model.
@@ -588,7 +604,13 @@ def extrapsh(
 
 @jit(nopython=True)
 def interpsh(
-    date: float, dte1: float, nmax1: int, dte2: float, nmax2: int, igh: int, gh: NDArray
+    date: float,
+    dte1: float,
+    nmax1: int,
+    dte2: float,
+    nmax2: int,
+    igh: int,
+    gh: NDArray,
 ) -> tuple[int, NDArray]:
     """
     Temporal Interpolation between two spherical harmonic models.
@@ -657,7 +679,13 @@ def interpsh(
 
 @jit(nopython=True)
 def shval3(
-    igdgc: int, flat: float, flon: float, elev: float, nmax: int, igh: int, gh: NDArray
+    igdgc: int,
+    flat: float,
+    flon: float,
+    elev: float,
+    nmax: int,
+    igh: int,
+    gh: NDArray,
 ) -> tuple[float, float, float]:
     """
     Calculate field components from spherical harmonic (sh) models.
@@ -828,7 +856,11 @@ def shval3(
 
 
 @jit(nopython=True)
-def dihf(x: float, y: float, z: float) -> tuple[float, float, float, float]:
+def dihf(
+    x: float,
+    y: float,
+    z: float,
+) -> tuple[float, float, float, float]:
     """
     Compute the geomagnetic d, i, h, and f from x, y, and z.
 

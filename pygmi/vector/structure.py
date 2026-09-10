@@ -51,7 +51,10 @@ class StructComp(BasicModule):
 
     """
 
-    def __init__(self, parent=None):
+    def __init__(
+        self,
+        parent=None,
+    ):
         super().__init__(parent)
 
         self.le_dxy = QtWidgets.QLineEdit("500.0")
@@ -128,7 +131,10 @@ class StructComp(BasicModule):
             self.lbl_wsize.show()
             self.le_wsize.show()
 
-    def settings(self, nodialog: bool = False) -> bool:
+    def settings(
+        self,
+        nodialog: bool = False,
+    ) -> bool:
         """
         Entry point into item.
 
@@ -229,7 +235,9 @@ class StructComp(BasicModule):
 
 
 def extendlines(
-    gdf: gpd.GeoDataFrame, length: float = 500.0, piter: Iterable = iter
+    gdf: gpd.GeoDataFrame,
+    length: float = 500.0,
+    piter: Iterable = iter,
 ) -> gpd.GeoDataFrame:
     """
     Extent lines from GeoPandas dataframe.
@@ -416,7 +424,10 @@ def feature_orientation_diversity(
 
 
 def feature_circular_stats(
-    gdf: gpd.GeoDataFrame, dxy: float, wsize: int = 3, piter: Iterable = iter
+    gdf: gpd.GeoDataFrame,
+    dxy: float,
+    wsize: int = 3,
+    piter: Iterable = iter,
 ) -> tuple[Data, Data]:
     """
     Feature circular variance.
@@ -504,7 +515,10 @@ def feature_circular_stats(
 
 
 def feature_fracdim(
-    gdf: gpd.GeoDataFrame, dxy: float, wsize: int = 21, piter: Iterable = iter
+    gdf: gpd.GeoDataFrame,
+    dxy: float,
+    wsize: int = 21,
+    piter: Iterable = iter,
 ) -> Data:
     """
     Feature fractal dimension.
@@ -662,7 +676,8 @@ def linesplit(curve: LineString) -> list:
 
 
 def segments_to_angles(
-    gdf: gpd.GeoDataFrame, piter: Iterable = iter
+    gdf: gpd.GeoDataFrame,
+    piter: Iterable = iter,
 ) -> gpd.GeoDataFrame:
     """
     Get line segment angles.

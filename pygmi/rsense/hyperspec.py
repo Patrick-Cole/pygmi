@@ -237,7 +237,10 @@ class AnalSpec(BasicModule):
 
     """
 
-    def __init__(self, parent=None):
+    def __init__(
+        self,
+        parent=None,
+    ):
         super().__init__(parent)
 
         self.filename = ""
@@ -302,7 +305,10 @@ class AnalSpec(BasicModule):
         self.lw_speclib.currentRowChanged.connect(self.disp_splib)
         self.cmb_1.currentIndexChanged.connect(self.on_combo)
 
-    def button_press_callback(self, event: MouseEvent):
+    def button_press_callback(
+        self,
+        event: MouseEvent,
+    ):
         """
         Button press callback.
 
@@ -345,7 +351,11 @@ class AnalSpec(BasicModule):
         self.map.remhull = self.cb_hull.isChecked()
         self.map.update_graph()
 
-    def load_splib(self, checked: bool = False, nofile: bool = True):
+    def load_splib(
+        self,
+        checked: bool = False,
+        nofile: bool = True,
+    ):
         """
         Load ENVI spectral library data.
 
@@ -402,7 +412,10 @@ class AnalSpec(BasicModule):
         self.map.overlay = self.cb_overlay.isChecked()
         self.map.update_graph()
 
-    def settings(self, nodialog: bool = False) -> bool:
+    def settings(
+        self,
+        nodialog: bool = False,
+    ) -> bool:
         """
         Entry point into item.
 
@@ -543,7 +556,10 @@ class ProcFeatures(BasicModule):
 
     """
 
-    def __init__(self, parent=None):
+    def __init__(
+        self,
+        parent=None,
+    ):
         super().__init__(parent)
 
         self.product = {}
@@ -656,7 +672,10 @@ class ProcFeatures(BasicModule):
 
         self.tablewidget.resizeColumnsToContents()
 
-    def settings(self, nodialog: bool = False) -> bool:
+    def settings(
+        self,
+        nodialog: bool = False,
+    ) -> bool:
         """
         Entry point into item.
 
@@ -1045,7 +1064,8 @@ def calcfeatures(
 
 
 def indexcalc(
-    formula: str, dat: dict[str, NDArray | np.ma.MaskedArray]
+    formula: str,
+    dat: dict[str, NDArray | np.ma.MaskedArray],
 ) -> NDArray | np.ma.MaskedArray:
     """
     Calculate an index using numexpr.
@@ -1143,7 +1163,11 @@ def fproc(
 
 
 @njit
-def cubic_calc(xdat: NDArray, crem: NDArray, imin: int) -> tuple[float, float]:
+def cubic_calc(
+    xdat: NDArray,
+    crem: NDArray,
+    imin: int,
+) -> tuple[float, float]:
     """
     Find minimum of function using an analytic cubic calculation for speed.
 

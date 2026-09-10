@@ -49,7 +49,10 @@ rcParams["savefig.dpi"] = 300
 class CanvasModule(FigureCanvasQTAgg):
     """Canvas Module."""
 
-    def __init__(self, parent=None):
+    def __init__(
+        self,
+        parent=None,
+    ):
 
         if parent is None:
             self.showlog = print
@@ -67,7 +70,10 @@ class CanvasModule(FigureCanvasQTAgg):
 
         self._pending_size = None
 
-    def resizeEvent(self, event):
+    def resizeEvent(
+        self,
+        event,
+    ):
         """
         Override Qt's default resize event to suppress immediate rendering.
 
@@ -98,7 +104,10 @@ class CanvasModule(FigureCanvasQTAgg):
 
 
 def discrete_colorbar(
-    axes: Axes, csp, cdat: np.ma.MaskedArray | NDArray, lbls: list[str] | None = None
+    axes: Axes,
+    csp,
+    cdat: np.ma.MaskedArray | NDArray,
+    lbls: list[str] | None = None,
 ):
     """
     Plot colour bar using discrete colours for a small range of values.
@@ -140,7 +149,10 @@ def discrete_colorbar(
 
 
 def get_neat_intervals(
-    start_dd: float, end_dd: float, num_intervals: int, islon: bool = True
+    start_dd: float,
+    end_dd: float,
+    num_intervals: int,
+    islon: bool = True,
 ) -> tuple[NDArray, list[str]]:
     """
     Divides a decimal degree range into neat minute/degree intervals.
@@ -222,7 +234,10 @@ def get_neat_intervals(
     return intervals, txt
 
 
-def set_axes(ax: Axes, crs: CRS):
+def set_axes(
+    ax: Axes,
+    crs: CRS,
+):
     """
     Set the axes.
 
@@ -292,7 +307,11 @@ def set_axes(ax: Axes, crs: CRS):
         ax.tick_params(axis="y", labelrotation=90, labelsize=9)
 
 
-def set_northscale(ax: Axes, crs: CRS, showlog: Callable[..., None] = print):
+def set_northscale(
+    ax: Axes,
+    crs: CRS,
+    showlog: Callable[..., None] = print,
+):
     """
     Set the north arrow and the scale bar.
 
@@ -346,7 +365,10 @@ def set_northscale(ax: Axes, crs: CRS, showlog: Callable[..., None] = print):
         )
 
 
-def tick_formatter(x: float, pos: int) -> str:
+def tick_formatter(
+    x: float,
+    pos: int,
+) -> str:
     """
     Format thousands separator in ticks for plots.
 

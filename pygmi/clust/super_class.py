@@ -65,7 +65,10 @@ class GraphMap(FigureCanvasQTAgg):
 
     """
 
-    def __init__(self, parent=None):
+    def __init__(
+        self,
+        parent=None,
+    ):
         self.figure = Figure()
         self.ax1 = self.figure.add_subplot(111)
 
@@ -78,7 +81,10 @@ class GraphMap(FigureCanvasQTAgg):
         self.bands = [0, 1, 2]
         self.manip = "RGB Ternary"
 
-    def polyint(self, dat: dict):
+    def polyint(
+        self,
+        dat: dict,
+    ):
         """
         Polygon integrator.
 
@@ -101,7 +107,10 @@ class GraphMap(FigureCanvasQTAgg):
         pntxy = np.transpose([xmesh, ymesh])
         self.polyi = PolygonInteractor(self.ax1, pntxy)
 
-    def compute_initial_figure(self, dat: dict):
+    def compute_initial_figure(
+        self,
+        dat: dict,
+    ):
         """
         Compute initial figure.
 
@@ -166,7 +175,10 @@ class GraphMap(FigureCanvasQTAgg):
         self.ax1.tick_params(axis="x", rotation=90)
         self.ax1.tick_params(axis="y", rotation=0)
 
-    def update_plot(self, dat: dict):
+    def update_plot(
+        self,
+        dat: dict,
+    ):
         """
         Update plot.
 
@@ -225,7 +237,10 @@ class GraphMap(FigureCanvasQTAgg):
         self.ax1.tick_params(axis="y", rotation=0)
         self.figure.canvas.draw()
 
-    def update_class(self, dat: np.ma.MaskedArray):
+    def update_class(
+        self,
+        dat: np.ma.MaskedArray,
+    ):
         """
         Update plot.
 
@@ -279,7 +294,11 @@ class PolygonInteractor(QtCore.QObject):
     epsilon = 5
     polyi_changed = QtCore.Signal(list)  #: polygon changed signal.
 
-    def __init__(self, axtmp: Axes, pntxy: NDArray):
+    def __init__(
+        self,
+        axtmp: Axes,
+        pntxy: NDArray,
+    ):
         super().__init__()
         self.ax = axtmp
         self.poly = mPolygon([(1, 1)], animated=True)
@@ -304,7 +323,10 @@ class PolygonInteractor(QtCore.QObject):
         self.canvas.mpl_connect("button_release_event", self.button_release_callback)
         self.canvas.mpl_connect("motion_notify_event", self.motion_notify_callback)
 
-    def draw_callback(self, event: DrawEvent | None = None):
+    def draw_callback(
+        self,
+        event: DrawEvent | None = None,
+    ):
         """
         Draw callback.
 
@@ -322,7 +344,10 @@ class PolygonInteractor(QtCore.QObject):
         self.ax.draw_artist(self.poly)
         self.ax.draw_artist(self.line)
 
-    def new_poly(self, npoly: list | None = None):
+    def new_poly(
+        self,
+        npoly: list | None = None,
+    ):
         """
         Create new polygon.
 
@@ -340,7 +365,10 @@ class PolygonInteractor(QtCore.QObject):
         self.update_plots()
         self.canvas.draw()
 
-    def get_ind_under_point(self, event: MouseEvent) -> int | None:
+    def get_ind_under_point(
+        self,
+        event: MouseEvent,
+    ) -> int | None:
         """
         Get the index of vertex under point if within epsilon tolerance.
 
@@ -368,7 +396,10 @@ class PolygonInteractor(QtCore.QObject):
 
         return ind
 
-    def button_press_callback(self, event: MouseEvent):
+    def button_press_callback(
+        self,
+        event: MouseEvent,
+    ):
         """
         Button press callback.
 
@@ -433,7 +464,10 @@ class PolygonInteractor(QtCore.QObject):
             self.ax.draw_artist(self.line)
             self.canvas.blit(self.ax.bbox)
 
-    def button_release_callback(self, event: MouseEvent):
+    def button_release_callback(
+        self,
+        event: MouseEvent,
+    ):
         """
         Button release callback.
 
@@ -456,7 +490,10 @@ class PolygonInteractor(QtCore.QObject):
             return
         self.polyi_changed.emit(self.poly.xy.tolist())
 
-    def motion_notify_callback(self, event: MouseEvent):
+    def motion_notify_callback(
+        self,
+        event: MouseEvent,
+    ):
         """
         Motion notify on mouse movement.
 
@@ -497,7 +534,10 @@ class SuperClass(BasicModule):
 
     """
 
-    def __init__(self, parent=None):
+    def __init__(
+        self,
+        parent=None,
+    ):
         super().__init__(parent)
         self.m1 = 0
         self.c = [0, 1, 0]
@@ -737,7 +777,10 @@ class SuperClass(BasicModule):
 
                 df.to_excel(filename)
 
-    def updatepoly(self, xycoords: NDArray | None = None):
+    def updatepoly(
+        self,
+        xycoords: NDArray | None = None,
+    ):
         """
         Update polygon.
 
@@ -759,7 +802,11 @@ class SuperClass(BasicModule):
         else:
             self.df.loc[row, "geometry"] = Polygon(xycoords)
 
-    def oncellchange(self, row: int, col: int):
+    def oncellchange(
+        self,
+        row: int,
+        col: int,
+    ):
         """
         Routine activated whenever a cell is changed.
 
@@ -777,7 +824,9 @@ class SuperClass(BasicModule):
         self.df.loc[row, "class"] = self.tablewidget.item(row, 0).text()
 
     def onrowchange(
-        self, current: QtWidgets.QTableWidgetItem, previous: QtWidgets.QTableWidgetItem
+        self,
+        current: QtWidgets.QTableWidgetItem,
+        previous: QtWidgets.QTableWidgetItem,
     ):
         """
         Routine activated whenever a row is changed.
@@ -931,7 +980,10 @@ class SuperClass(BasicModule):
         self.df.to_file(filename)
         return True
 
-    def settings(self, nodialog: bool = False) -> bool:
+    def settings(
+        self,
+        nodialog: bool = False,
+    ) -> bool:
         """
         Entry point into item.
 
@@ -1167,7 +1219,11 @@ class SuperClass(BasicModule):
         self.map.figure.canvas.draw()
 
 
-def dist_point_to_segment(p: NDArray, s0: NDArray, s1: NDArray) -> NDArray | float:
+def dist_point_to_segment(
+    p: NDArray,
+    s0: NDArray,
+    s1: NDArray,
+) -> NDArray | float:
     """
     Dist point to segment.
 

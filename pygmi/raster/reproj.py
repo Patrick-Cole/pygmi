@@ -299,7 +299,10 @@ def getepsgcodes() -> dict:
     return pcodes
 
 
-def transform_exists(crs_from_id: str | int | CRS, crs_to_id: str | int | CRS) -> bool:
+def transform_exists(
+    crs_from_id: str | int | CRS,
+    crs_to_id: str | int | CRS,
+) -> bool:
     """
     Check if transform exists.
 

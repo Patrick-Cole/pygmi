@@ -49,7 +49,10 @@ class FileMenu:
 
     """
 
-    def __init__(self, parent=None):
+    def __init__(
+        self,
+        parent=None,
+    ):
 
         self.parent = parent
 
@@ -82,7 +85,10 @@ class HelpMenu:
 
     """
 
-    def __init__(self, parent=None):
+    def __init__(
+        self,
+        parent=None,
+    ):
 
         self.parent = parent
         self.webpage = r"http://patrick-cole.github.io/pygmi/"
@@ -156,7 +162,10 @@ class HelpButton(QtWidgets.QPushButton):
         HTML help file name.
     """
 
-    def __init__(self, htmlfile: str | None = None):
+    def __init__(
+        self,
+        htmlfile: str | None = None,
+    ):
         super().__init__()
 
         self.htmlfile = htmlfile

@@ -53,7 +53,10 @@ class Cluster(BasicModule):
 
     """
 
-    def __init__(self, parent=None):
+    def __init__(
+        self,
+        parent=None,
+    ):
         super().__init__(parent)
         self.cmb_alg = QtWidgets.QComboBox()
         self.sb_branchfac = QtWidgets.QSpinBox()
@@ -217,7 +220,10 @@ class Cluster(BasicModule):
             self.lbl_bthres.show()
             self.dsb_bthres.show()
 
-    def settings(self, nodialog: bool = False) -> bool:
+    def settings(
+        self,
+        nodialog: bool = False,
+    ) -> bool:
         """
         Entry point into item.
 

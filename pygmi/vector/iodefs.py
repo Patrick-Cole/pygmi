@@ -55,7 +55,10 @@ class ColumnSelect(BasicModule):
 
     """
 
-    def __init__(self, parent=None):
+    def __init__(
+        self,
+        parent=None,
+    ):
         super().__init__(parent)
         self.setWindowTitle("Column Selection")
 
@@ -72,7 +75,10 @@ class ColumnSelect(BasicModule):
         self.buttonbox.htmlfile = "vector.dm.colsel"
         vbl.addWidget(self.buttonbox)
 
-    def settings(self, nodialog: bool = False) -> bool:
+    def settings(
+        self,
+        nodialog: bool = False,
+    ) -> bool:
         """
         Entry point into item.
 
@@ -167,7 +173,10 @@ class ImportVector(BasicModule):
 
     """
 
-    def __init__(self, parent=None):
+    def __init__(
+        self,
+        parent=None,
+    ):
         super().__init__(parent)
         self.is_import = True
         self.crs = None
@@ -228,7 +237,10 @@ class ImportVector(BasicModule):
         pb_sfile.pressed.connect(self.get_sfile)
         self.cmb_bounds.currentIndexChanged.connect(self.change_bounds)
 
-    def settings(self, nodialog: bool = False) -> bool:
+    def settings(
+        self,
+        nodialog: bool = False,
+    ) -> bool:
         """
         Entry point into item.
 
@@ -394,7 +406,10 @@ class ImportVector(BasicModule):
 
         return True
 
-    def set_bounds(self, bounds: tuple | list | NDArray):
+    def set_bounds(
+        self,
+        bounds: tuple | list | NDArray,
+    ):
         """
         Set the bounds.
 
@@ -438,7 +453,10 @@ class ImportXYZ(BasicModule):
 
     """
 
-    def __init__(self, parent=None):
+    def __init__(
+        self,
+        parent=None,
+    ):
         super().__init__(parent)
         self.filt = ""
         self.is_import = True
@@ -478,7 +496,10 @@ class ImportXYZ(BasicModule):
 
         gl_main.addWidget(self.proj, 3, 0, 1, 4)
 
-    def settings(self, nodialog: bool = False) -> bool:
+    def settings(
+        self,
+        nodialog: bool = False,
+    ) -> bool:
         """
         Entry point into item.
 
@@ -662,7 +683,10 @@ class ImportXYZ(BasicModule):
 
         return df
 
-    def get_delimited(self, delimiter: str = ",") -> pd.DataFrame | None:
+    def get_delimited(
+        self,
+        delimiter: str = ",",
+    ) -> pd.DataFrame | None:
         """
         Get a delimited file.
 
@@ -721,12 +745,18 @@ class ImportVoxel(ContextModule):
 
     """
 
-    def __init__(self, parent=None):
+    def __init__(
+        self,
+        parent=None,
+    ):
         super().__init__(parent)
         self.filt = ""
         self.is_import = True
 
-    def settings(self, nodialog: bool = False) -> bool:
+    def settings(
+        self,
+        nodialog: bool = False,
+    ) -> bool:
         """
         Entry point into item.
 
@@ -778,7 +808,10 @@ class ExportXYZ(ContextModule):
 
     """
 
-    def __init__(self, parent=None):
+    def __init__(
+        self,
+        parent=None,
+    ):
         super().__init__(parent)
 
     def run(self) -> bool:
@@ -863,7 +896,10 @@ class ExportVector(ContextModule):
 
     """
 
-    def __init__(self, parent=None):
+    def __init__(
+        self,
+        parent=None,
+    ):
         super().__init__(parent)
 
     def run(self) -> bool:
@@ -947,7 +983,10 @@ class ExportVoxel(ContextModule):
 
     """
 
-    def __init__(self, parent=None):
+    def __init__(
+        self,
+        parent=None,
+    ):
         super().__init__(parent)
 
     def run(self) -> bool:
@@ -1043,7 +1082,10 @@ def import_ubc(ifile: str) -> VoxModel:
     return vdat
 
 
-def export_ubc(ofile: str, data: VoxModel):
+def export_ubc(
+    ofile: str,
+    data: VoxModel,
+):
     """
     Export a section to a 3D UBC mesh and model.
 
@@ -1076,7 +1118,9 @@ def export_ubc(ofile: str, data: VoxModel):
 
 
 def get_GXYZ(
-    ifile: str, showlog: Callable[..., None] = print, piter: Iterable = iter
+    ifile: str,
+    showlog: Callable[..., None] = print,
+    piter: Iterable = iter,
 ) -> pd.DataFrame | None:
     """
     Get Geosoft XYZ.
@@ -1174,7 +1218,9 @@ def get_GXYZ(
 
 
 def get_intrepid(
-    ifile: str, showlog: Callable[..., None] = print, piter: Iterable = iter
+    ifile: str,
+    showlog: Callable[..., None] = print,
+    piter: Iterable = iter,
 ) -> pd.DataFrame | None:
     """
     Get Intrepid Database.

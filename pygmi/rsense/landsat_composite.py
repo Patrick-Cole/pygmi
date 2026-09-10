@@ -53,7 +53,10 @@ class LandsatComposite(BasicModule):
         Input directory.
     """
 
-    def __init__(self, parent=None):
+    def __init__(
+        self,
+        parent=None,
+    ):
         super().__init__(parent)
 
         self.idir = ""
@@ -86,7 +89,10 @@ class LandsatComposite(BasicModule):
 
         pb_idirlist.pressed.connect(self.get_idir)
 
-    def settings(self, nodialog: bool = False) -> bool:
+    def settings(
+        self,
+        nodialog: bool = False,
+    ) -> bool:
         """
         Entry point into item.
 

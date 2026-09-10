@@ -48,7 +48,10 @@ class Normalisation(BasicModule):
 
     """
 
-    def __init__(self, parent=None):
+    def __init__(
+        self,
+        parent=None,
+    ):
         super().__init__(parent)
 
         self.rb_interval = QtWidgets.QRadioButton("Interval [0 1]")
@@ -81,7 +84,10 @@ class Normalisation(BasicModule):
 
         self.setWindowTitle("Normalisation")
 
-    def settings(self, nodialog: bool = False) -> bool:
+    def settings(
+        self,
+        nodialog: bool = False,
+    ) -> bool:
         """
         Entry point into item.
 
@@ -136,7 +142,11 @@ class Normalisation(BasicModule):
         self.saveobj(self.rb_8bit)
 
 
-def datacommon(data: Data, tmp1: float, tmp2: float) -> tuple[Data, NDArray]:
+def datacommon(
+    data: Data,
+    tmp1: float,
+    tmp2: float,
+) -> tuple[Data, NDArray]:
     """
     Variables used in the process routine.
 
@@ -173,7 +183,10 @@ def datacommon(data: Data, tmp1: float, tmp2: float) -> tuple[Data, NDArray]:
     return data, transform
 
 
-def norm(data: list[Data], ntype: str) -> list[Data]:
+def norm(
+    data: list[Data],
+    ntype: str,
+) -> list[Data]:
     """
     Normalise data.
 

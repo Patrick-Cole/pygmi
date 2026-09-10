@@ -57,7 +57,10 @@ class MyMplCanvas(FigureCanvasQTAgg):
         Reference to the parent routine. The default is None.
     """
 
-    def __init__(self, parent=None):
+    def __init__(
+        self,
+        parent=None,
+    ):
         fig = Figure()
         super().__init__(fig)
         if parent is None:
@@ -142,7 +145,10 @@ class BeachBall(BasicModule):
 
     """
 
-    def __init__(self, parent=None):
+    def __init__(
+        self,
+        parent=None,
+    ):
         super().__init__(parent)
 
         self.algorithm = "FPFIT"
@@ -369,7 +375,10 @@ class BeachBall(BasicModule):
         self.mmc.pwidth = self.dsb_dist.value()
         self.mmc.init_graph()
 
-    def settings(self, nodialog: bool = False) -> bool:
+    def settings(
+        self,
+        nodialog: bool = False,
+    ) -> bool:
         """
         Entry point into item.
 
@@ -599,7 +608,10 @@ def beachball(
     return X, Y, xx, yy
 
 
-def pol2cart(phi: NDArray, rho: NDArray) -> tuple[NDArray, NDArray]:
+def pol2cart(
+    phi: NDArray,
+    rho: NDArray,
+) -> tuple[NDArray, NDArray]:
     """
     Polar to cartesian coordinates.
 
@@ -623,7 +635,11 @@ def pol2cart(phi: NDArray, rho: NDArray) -> tuple[NDArray, NDArray]:
     return xxx, yyy
 
 
-def auxplane(s1: NDArray, d1: NDArray, r1: NDArray) -> tuple[NDArray, NDArray, NDArray]:
+def auxplane(
+    s1: NDArray,
+    d1: NDArray,
+    r1: NDArray,
+) -> tuple[NDArray, NDArray, NDArray]:
     """
     Get Strike and dip of second plane.
 
@@ -678,7 +694,11 @@ def auxplane(s1: NDArray, d1: NDArray, r1: NDArray) -> tuple[NDArray, NDArray, N
     return strike, dip, rake
 
 
-def strikedip(n: NDArray, e: NDArray, u: NDArray) -> tuple[NDArray, NDArray]:
+def strikedip(
+    n: NDArray,
+    e: NDArray,
+    u: NDArray,
+) -> tuple[NDArray, NDArray]:
     """
     Find strike and dip of plane given normal vector.
 
@@ -721,7 +741,12 @@ def strikedip(n: NDArray, e: NDArray, u: NDArray) -> tuple[NDArray, NDArray]:
 
 
 def mij2sdr(
-    mxx: float, myy: float, mzz: float, mxy: float, mxz: float, myz: float
+    mxx: float,
+    myy: float,
+    mzz: float,
+    mxy: float,
+    mxz: float,
+    myz: float,
 ) -> tuple[float, float, float]:
     """
     Adapted from code, mij2d.f, created by Chen Ji.
@@ -784,7 +809,10 @@ def mij2sdr(
     return strike, dip, rake
 
 
-def TDL(AN: NDArray, BN: NDArray) -> tuple[float, float, float] | None:
+def TDL(
+    AN: NDArray,
+    BN: NDArray,
+) -> tuple[float, float, float] | None:
     """
     TDL.
 

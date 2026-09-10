@@ -43,7 +43,10 @@ class MergeLith(QtWidgets.QDialog):
 
     """
 
-    def __init__(self, parent=None):
+    def __init__(
+        self,
+        parent=None,
+    ):
         super().__init__(parent)
 
         self.lw_lithmaster = QtWidgets.QListWidget()
@@ -93,7 +96,10 @@ class LithNotes(QtWidgets.QDialog):
 
     """
 
-    def __init__(self, parent=None):
+    def __init__(
+        self,
+        parent=None,
+    ):
         super().__init__(parent)
 
         self.parent = parent
@@ -206,7 +212,10 @@ class ParamDisplay(QtWidgets.QDialog):
 
     """
 
-    def __init__(self, parent=None):
+    def __init__(
+        self,
+        parent=None,
+    ):
         super().__init__(parent)
 
         self.parent = parent
@@ -399,7 +408,12 @@ class ParamDisplay(QtWidgets.QDialog):
         buttonbox.accepted.connect(self.apply_changes)
         buttonbox.rejected.connect(self.reject)
 
-    def add_defs(self, deftxt: str = "", getcol: bool = False, lmod: LithModel = None):
+    def add_defs(
+        self,
+        deftxt: str = "",
+        getcol: bool = False,
+        lmod: LithModel = None,
+    ):
         """
         Add geophysical definitions and make them editable.
 
@@ -566,7 +580,10 @@ class ParamDisplay(QtWidgets.QDialog):
         self.dsb_magnetization.valueChanged.connect(self.change_magnetization)
         self.dsb_qratio.valueChanged.connect(self.change_qratio)
 
-    def change_defs(self, item: QtWidgets.QListWidget):
+    def change_defs(
+        self,
+        item: QtWidgets.QListWidget,
+    ):
         """
         Change geophysical definitions.
 
@@ -733,7 +750,11 @@ class ParamDisplay(QtWidgets.QDialog):
 
         self.change_defs(self.lw_param_defs.currentItem())
 
-    def set_lw_colors(self, lwidget: QtWidgets.QListWidget, lmod: LithModel = None):
+    def set_lw_colors(
+        self,
+        lwidget: QtWidgets.QListWidget,
+        lmod: LithModel = None,
+    ):
         """
         Set list widget colors.
 

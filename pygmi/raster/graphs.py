@@ -54,11 +54,18 @@ from pygmi.raster.modest_image import imshow
 class MyMplCanvas(CanvasModule):
     """Matplotlib canvas widget for the actual plot."""
 
-    def __init__(self, parent=None):
+    def __init__(
+        self,
+        parent=None,
+    ):
         super().__init__(parent)
         self.data = None
 
-    def format_coord(self, x: float, y: float) -> str:
+    def format_coord(
+        self,
+        x: float,
+        y: float,
+    ) -> str:
         """
         Set format coordinate for section plot.
 
@@ -85,7 +92,11 @@ class MyMplCanvas(CanvasModule):
         text = f"X={x1:.2f}, Y={y1:.2f}, Z={y:.1f}"
         return text
 
-    def update_ccoef(self, data1: Data, dmat: NDArray):
+    def update_ccoef(
+        self,
+        data1: Data,
+        dmat: NDArray,
+    ):
         """
         Update the correlation coefficient plot.
 
@@ -135,7 +146,13 @@ class MyMplCanvas(CanvasModule):
 
         self.figure.canvas.draw()
 
-    def update_raster(self, data1: Data, cmap: str, plotlog: bool, aspect: int = 1):
+    def update_raster(
+        self,
+        data1: Data,
+        cmap: str,
+        plotlog: bool,
+        aspect: int = 1,
+    ):
         """
         Update the raster plot.
 
@@ -230,7 +247,11 @@ class MyMplCanvas(CanvasModule):
 
         self.draw()
 
-    def update_hexbin(self, data1: Data, data2: Data):
+    def update_hexbin(
+        self,
+        data1: Data,
+        data2: Data,
+    ):
         """
         Update the hexbin plot.
 
@@ -280,7 +301,11 @@ class MyMplCanvas(CanvasModule):
 
         self.figure.canvas.draw()
 
-    def update_surface(self, data: Data, icmap: str):
+    def update_surface(
+        self,
+        data: Data,
+        icmap: str,
+    ):
         """
         Update the surface plot.
 
@@ -345,7 +370,12 @@ class MyMplCanvas(CanvasModule):
 
         self.figure.canvas.draw()
 
-    def update_hist(self, data1: Data, ylog: bool, iscum: bool):
+    def update_hist(
+        self,
+        data1: Data,
+        ylog: bool,
+        iscum: bool,
+    ):
         """
         Update the histogram plot.
 
@@ -393,7 +423,10 @@ class PlotCCoef(ContextModule):
 
     """
 
-    def __init__(self, parent=None):
+    def __init__(
+        self,
+        parent=None,
+    ):
         super().__init__(parent)
         self.setAttribute(QtCore.Qt.WidgetAttribute.WA_DeleteOnClose)
         self.setWindowTitle("Correlation Coefficients")
@@ -459,7 +492,10 @@ class PlotRaster(ContextModule):
 
     """
 
-    def __init__(self, parent=None):
+    def __init__(
+        self,
+        parent=None,
+    ):
         super().__init__(parent)
         self.setAttribute(QtCore.Qt.WidgetAttribute.WA_DeleteOnClose)
         self.setWindowTitle("Raster Plot (Simple)")
@@ -565,7 +601,10 @@ class PlotSurface(ContextModule):
 
     """
 
-    def __init__(self, parent=None):
+    def __init__(
+        self,
+        parent=None,
+    ):
         super().__init__(parent)
         self.setAttribute(QtCore.Qt.WidgetAttribute.WA_DeleteOnClose)
         self.setWindowTitle("Surface Plot")
@@ -699,7 +738,10 @@ class PlotScatter(ContextModule):
 
     """
 
-    def __init__(self, parent=None):
+    def __init__(
+        self,
+        parent=None,
+    ):
         super().__init__(parent)
         self.setAttribute(QtCore.Qt.WidgetAttribute.WA_DeleteOnClose)
         self.setWindowTitle("Hexbin Plot")
@@ -785,7 +827,10 @@ class PlotHist(ContextModule):
         Reference to the parent routine. The default is None.
     """
 
-    def __init__(self, parent=None):
+    def __init__(
+        self,
+        parent=None,
+    ):
         super().__init__(parent)
         self.setAttribute(QtCore.Qt.WidgetAttribute.WA_DeleteOnClose)
         self.setWindowTitle("Histogram")
@@ -869,7 +914,10 @@ def check_bands(data: list[Data]) -> bool:
     return chk
 
 
-def corr2d(idat1: np.ma.MaskedArray, idat2: np.ma.MaskedArray) -> NDArray | None:
+def corr2d(
+    idat1: np.ma.MaskedArray,
+    idat2: np.ma.MaskedArray,
+) -> NDArray | None:
     """
     Calculate the 2D correlation.
 

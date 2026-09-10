@@ -81,7 +81,10 @@ class MyMplCanvas(FigureCanvasQTAgg):
             "motion_notify_event", self.motion_notify_callback
         )
 
-    def button_release_callback(self, event: MouseEvent):
+    def button_release_callback(
+        self,
+        event: MouseEvent,
+    ):
         """
         Mouse button release callback.
 
@@ -97,7 +100,10 @@ class MyMplCanvas(FigureCanvasQTAgg):
             return
         self.ind = None
 
-    def motion_notify_callback(self, event: MouseEvent):
+    def motion_notify_callback(
+        self,
+        event: MouseEvent,
+    ):
         """
         Move mouse callback.
 
@@ -122,7 +128,10 @@ class MyMplCanvas(FigureCanvasQTAgg):
         self.axes.draw_artist(self.line)
         self.figure.canvas.update()
 
-    def onpick(self, event: PickEvent) -> bool:
+    def onpick(
+        self,
+        event: PickEvent,
+    ) -> bool:
         """
         Picker event.
 
@@ -149,7 +158,12 @@ class MyMplCanvas(FigureCanvasQTAgg):
 
         return True
 
-    def update_line(self, data: dict, ival: str, itype: str):
+    def update_line(
+        self,
+        data: dict,
+        ival: str,
+        itype: str,
+    ):
         """
         Update the plot from point data.
 
@@ -387,7 +401,10 @@ class PlotPoints(ContextModule):
 
     """
 
-    def __init__(self, parent=None):
+    def __init__(
+        self,
+        parent=None,
+    ):
         super().__init__(parent)
         self.setAttribute(QtCore.Qt.WidgetAttribute.WA_DeleteOnClose)
         self.setWindowTitle("Graph Window")
@@ -451,7 +468,10 @@ class PlotPhaseTensor(ContextModule):
 
     """
 
-    def __init__(self, parent=None):
+    def __init__(
+        self,
+        parent=None,
+    ):
         super().__init__(parent)
 
         self.data = None

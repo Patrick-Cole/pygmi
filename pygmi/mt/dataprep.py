@@ -63,7 +63,10 @@ class Metadata(ContextModule):
 
     """
 
-    def __init__(self, parent=None):
+    def __init__(
+        self,
+        parent=None,
+    ):
         super().__init__(parent)
 
         self.banddata = {}
@@ -257,7 +260,12 @@ class MyMplCanvas(FigureCanvasQTAgg):
         fig = Figure(layout="tight")
         super().__init__(fig)
 
-    def update_line(self, data: dict, ival: str, itype: str):
+    def update_line(
+        self,
+        data: dict,
+        ival: str,
+        itype: str,
+    ):
         """
         Update the plot from point data.
 
@@ -387,7 +395,10 @@ class StaticShiftEDI(BasicModule):
 
     """
 
-    def __init__(self, parent=None):
+    def __init__(
+        self,
+        parent=None,
+    ):
         super().__init__(parent)
         self.data = None
 
@@ -488,7 +499,10 @@ class StaticShiftEDI(BasicModule):
         i2 = self.cmb_2.currentText()
         self.mmc.update_line(self.data, i, i2)
 
-    def settings(self, nodialog: bool = False) -> bool:
+    def settings(
+        self,
+        nodialog: bool = False,
+    ) -> bool:
         """
         Entry point into item.
 
@@ -544,7 +558,10 @@ class RotateEDI(BasicModule):
 
     """
 
-    def __init__(self, parent=None):
+    def __init__(
+        self,
+        parent=None,
+    ):
         super().__init__(parent)
         self.data = None
 
@@ -638,7 +655,10 @@ class RotateEDI(BasicModule):
         i2 = self.cmb_2.currentText()
         self.mmc.update_line(self.data, i, i2)
 
-    def settings(self, nodialog: bool = False) -> bool:
+    def settings(
+        self,
+        nodialog: bool = False,
+    ) -> bool:
         """
         Entry point into item.
 
@@ -718,7 +738,10 @@ class MyMplCanvasPick(FigureCanvasQTAgg):
         )
         self.figure.canvas.mpl_connect("resize_event", self.revent)
 
-    def button_press_callback(self, event: MouseEvent):
+    def button_press_callback(
+        self,
+        event: MouseEvent,
+    ):
         """
         Mouse button release callback.
 
@@ -734,7 +757,10 @@ class MyMplCanvasPick(FigureCanvasQTAgg):
             return
         self.ind = None
 
-    def button_release_callback(self, event: MouseEvent):
+    def button_release_callback(
+        self,
+        event: MouseEvent,
+    ):
         """
         Mouse button release callback.
 
@@ -750,7 +776,10 @@ class MyMplCanvasPick(FigureCanvasQTAgg):
             return
         self.ind = None
 
-    def motion_notify_callback(self, event: MouseEvent):
+    def motion_notify_callback(
+        self,
+        event: MouseEvent,
+    ):
         """
         Move mouse callback.
 
@@ -791,7 +820,10 @@ class MyMplCanvasPick(FigureCanvasQTAgg):
 
         self.figure.canvas.draw()
 
-    def onpick(self, event: PickEvent):
+    def onpick(
+        self,
+        event: PickEvent,
+    ):
         """
         Picker event.
 
@@ -818,7 +850,10 @@ class MyMplCanvasPick(FigureCanvasQTAgg):
 
         return True
 
-    def revent(self, event: ResizeEvent):
+    def revent(
+        self,
+        event: ResizeEvent,
+    ):
         """
         Resize event.
 
@@ -833,7 +868,10 @@ class MyMplCanvasPick(FigureCanvasQTAgg):
         self.update_line(self.data, self.ival, self.itype)
 
     def update_line(
-        self, data: dict, ival: str | None = None, itype: str | None = None
+        self,
+        data: dict,
+        ival: str | None = None,
+        itype: str | None = None,
     ):
         """
         Update the plot from point data.
@@ -981,7 +1019,10 @@ class EditEDI(BasicModule):
 
     """
 
-    def __init__(self, parent=None):
+    def __init__(
+        self,
+        parent=None,
+    ):
         super().__init__(parent)
         self.data = None
 
@@ -1080,7 +1121,10 @@ class EditEDI(BasicModule):
         i2 = self.cmb_2.currentText()
         self.mmc.update_line(self.data, i, i2)
 
-    def settings(self, nodialog: bool = False) -> bool:
+    def settings(
+        self,
+        nodialog: bool = False,
+    ) -> bool:
         """
         Entry point into item.
 
@@ -1130,10 +1174,16 @@ class MySlider(QtWidgets.QSlider):
     moving to click in a single step.
     """
 
-    def __init__(self, parent=None):
+    def __init__(
+        self,
+        parent=None,
+    ):
         super().__init__(parent)
 
-    def mousePressEvent(self, event: MouseEvent):
+    def mousePressEvent(
+        self,
+        event: MouseEvent,
+    ):
         """
         Mouse press event.
 
@@ -1150,7 +1200,10 @@ class MySlider(QtWidgets.QSlider):
             )
         )
 
-    def mouseMoveEvent(self, event: MouseEvent):
+    def mouseMoveEvent(
+        self,
+        event: MouseEvent,
+    ):
         """
         Jump to pointer position while moving.
 
@@ -1265,7 +1318,10 @@ class Occam1D(BasicModule):
 
     """
 
-    def __init__(self, parent=None):
+    def __init__(
+        self,
+        parent=None,
+    ):
         super().__init__(parent)
 
         self.data = None
@@ -1503,7 +1559,10 @@ class Occam1D(BasicModule):
 
         self.change_band()
 
-    def get_occfile(self, filename: str = ""):
+    def get_occfile(
+        self,
+        filename: str = "",
+    ):
         """
         Get Occam executable filename.
 
@@ -1585,7 +1644,10 @@ class Occam1D(BasicModule):
 
         self.mmc.update_line(x, pdata, rdata, depths=depths, res=res, title=title)
 
-    def settings(self, nodialog: bool = False) -> bool:
+    def settings(
+        self,
+        nodialog: bool = False,
+    ) -> bool:
         """
         Entry point into item.
 
@@ -1658,7 +1720,10 @@ class Occam1D(BasicModule):
         self.saveobj(self.cmb_2)
 
 
-def tonumber(test: str, alttext: str | None = None) -> str | float:
+def tonumber(
+    test: str,
+    alttext: str | None = None,
+) -> str | float:
     """
     Check if something is a number or matches alttext.
 

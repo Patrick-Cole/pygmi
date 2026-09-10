@@ -45,7 +45,10 @@ class CorrectDescriptions(BasicModule):
 
     """
 
-    def __init__(self, parent=None):
+    def __init__(
+        self,
+        parent=None,
+    ):
         super().__init__(parent)
 
         idir = os.path.dirname(os.path.realpath(__file__))
@@ -70,7 +73,10 @@ class CorrectDescriptions(BasicModule):
 
         pb_textfile.pressed.connect(self.get_textfile)
 
-    def get_textfile(self, filename: str = ""):
+    def get_textfile(
+        self,
+        filename: str = "",
+    ):
         """
         Get description list filename.
 
@@ -91,7 +97,10 @@ class CorrectDescriptions(BasicModule):
 
         self.le_textfile.setText(filename)
 
-    def settings(self, nodialog: bool = False) -> bool:
+    def settings(
+        self,
+        nodialog: bool = False,
+    ) -> bool:
         """
         Entry point into item.
 

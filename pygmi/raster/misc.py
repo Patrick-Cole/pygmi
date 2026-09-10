@@ -314,7 +314,9 @@ def fill_nd_closest(arr: np.ma.MaskedArray) -> NDArray:
 
 
 def histcomp(
-    img: np.ma.MaskedArray, perc: float = 5.0, uperc: float | None = None
+    img: np.ma.MaskedArray,
+    perc: float = 5.0,
+    uperc: float | None = None,
 ) -> tuple[np.ma.MaskedArray, float, float]:
     """
     Histogram Compaction.
@@ -364,7 +366,10 @@ def histcomp(
     return img2, svalue, evalue
 
 
-def histeq(img: np.ma.MaskedArray, nbrbins: int = 32768) -> np.ma.MaskedArray:
+def histeq(
+    img: np.ma.MaskedArray,
+    nbrbins: int = 32768,
+) -> np.ma.MaskedArray:
     """
     Histogram Equalization.
 
@@ -400,7 +405,10 @@ def histeq(img: np.ma.MaskedArray, nbrbins: int = 32768) -> np.ma.MaskedArray:
     return im2
 
 
-def img2rgb(img: NDArray, cbar=colormaps["jet"]) -> NDArray:
+def img2rgb(
+    img: NDArray,
+    cbar=colormaps["jet"],
+) -> NDArray:
     """
     Image to RGB.
 
@@ -626,7 +634,9 @@ def lstack(
 
 
 def norm2(
-    dat: np.ma.MaskedArray, datmin: float | None = None, datmax: float | None = None
+    dat: np.ma.MaskedArray,
+    datmin: float | None = None,
+    datmax: float | None = None,
 ) -> np.ma.MaskedArray:
     """
     Normalise array vector between 0 and 1.

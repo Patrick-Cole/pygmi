@@ -44,7 +44,10 @@ from pygmi.raster.datatypes import Data
 class GraphHist(FigureCanvasQTAgg):
     """Histogram graph widget."""
 
-    def __init__(self, parent=None):
+    def __init__(
+        self,
+        parent=None,
+    ):
         self.figure = Figure()
 
         super().__init__(self.figure)
@@ -65,7 +68,10 @@ class GraphHist(FigureCanvasQTAgg):
         self.csp = None
         self.nbins = 100
 
-    def get_hist(self, bins: int) -> NDArray:
+    def get_hist(
+        self,
+        bins: int,
+    ) -> NDArray:
         """
         Routine to get the scattergram with histogram overlay.
 
@@ -89,7 +95,12 @@ class GraphHist(FigureCanvasQTAgg):
         xymahist = np.ma.masked_equal(xyhist[0], 0)
         return xymahist
 
-    def get_clust_scat(self, bins: int, dattmp: list[Data], ctmp: list):
+    def get_clust_scat(
+        self,
+        bins: int,
+        dattmp: list[Data],
+        ctmp: list,
+    ):
         """
         Routine to get the scattergram with cluster overlay.
 
@@ -195,7 +206,10 @@ class GraphHist(FigureCanvasQTAgg):
         self.axhistx.set_xlim(xrng)
         self.axhisty.set_ylim(yrng[::-1])
 
-    def update_graph(self, clearaxis: bool = False):
+    def update_graph(
+        self,
+        clearaxis: bool = False,
+    ):
         """
         Draw Routine.
 
@@ -332,7 +346,11 @@ class PolygonInteractor(QtCore.QObject):
     epsilon = 5
     polyi_changed = QtCore.Signal()  #: polygon changed signal.
 
-    def __init__(self, axtmp: Axes, pntxy: NDArray):
+    def __init__(
+        self,
+        axtmp: Axes,
+        pntxy: NDArray,
+    ):
         super().__init__()
         self.ax = axtmp
         self.poly = Polygon([(1, 1)], animated=True)
@@ -367,7 +385,10 @@ class PolygonInteractor(QtCore.QObject):
         self.ax.draw_artist(self.line)
         self.canvas.update()
 
-    def new_poly(self, npoly: list):
+    def new_poly(
+        self,
+        npoly: list,
+    ):
         """
         Create new Polygon.
 
@@ -383,7 +404,10 @@ class PolygonInteractor(QtCore.QObject):
         self.canvas.draw()
         self.update_plots()
 
-    def get_ind_under_point(self, event: MouseEvent):
+    def get_ind_under_point(
+        self,
+        event: MouseEvent,
+    ):
         """
         Get the index of vertex under point if within epsilon tolerance.
 
@@ -411,7 +435,10 @@ class PolygonInteractor(QtCore.QObject):
 
         return ind
 
-    def button_press_callback(self, event: MouseEvent):
+    def button_press_callback(
+        self,
+        event: MouseEvent,
+    ):
         """
         Button press callback.
 
@@ -475,7 +502,10 @@ class PolygonInteractor(QtCore.QObject):
             self.ax.draw_artist(self.line)
             self.canvas.update()
 
-    def button_release_callback(self, event: MouseEvent):
+    def button_release_callback(
+        self,
+        event: MouseEvent,
+    ):
         """
         Button release callback.
 
@@ -495,7 +525,10 @@ class PolygonInteractor(QtCore.QObject):
         self.polymask = Path(self.poly.xy).contains_points(self.pntxy)
         self.polyi_changed.emit()
 
-    def motion_notify_callback(self, event: MouseEvent):
+    def motion_notify_callback(
+        self,
+        event: MouseEvent,
+    ):
         """
         Mouse notify callback.
 
@@ -536,7 +569,10 @@ class ScatterPlot(BasicModule):
 
     """
 
-    def __init__(self, parent=None):
+    def __init__(
+        self,
+        parent=None,
+    ):
         super().__init__(parent)
         self.m1 = 0
         self.c = [0, 0, 0]
@@ -656,7 +692,10 @@ class ScatterPlot(BasicModule):
         self.m[1] = self.map_combo2.currentIndex()
         self.map.update_graph()
 
-    def settings(self, nodialog: bool = False) -> bool:
+    def settings(
+        self,
+        nodialog: bool = False,
+    ) -> bool:
         """
         Entry point into item.
 
@@ -771,7 +810,11 @@ class ScatterPlot(BasicModule):
         self.hist.figure.canvas.draw()
 
 
-def dist_point_to_segment(p: NDArray, s0: NDArray, s1: NDArray) -> NDArray | float:
+def dist_point_to_segment(
+    p: NDArray,
+    s0: NDArray,
+    s1: NDArray,
+) -> NDArray | float:
     """
     Distance of a point to a line segment.
 

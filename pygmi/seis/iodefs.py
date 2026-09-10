@@ -156,12 +156,18 @@ class ImportSeisan(BasicModule):
 
     """
 
-    def __init__(self, parent=None):
+    def __init__(
+        self,
+        parent=None,
+    ):
         super().__init__(parent)
 
         self.is_import = True
 
-    def settings(self, nodialog: bool = False) -> bool:
+    def settings(
+        self,
+        nodialog: bool = False,
+    ) -> bool:
         """
         Entry point into item.
 
@@ -302,7 +308,10 @@ def importmacro(ifile: str) -> gpd.GeoDataFrame:
     return gdf1
 
 
-def importnordic(ifile: str, showlog: Callable[..., None] = print) -> list | False:
+def importnordic(
+    ifile: str,
+    showlog: Callable[..., None] = print,
+) -> list | False:
     """
     Import Nordic and Nordic2 data.
 
@@ -514,7 +523,9 @@ def importnordic(ifile: str, showlog: Callable[..., None] = print) -> list | Fal
 
 
 def importseiscomp(
-    ifile: str, showlog: Callable[..., None] = print, prefmag: str = "MLv"
+    ifile: str,
+    showlog: Callable[..., None] = print,
+    prefmag: str = "MLv",
 ) -> list:
     """
     Import SeisComp data.
@@ -772,7 +783,10 @@ def importseiscomp(
     return sdat
 
 
-def importxlsx(ifile: str, showlog: Callable[..., None] = print) -> list:
+def importxlsx(
+    ifile: str,
+    showlog: Callable[..., None] = print,
+) -> list:
     """
     Import Excel summary.
 
@@ -1300,7 +1314,10 @@ def read_record_type_m(i: str) -> sdt.seisan_M:
     return tmp
 
 
-def merge_m(rec1: sdt.seisan_M, rec2: sdt.seisan_M) -> sdt.seisan_M:
+def merge_m(
+    rec1: sdt.seisan_M,
+    rec2: sdt.seisan_M,
+) -> sdt.seisan_M:
     """
     Merge M records.
 
@@ -1366,11 +1383,17 @@ class ImportGenericFPS(BasicModule):
 
     """
 
-    def __init__(self, parent=None):
+    def __init__(
+        self,
+        parent=None,
+    ):
         super().__init__(parent)
         self.is_import = True
 
-    def settings(self, nodialog: bool = False) -> bool:
+    def settings(
+        self,
+        nodialog: bool = False,
+    ) -> bool:
         """
         Entry point into item.
 
@@ -1473,7 +1496,10 @@ class ExportSeisan(ContextModule):
 
     """
 
-    def __init__(self, parent=None):
+    def __init__(
+        self,
+        parent=None,
+    ):
         super().__init__(parent)
 
         self.lmod = None
@@ -1533,7 +1559,10 @@ class ExportSeisan(ContextModule):
         if self.parent is not None:
             self.parent.process_is_active(False)
 
-    def write_record_type_1(self, data: dict):
+    def write_record_type_1(
+        self,
+        data: dict,
+    ):
         """
         Write record type 1.
 
@@ -1579,7 +1608,10 @@ class ExportSeisan(ContextModule):
 
         self.fobj.write(tmp)
 
-    def write_record_type_2(self, data: dict):
+    def write_record_type_2(
+        self,
+        data: dict,
+    ):
         """
         Write record type 2.
 
@@ -1618,7 +1650,10 @@ class ExportSeisan(ContextModule):
 
         self.fobj.write(tmp)
 
-    def write_record_type_3(self, data: dict):
+    def write_record_type_3(
+        self,
+        data: dict,
+    ):
         """
         Write record type 3.
 
@@ -1641,7 +1676,10 @@ class ExportSeisan(ContextModule):
 
         self.fobj.write(tmp)
 
-    def write_record_type_4(self, data: dict):
+    def write_record_type_4(
+        self,
+        data: dict,
+    ):
         """
         Write record type 4.
 
@@ -1684,7 +1722,10 @@ class ExportSeisan(ContextModule):
 
             self.fobj.write(tmp)
 
-    def write_record_type_phase(self, data: dict):
+    def write_record_type_phase(
+        self,
+        data: dict,
+    ):
         """
         Write record type 4.
 
@@ -1751,7 +1792,10 @@ class ExportSeisan(ContextModule):
 
             self.fobj.write(tmp)
 
-    def write_record_type_5(self, data: dict):
+    def write_record_type_5(
+        self,
+        data: dict,
+    ):
         """
         Write record type 5.
 
@@ -1771,7 +1815,10 @@ class ExportSeisan(ContextModule):
 
         self.fobj.write(tmp)
 
-    def write_record_type_6(self, data: dict):
+    def write_record_type_6(
+        self,
+        data: dict,
+    ):
         """
         Write record type 6.
 
@@ -1799,7 +1846,10 @@ class ExportSeisan(ContextModule):
         )
         self.fobj.write(tmp)
 
-    def write_record_type_e(self, data: dict):
+    def write_record_type_e(
+        self,
+        data: dict,
+    ):
         """
         Write record type E.
 
@@ -1830,7 +1880,10 @@ class ExportSeisan(ContextModule):
 
         self.fobj.write(tmp)
 
-    def write_record_type_f(self, data: dict):
+    def write_record_type_f(
+        self,
+        data: dict,
+    ):
         """
         Write record type F.
 
@@ -1863,7 +1916,10 @@ class ExportSeisan(ContextModule):
 
             self.fobj.write(tmp)
 
-    def write_record_type_h(self, data: dict):
+    def write_record_type_h(
+        self,
+        data: dict,
+    ):
         """
         Write record type H.
 
@@ -1894,7 +1950,10 @@ class ExportSeisan(ContextModule):
 
         self.fobj.write(tmp)
 
-    def write_record_type_i(self, data: dict):
+    def write_record_type_i(
+        self,
+        data: dict,
+    ):
         """
         Write record type I.
 
@@ -1925,7 +1984,10 @@ class ExportSeisan(ContextModule):
 
         self.fobj.write(tmp)
 
-    def write_record_type_m(self, data: dict):
+    def write_record_type_m(
+        self,
+        data: dict,
+    ):
         """
         Write record type M.
 
@@ -1981,7 +2043,10 @@ class ExportSeisan(ContextModule):
 
         self.fobj.write(tmp)
 
-    def write_record_type_p(self, data: dict):
+    def write_record_type_p(
+        self,
+        data: dict,
+    ):
         """
         Write record type P.
 
@@ -2014,7 +2079,10 @@ class ExportCSV(ContextModule):
 
     """
 
-    def __init__(self, parent=None):
+    def __init__(
+        self,
+        parent=None,
+    ):
         super().__init__(parent)
 
         self.lmod = None
@@ -2085,7 +2153,10 @@ class ExportCSV(ContextModule):
         self.showlog("Export to csv Finished!")
         self.parent.process_is_active(False)
 
-    def write_record_type_1(self, data: dict) -> str:
+    def write_record_type_1(
+        self,
+        data: dict,
+    ) -> str:
         """
         Write record type 1.
 
@@ -2135,7 +2206,10 @@ class ExportCSV(ContextModule):
         tmp = tmp.replace("None", "")
         return tmp
 
-    def write_record_type_2(self, data: dict) -> str | None:
+    def write_record_type_2(
+        self,
+        data: dict,
+    ) -> str | None:
         """
         Write record type 2.
 
@@ -2180,7 +2254,10 @@ class ExportCSV(ContextModule):
 
         return tmp
 
-    def write_record_type_3(self, tmp: str) -> str | None:
+    def write_record_type_3(
+        self,
+        tmp: str,
+    ) -> str | None:
         """
         Write record type 3.
 
@@ -2206,7 +2283,10 @@ class ExportCSV(ContextModule):
 
         return tmp
 
-    def write_record_type_4(self, data: dict) -> list[str]:
+    def write_record_type_4(
+        self,
+        data: dict,
+    ) -> list[str]:
         """
         Write record type 4.
 
@@ -2258,7 +2338,10 @@ class ExportCSV(ContextModule):
 
         return tmpfin
 
-    def write_record_type_5(self, data: dict) -> str | None:
+    def write_record_type_5(
+        self,
+        data: dict,
+    ) -> str | None:
         """
         Write record type 5.
 
@@ -2283,7 +2366,10 @@ class ExportCSV(ContextModule):
 
         return tmp
 
-    def write_record_type_6(self, data: dict) -> str | None:
+    def write_record_type_6(
+        self,
+        data: dict,
+    ) -> str | None:
         """
         Write record type 6.
 
@@ -2324,7 +2410,10 @@ class ExportCSV(ContextModule):
         )
         return tmp
 
-    def write_record_type_e(self, data: dict) -> str:
+    def write_record_type_e(
+        self,
+        data: dict,
+    ) -> str:
         """
         Write record type E.
 
@@ -2359,7 +2448,10 @@ class ExportCSV(ContextModule):
 
         return tmp
 
-    def write_record_type_f(self, data: dict) -> str | None:
+    def write_record_type_f(
+        self,
+        data: dict,
+    ) -> str | None:
         """
         Write record type F.
 
@@ -2398,7 +2490,10 @@ class ExportCSV(ContextModule):
 
         return tmp
 
-    def write_record_type_h(self, data: dict) -> str | None:
+    def write_record_type_h(
+        self,
+        data: dict,
+    ) -> str | None:
         """
         Write record type H.
 
@@ -2434,7 +2529,10 @@ class ExportCSV(ContextModule):
 
         return tmp
 
-    def write_record_type_i(self, data: dict) -> str:
+    def write_record_type_i(
+        self,
+        data: dict,
+    ) -> str:
         """
         Write record type I.
 
@@ -2464,7 +2562,10 @@ class ExportCSV(ContextModule):
 
         return tmp
 
-    def write_record_type_m(self, data: dict) -> str | None:
+    def write_record_type_m(
+        self,
+        data: dict,
+    ) -> str | None:
         """
         Write record type M.
 
@@ -2523,7 +2624,10 @@ class ExportCSV(ContextModule):
 
         return tmp
 
-    def write_record_type_p(self, data: dict) -> str | None:
+    def write_record_type_p(
+        self,
+        data: dict,
+    ) -> str | None:
         """
         Write record type P.
 
@@ -2560,7 +2664,10 @@ class ExportSummary(ContextModule):
 
     """
 
-    def __init__(self, parent=None):
+    def __init__(
+        self,
+        parent=None,
+    ):
         super().__init__(parent)
 
         self.lmod = None
@@ -2735,7 +2842,10 @@ class FilterSeisan(BasicModule):
 
     """
 
-    def __init__(self, parent=None):
+    def __init__(
+        self,
+        parent=None,
+    ):
         super().__init__(parent)
 
         self.datlimits = None
@@ -2858,7 +2968,10 @@ class FilterSeisan(BasicModule):
         self.cmb_update(self.cmb_recdesc, tmp)
         return True
 
-    def dind_click(self, state: int):
+    def dind_click(
+        self,
+        state: int,
+    ):
         """
         Check checkboxes.
 
@@ -2886,7 +2999,10 @@ class FilterSeisan(BasicModule):
             self.recdesc_init("")
             self.cmb_recdesc.currentTextChanged.connect(self.recdesc_init)
 
-    def rectype_init(self, txt: str):
+    def rectype_init(
+        self,
+        txt: str,
+    ):
         """
         Change combo.
 
@@ -2902,7 +3018,10 @@ class FilterSeisan(BasicModule):
 
         self.recdesc_init(self.cmb_recdesc.currentText())
 
-    def recdesc_init(self, txt: str):
+    def recdesc_init(
+        self,
+        txt: str,
+    ):
         """
         Change Description.
 
@@ -2979,7 +3098,10 @@ class FilterSeisan(BasicModule):
 
         self.datlimits = datd
 
-    def settings(self, nodialog: bool = False) -> bool:
+    def settings(
+        self,
+        nodialog: bool = False,
+    ) -> bool:
         """
         Entry point into item.
 
@@ -3125,7 +3247,7 @@ def _testfn2():
     """Test."""
     ifile = r"D:\Workdata\PyGMI Test Data\Seismology\collect 7.out"
 
-    data = importnordic(ifile)
+    _data = importnordic(ifile)
 
     # ifile = r"D:\seis\Lesotho_catalog.xlsx"
     # _data = importxlsx(ifile)

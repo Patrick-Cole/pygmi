@@ -122,7 +122,12 @@ class MyMplCanvas2(FigureCanvasQTAgg):
 
         self.figure.canvas.draw()
 
-    def disp_wave(self, times: NDArray, wave: NDArray, title: str):
+    def disp_wave(
+        self,
+        times: NDArray,
+        wave: NDArray,
+        title: str,
+    ):
         """
         Display waveform.
 
@@ -162,7 +167,10 @@ class TDEM1D(BasicModule):
 
     """
 
-    def __init__(self, parent=None):
+    def __init__(
+        self,
+        parent=None,
+    ):
         super().__init__(parent)
         self.data = None
         self.cursoln = 0
@@ -610,7 +618,10 @@ class TDEM1D(BasicModule):
 
         return wform
 
-    def get_wfile(self, filename: str = ""):
+    def get_wfile(
+        self,
+        filename: str = "",
+    ):
         """
         Get the window time filename.
 
@@ -643,7 +654,10 @@ class TDEM1D(BasicModule):
         self.cmb_fid.clear()
         self.cmb_fid.addItems(fid)
 
-    def settings(self, nodialog: bool = False) -> bool:
+    def settings(
+        self,
+        nodialog: bool = False,
+    ) -> bool:
         """
         Entry point into item.
 
@@ -733,7 +747,10 @@ class TDEM1D(BasicModule):
         self.saveobj(self.le_maxiter)
 
 
-def tonumber(test: str, alttext: str | None = None) -> str | float:
+def tonumber(
+    test: str,
+    alttext: str | None = None,
+) -> str | float:
     """
     Check if something is a number or matches alttext.
 

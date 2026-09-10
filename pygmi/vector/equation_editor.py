@@ -51,7 +51,10 @@ class EquationEditor(BasicModule):
         Dictionary of bands
     """
 
-    def __init__(self, parent=None):
+    def __init__(
+        self,
+        parent=None,
+    ):
         super().__init__(parent)
         self.equation = None
         self.bands = {}
@@ -142,7 +145,10 @@ class EquationEditor(BasicModule):
         if txt != "":
             self.lbl_bands.setText(": " + self.bands[txt])
 
-    def settings(self, nodialog: bool = False) -> bool:
+    def settings(
+        self,
+        nodialog: bool = False,
+    ) -> bool:
         """
         Entry point into item.
 

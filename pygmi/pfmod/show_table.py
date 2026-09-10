@@ -44,7 +44,10 @@ class BasicStats3D(ContextModule):
 
     """
 
-    def __init__(self, parent=None):
+    def __init__(
+        self,
+        parent=None,
+    ):
         super().__init__(parent)
 
         self.resize(640, 320)
@@ -226,7 +229,12 @@ def basicstats3d_calc(lmod: LithModel) -> tuple[list[str], list[str], list[NDArr
     return bands, cols, dattmp
 
 
-def savetable(ofile: str, bands: list, cols: list, data: list):
+def savetable(
+    ofile: str,
+    bands: list,
+    cols: list,
+    data: list,
+):
     """
     Save tabular data.
 

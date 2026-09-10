@@ -47,7 +47,10 @@ class MyMplCanvas(FigureCanvasQTAgg):
         self.axes = fig.add_subplot(111)
         super().__init__(fig)
 
-    def update_raster(self, drift: dict):
+    def update_raster(
+        self,
+        drift: dict,
+    ):
         """
         Update the raster plot.
 
@@ -85,10 +88,16 @@ class PlotDrift(ContextModule):
     ----------
     parent
         Reference to the parent routine. The default is None.
+    data
+        Data to plot. The default is None.
 
     """
 
-    def __init__(self, parent=None, data=None):
+    def __init__(
+        self,
+        parent=None,
+        data: dict | None = None,
+    ):
         super().__init__(parent)
 
         self.setAttribute(QtCore.Qt.WidgetAttribute.WA_DeleteOnClose)
@@ -122,7 +131,10 @@ class ProcessData(BasicModule):
 
     """
 
-    def __init__(self, parent=None):
+    def __init__(
+        self,
+        parent=None,
+    ):
         super().__init__(parent)
 
         self.le_density = QtWidgets.QLineEdit("2670")
@@ -173,7 +185,10 @@ class ProcessData(BasicModule):
 
         pb_calcbase.pressed.connect(self.calcbase)
 
-    def settings(self, nodialog: bool = False) -> bool:
+    def settings(
+        self,
+        nodialog: bool = False,
+    ) -> bool:
         """
         Entry point into item.
 
@@ -226,12 +241,16 @@ class ProcessData(BasicModule):
         self.saveobj(self.le_absbase)
         self.saveobj(self.le_basethres)
 
-    def acceptall(self, nodialog):
+    def acceptall(self, nodialog: bool = False):
         """
         Accept option.
 
         Updates self.outdata, which is used as input to other modules.
 
+        Parameters
+        ----------
+        nodialog
+            Run settings without a dialog. The default is False.
         """
         pdat = self.gdata
         basethres = float(self.le_basethres.text())
@@ -512,7 +531,10 @@ def atmospheric_correction(h: NDArray) -> NDArray:
     return gATM
 
 
-def height_correction(lat: NDArray, h: NDArray) -> NDArray:
+def height_correction(
+    lat: NDArray,
+    h: NDArray,
+) -> NDArray:
     """
     Calculate height correction.
 
@@ -534,7 +556,10 @@ def height_correction(lat: NDArray, h: NDArray) -> NDArray:
     return gHC
 
 
-def spherical_bouguer(h: NDArray, dens: float) -> NDArray:
+def spherical_bouguer(
+    h: NDArray,
+    dens: float,
+) -> NDArray:
     """
     Calculate spherical Bouguer.
 

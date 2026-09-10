@@ -55,7 +55,10 @@ class Mod3dDisplay(ContextModule):
 
     """
 
-    def __init__(self, parent=None):
+    def __init__(
+        self,
+        parent=None,
+    ):
         super().__init__(parent)
 
         self.lmod1 = LithModel()
@@ -183,7 +186,10 @@ class Mod3dDisplay(ContextModule):
         self.msc.figure.canvas.mpl_connect("button_press_event", self.sunclick)
         self.cmb_light.currentIndexChanged.connect(self.change_light)
 
-    def closeEvent(self, QCloseEvent):
+    def closeEvent(
+        self,
+        QCloseEvent,
+    ):
         """
         Close event.
 
@@ -286,7 +292,10 @@ class Mod3dDisplay(ContextModule):
         azim = 45
         self.light.set_direction_angle(elev, azim)
 
-    def sunclick(self, event: MouseEvent):
+    def sunclick(
+        self,
+        event: MouseEvent,
+    ):
         """
         Sunclick event is used to track changes to the sunshading.
 
@@ -441,7 +450,10 @@ class Mod3dDisplay(ContextModule):
             self.plotter.add_light(self.light)
             # self.plotter.show_grid(use_2d=True)
 
-    def update_model(self, issmooth: bool | None = None):
+    def update_model(
+        self,
+        issmooth: bool | None = None,
+    ):
         """
         Update the 3D model.
 
@@ -633,7 +645,10 @@ class MySunCanvas(FigureCanvasQTAgg):
 
     """
 
-    def __init__(self, parent=None):
+    def __init__(
+        self,
+        parent=None,
+    ):
         fig = Figure(layout="constrained")
         super().__init__(fig)
 
@@ -662,7 +677,11 @@ class MySunCanvas(FigureCanvasQTAgg):
         self.figure.canvas.draw()
 
 
-def updatemod(gdat2: NDArray, cindx: NDArray, cloc: NDArray) -> tuple[NDArray, NDArray]:
+def updatemod(
+    gdat2: NDArray,
+    cindx: NDArray,
+    cloc: NDArray,
+) -> tuple[NDArray, NDArray]:
     """
     Update model without smoothing.
 
@@ -756,7 +775,10 @@ def updatemod(gdat2: NDArray, cindx: NDArray, cloc: NDArray) -> tuple[NDArray, N
     return newcorners, newfaces
 
 
-def calc_norms(faces: NDArray, vtx: NDArray) -> NDArray:
+def calc_norms(
+    faces: NDArray,
+    vtx: NDArray,
+) -> NDArray:
     """
     Calculate normals.
 
@@ -1095,7 +1117,11 @@ def InterpolateVertices(
 
 @jit(nopython=True)
 def fancyindex(
-    out: NDArray, var1: NDArray, ii: NDArray, jj: NDArray, kk: NDArray
+    out: NDArray,
+    var1: NDArray,
+    ii: NDArray,
+    jj: NDArray,
+    kk: NDArray,
 ) -> NDArray:
     """
     Fancy index.
@@ -1132,7 +1158,10 @@ def fancyindex(
     return out
 
 
-def bitget(byteval: int, idx: int) -> bool:
+def bitget(
+    byteval: int,
+    idx: int,
+) -> bool:
     """
     Bit get.
 
@@ -1152,7 +1181,10 @@ def bitget(byteval: int, idx: int) -> bool:
     return (byteval & (1 << idx)) != 0
 
 
-def bitset(byteval: int, idx: int) -> int:
+def bitset(
+    byteval: int,
+    idx: int,
+) -> int:
     """
     Bit set.
 
@@ -1172,7 +1204,12 @@ def bitset(byteval: int, idx: int) -> int:
     return byteval | (1 << idx)
 
 
-def sub2ind(msize, row: NDArray, col: NDArray, layer: NDArray) -> NDArray:
+def sub2ind(
+    msize,
+    row: NDArray,
+    col: NDArray,
+    layer: NDArray,
+) -> NDArray:
     """
     Sub to index.
 
@@ -1199,7 +1236,8 @@ def sub2ind(msize, row: NDArray, col: NDArray, layer: NDArray) -> NDArray:
 
 
 def ind2sub(
-    msize: tuple[int, int, int], idx: NDArray
+    msize: tuple[int, int, int],
+    idx: NDArray,
 ) -> tuple[NDArray, NDArray, NDArray]:
     """
     Index to sub.

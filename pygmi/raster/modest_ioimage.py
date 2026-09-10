@@ -418,7 +418,10 @@ class ModestImage(mi.AxesImage):
 
         return colormap
 
-    def set_clim_std(self, mult):
+    def set_clim_std(
+        self,
+        mult: float,
+    ):
         """
         Set the vmin and vmax to mult*std(self._A).
 
@@ -426,7 +429,7 @@ class ModestImage(mi.AxesImage):
 
         Parameters
         ----------
-        mult : float
+        mult
             Multiplier.
 
         """
@@ -533,7 +536,9 @@ def imshow(
 
 
 def extract_matched_slices(
-    axes: Axes | None = None, shape: tuple | None = None, transform=IDENTITY_TRANSFORM
+    axes: Axes | None = None,
+    shape: tuple | None = None,
+    transform=IDENTITY_TRANSFORM,
 ) -> tuple[int, int, int, int, int, int]:
     """
     Determine the slice parameters to use, matched to the screen.

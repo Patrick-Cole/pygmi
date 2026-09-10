@@ -43,7 +43,10 @@ class ImportData(BasicModule):
 
     """
 
-    def __init__(self, parent=None):
+    def __init__(
+        self,
+        parent=None,
+    ):
         super().__init__(parent)
 
         self.hfile = ""
@@ -127,7 +130,10 @@ class ImportData(BasicModule):
         pb_lithfile.pressed.connect(self.get_lithfile)
         pb_headfile.pressed.connect(self.get_headfile)
 
-    def settings(self, nodialog: bool = False) -> bool:
+    def settings(
+        self,
+        nodialog: bool = False,
+    ) -> bool:
         """
         Entry point into item.
 

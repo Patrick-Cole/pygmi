@@ -48,7 +48,10 @@ class ImageSeg(BasicModule):
 
     """
 
-    def __init__(self, parent=None):
+    def __init__(
+        self,
+        parent=None,
+    ):
         super().__init__(parent)
 
         self.le_scale = QtWidgets.QLineEdit("1000")
@@ -100,7 +103,10 @@ class ImageSeg(BasicModule):
 
         gl_main.addWidget(self.buttonbox, 5, 0, 1, 4)
 
-    def settings(self, nodialog: bool = False) -> bool:
+    def settings(
+        self,
+        nodialog: bool = False,
+    ) -> bool:
         """
         Entry point into item.
 

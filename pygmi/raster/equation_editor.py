@@ -56,7 +56,10 @@ class EquationEditor(BasicModule):
         Dictionary of bands
     """
 
-    def __init__(self, parent=None):
+    def __init__(
+        self,
+        parent=None,
+    ):
         super().__init__(parent)
         self.equation = None
         self.bands = {}
@@ -163,7 +166,10 @@ class EquationEditor(BasicModule):
         if txt != "":
             self.lbl_bands.setText(": " + self.bands[txt])
 
-    def settings(self, nodialog: bool = False) -> bool:
+    def settings(
+        self,
+        nodialog: bool = False,
+    ) -> bool:
         """
         Entry point into item.
 
@@ -347,7 +353,9 @@ def eqedit(
 
 
 def eq_fix(
-    indata: list[Data], equation: str, showlog: Callable[..., None] = print
+    indata: list[Data],
+    equation: str,
+    showlog: Callable[..., None] = print,
 ) -> str:
     """
     Corrects names in equation to variable names.
@@ -411,7 +419,10 @@ def hmode(data: list[float]) -> float:
     return mode2
 
 
-def mosaic(eq: str, localdict: dict) -> np.ma.MaskedArray | None:
+def mosaic(
+    eq: str,
+    localdict: dict,
+) -> np.ma.MaskedArray | None:
     """
     Mosaics data into a single band dataset.
 
@@ -472,7 +483,10 @@ def mosaic(eq: str, localdict: dict) -> np.ma.MaskedArray | None:
     return master
 
 
-def mean(eq: str, localdict: dict) -> np.ma.MaskedArray:
+def mean(
+    eq: str,
+    localdict: dict,
+) -> np.ma.MaskedArray:
     """
     Get mean pixel value of all input bands.
 
@@ -518,7 +532,10 @@ def mean(eq: str, localdict: dict) -> np.ma.MaskedArray:
     return findat
 
 
-def detrend(eq: str, localdict: dict) -> np.ma.MaskedArray | None:
+def detrend(
+    eq: str,
+    localdict: dict,
+) -> np.ma.MaskedArray | None:
     """
     Get mean pixel value of all input bands.
 
@@ -584,7 +601,10 @@ def detrend(eq: str, localdict: dict) -> np.ma.MaskedArray | None:
     return findat
 
 
-def std(eq: str, localdict: dict) -> np.ma.MaskedArray:
+def std(
+    eq: str,
+    localdict: dict,
+) -> np.ma.MaskedArray:
     """
     Get standard deviation pixel value of all input bands.
 

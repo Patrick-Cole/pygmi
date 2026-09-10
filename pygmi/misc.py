@@ -74,10 +74,16 @@ class EmittingStream(QtCore.QObject):
 
     """
 
-    def __init__(self, textWritten: Callable[..., None]):
+    def __init__(
+        self,
+        textWritten: Callable[..., None],
+    ):
         self.textWritten = textWritten
 
-    def write(self, text: str):
+    def write(
+        self,
+        text: str,
+    ):
         """
         Write text.
 
@@ -135,7 +141,10 @@ class BasicModule(QtWidgets.QDialog):
         Project data.
     """
 
-    def __init__(self, parent=None):
+    def __init__(
+        self,
+        parent=None,
+    ):
         super().__init__(parent)
 
         if parent is None:
@@ -171,7 +180,10 @@ class BasicModule(QtWidgets.QDialog):
         self.buttonbox.buttonbox.accepted.connect(self.accept)
         self.buttonbox.buttonbox.rejected.connect(self.reject)
 
-    def settings(self, nodialog: bool = False) -> bool:
+    def settings(
+        self,
+        nodialog: bool = False,
+    ) -> bool:
         """
         Entry point into item.
 
@@ -205,7 +217,11 @@ class BasicModule(QtWidgets.QDialog):
 
         return True
 
-    def cmb_update(self, obj: QtWidgets.QComboBox, txtlist: list[str]):
+    def cmb_update(
+        self,
+        obj: QtWidgets.QComboBox,
+        txtlist: list[str],
+    ):
         """
         Update combo box.
 
@@ -234,7 +250,10 @@ class BasicModule(QtWidgets.QDialog):
         be initialised before entering at the standard 'settings' sub module.
         """
 
-    def loadproj(self, projdata: dict) -> bool:
+    def loadproj(
+        self,
+        projdata: dict,
+    ) -> bool:
         """
         Load project data into class.
 
@@ -333,7 +352,10 @@ class BasicModule(QtWidgets.QDialog):
     def saveproj(self):
         """Save project data from class."""
 
-    def saveobj(self, obj: object):
+    def saveobj(
+        self,
+        obj: object,
+    ):
         """
         Save an object to a dictionary.
 
@@ -420,7 +442,10 @@ class ContextModule(QtWidgets.QDialog):
         Reference to a way to view messages, normally stdout or a Qt text box.
     """
 
-    def __init__(self, parent=None):
+    def __init__(
+        self,
+        parent=None,
+    ):
         super().__init__(parent)
         if parent is None:
             self.stdout_redirect = sys.stdout
@@ -471,7 +496,10 @@ class ContextModule(QtWidgets.QDialog):
         return True
 
     def cmb_update(
-        self, obj: QtWidgets.QComboBox, txtlist: list[str], curindex: int = 0
+        self,
+        obj: QtWidgets.QComboBox,
+        txtlist: list[str],
+        curindex: int = 0,
     ):
         """
         Update combo box.
@@ -506,7 +534,10 @@ class PButtonBox(QtWidgets.QWidget):
 
     """
 
-    def __init__(self, parent=None):
+    def __init__(
+        self,
+        parent=None,
+    ):
         super().__init__(parent)
 
         buttonbox = QtWidgets.QDialogButtonBox()
@@ -562,13 +593,18 @@ class QVStack2Layout(QtWidgets.QGridLayout):
 
     """
 
-    def __init__(self, parent=None):
+    def __init__(
+        self,
+        parent=None,
+    ):
         super().__init__(parent)
         self.setSizeConstraint(QtWidgets.QLayout.SizeConstraint.SetFixedSize)
         self.indx = 0
 
     def addWidget(
-        self, widget1: str | QtWidgets.QWidget, widget2: QtWidgets.QWidget | str
+        self,
+        widget1: str | QtWidgets.QWidget,
+        widget2: QtWidgets.QWidget | str,
     ):
         """
         Add two widgets on a row, widget can also be text.
@@ -614,7 +650,9 @@ class PTime:
         self.tchk = [time.perf_counter()]
 
     def since_first_call(
-        self, msg: str = "since first call", show: bool = True
+        self,
+        msg: str = "since first call",
+        show: bool = True,
     ) -> float:
         """
         Time lapsed since first call.
@@ -645,7 +683,11 @@ class PTime:
                 print(msg, "time (s): ", mins, " minutes ", secs, " seconds")
         return tdiff
 
-    def since_last_call(self, msg: str = "since last call", show: bool = True) -> float:
+    def since_last_call(
+        self,
+        msg: str = "since last call",
+        show: bool = True,
+    ) -> float:
         """
         Time lapsed since last call.
 
@@ -691,7 +733,10 @@ class ProgressBar(QtWidgets.QProgressBar):
         Maximum progress bar value. The default is 100.
     """
 
-    def __init__(self, parent=None):
+    def __init__(
+        self,
+        parent=None,
+    ):
         super().__init__(parent)
 
         self.setMinimum(0)
@@ -700,7 +745,10 @@ class ProgressBar(QtWidgets.QProgressBar):
         self.setStyleSheet(PBAR_STYLE)
         self.total = 100
 
-    def iter(self, iterable: Iterable) -> Generator[object, None, None]:
+    def iter(
+        self,
+        iterable: Iterable,
+    ) -> Generator[object, None, None]:
         """
         Iterate Routine.
 
@@ -772,7 +820,10 @@ class ProgressBarText:
         self.fill = "#"
         self.prefix = "Progress:"
 
-    def iter(self, iterable: Iterable) -> Generator[object, None, None]:
+    def iter(
+        self,
+        iterable: Iterable,
+    ) -> Generator[object, None, None]:
         """
         Iterate Routine.
 
@@ -818,7 +869,11 @@ class ProgressBarText:
         if not gottototal:
             self.printprogressbar(self.total)
 
-    def printprogressbar(self, iteration: int, suffix: str = ""):
+    def printprogressbar(
+        self,
+        iteration: int,
+        suffix: str = "",
+    ):
         """
         Call in a loop to create terminal progress bar.
 
@@ -841,7 +896,10 @@ class ProgressBarText:
         if iteration == self.total:
             print()
 
-    def setMaximum(self, val: int):
+    def setMaximum(
+        self,
+        val: int,
+    ):
         """
         Set the maximum value.
 
@@ -852,7 +910,10 @@ class ProgressBarText:
         """
         self.total = int(val)
 
-    def setValue(self, val: int):
+    def setValue(
+        self,
+        val: int,
+    ):
         """
         Set the progressbar value.
 
@@ -909,7 +970,11 @@ def check_for_updates() -> str:
     return verpath
 
 
-def getinfo(txt: str | float | None = None, reset: bool = False, hide: bool = False):
+def getinfo(
+    txt: str | float | None = None,
+    reset: bool = False,
+    hide: bool = False,
+):
     """
     Get time and memory info.
 
@@ -975,7 +1040,10 @@ def getinfo(txt: str | float | None = None, reset: bool = False, hide: bool = Fa
 
 
 def textwrap2(
-    text: str, width: int, placeholder: str = "...", max_lines: int | None = None
+    text: str,
+    width: int,
+    placeholder: str = "...",
+    max_lines: int | None = None,
 ) -> str:
     """
     Provide slightly different placeholder functionality to textwrap.
