@@ -515,6 +515,7 @@ def get_raster(
     tnames: list[str] | None = None,
     metaonly: bool = False,
     out_shape: tuple | None = None,
+    firstbandonly: bool = False,
 ) -> list[Data] | None:
     """
     Get raster dataset.
@@ -545,6 +546,8 @@ def get_raster(
         Retrieve only the metadata for the file. The default is False.
     out_shape
         Tuple describing the output array's shape.
+    firstbandonly
+        Import the first band of the data only.
 
     Returns
     -------
@@ -766,6 +769,8 @@ def get_raster(
                 bandid = "Band " + str(index) + " " + bname
 
             if tnames is not None and bandid not in tnames:
+                continue
+            if firstbandonly is True and i > 0:
                 continue
 
             dat.append(Data())
