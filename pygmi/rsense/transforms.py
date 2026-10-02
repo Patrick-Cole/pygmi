@@ -1142,6 +1142,7 @@ def _testfn():
 
 
 def _testfn2():
+    """Test function."""
     import sys
 
     from matplotlib import rcParams
@@ -1184,6 +1185,7 @@ def _testfn2():
 
 
 def _testfn3():
+    """Test function."""
     import sys
 
     from pygmi.rsense.iodefs import ImportBatch

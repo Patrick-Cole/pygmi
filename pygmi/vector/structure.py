@@ -308,7 +308,7 @@ def feature_intersection_density(
     geom2 : GeoDataFrame
         New geometry with intersection points.
     dat : Data
-        Output featue intersection density raster data
+        Output feature intersection density raster data
 
     """
     # Extend lines to make sure almost intersections are found

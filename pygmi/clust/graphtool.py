@@ -858,6 +858,7 @@ def dist_point_to_segment(
 
 
 def _testfn():
+    """Test function."""
     import sys
 
     from pygmi.raster.iodefs import get_raster

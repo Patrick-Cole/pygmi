@@ -355,6 +355,7 @@ def get_CGS(lithfile, headerfile, boreholeid):
 
 
 def _testfn():
+    """Test functon."""
     import sys
 
     app = QtWidgets.QApplication(sys.argv)

@@ -1143,8 +1143,8 @@ def get_geosoft(hfile: str) -> list[Data] | None:
         zbase = np.fromfile(f, dtype=np.float64, count=1)[0]  # zbase
         zmult = np.fromfile(f, dtype=np.float64, count=1)[0]  # zmult
 
-        _ = np.fromfile(f, dtype="a48", count=1)[0]  # label
-        _ = np.fromfile(f, dtype="a16", count=1)[0]  # mapno
+        _ = np.fromfile(f, dtype="S48", count=1)[0]  # label
+        _ = np.fromfile(f, dtype="S16", count=1)[0]  # mapno
 
         _ = np.fromfile(f, dtype=np.int32, count=1)[0]  # proj
         _ = np.fromfile(f, dtype=np.int32, count=1)[0]  # unitx
@@ -1160,7 +1160,7 @@ def get_geosoft(hfile: str) -> list[Data] | None:
 
         _ = np.fromfile(f, dtype=np.int32, count=1)[0]  # prcs
 
-        _ = np.fromfile(f, dtype="a324", count=1)[0]  # temspc
+        _ = np.fromfile(f, dtype="S324", count=1)[0]  # temspc
 
         if es == 2:
             nval = -32767

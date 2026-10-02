@@ -739,6 +739,7 @@ def gdist(
 
 
 def _testfn():
+    """Test function."""
     import sys
 
     import matplotlib.pyplot as plt

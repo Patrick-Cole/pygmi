@@ -534,6 +534,7 @@ def cluster(
 
 
 def _testfn():
+    """Test function."""
     import sys
 
     import matplotlib.pyplot as plt
@@ -561,6 +562,7 @@ def _testfn():
 
 
 def _test_marinda():
+    """Test function."""
     import sys
 
     import matplotlib.pyplot as plt
@@ -639,6 +641,7 @@ def _test_marinda():
 
 
 def _test_marinda2():
+    """Test function."""
     import sys
 
     import matplotlib.pyplot as plt

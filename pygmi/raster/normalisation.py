@@ -231,6 +231,7 @@ def norm(
 
 
 def _testfn():
+    """Test function."""
     import sys
 
     from pygmi.raster.iodefs import get_raster

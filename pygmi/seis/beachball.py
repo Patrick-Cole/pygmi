@@ -434,7 +434,7 @@ def beachball(
     Source code provided here are adopted from MatLab script
     `bb.m` written by Andy Michael and Oliver Boyd.
 
-    function bb(fm, centerx, centery, diam, ta, color)
+    function bb(fm, icenterx, icentery, idiam, ta, color)
     Draws beachball diagram of earthquake double-couple focal mechanism(s).
     S1, D1, and R1, the strike, dip and rake of one of the focal planes, can
     be vectors of multiple focal mechanisms.
@@ -453,9 +453,9 @@ def beachball(
         it down-dip (normal), and 180 moves it opposite to strike
         (right-lateral).
     icenterx
-        Place beachball(s) at position centerx
+        Place beachball(s) at position icenterx
     icentery
-        Place beachball(s) at position centery
+        Place beachball(s) at position icentery
     idiam
         Draw beachball with this diameter.
     isgeog

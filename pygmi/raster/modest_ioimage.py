@@ -212,6 +212,7 @@ class ModestImage(mi.AxesImage):
 
     @property
     def _pixel2world(self):
+        """Pixel to world."""
 
         if self._pixel2world_cache is None:
             # Pre-compute affine transforms to convert between the 'world'
@@ -241,6 +242,7 @@ class ModestImage(mi.AxesImage):
 
     @property
     def _world2pixel(self):
+        """World to pixel."""
         if self._world2pixel_cache is None:
             self._world2pixel_cache = self._pixel2world.inverted()
         return self._world2pixel_cache
@@ -585,6 +587,7 @@ def extract_matched_slices(
     ind1 = transform.transform([max(xlim), max(ylim)])
 
     def _clip(val, lo, hi):
+        """Clip."""
         return int(max(min(val, hi), lo))
 
     # Determine the range of pixels to extract from the array, including a 5

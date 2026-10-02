@@ -863,6 +863,7 @@ def xie_beni(
 
 
 def _testfn():
+    """Test function."""
     import sys
 
     import matplotlib.pyplot as plt

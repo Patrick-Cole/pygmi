@@ -44,7 +44,7 @@ from PySide6 import QtCore, QtWidgets
 from scipy.interpolate import interp1d
 from scipy.spatial import ConvexHull
 
-from pygmi.maps import frm
+from pygmi.maps import frm, set_axes
 from pygmi.misc import BasicModule
 from pygmi.raster.datatypes import Data, numpy_to_pygmi
 from pygmi.raster.iodefs import export_raster
@@ -84,17 +84,14 @@ class GraphMap(FigureCanvasQTAgg):
         self.ax1 = None
         self.ax2 = None
         self.im1 = None
+        self.xdata = None
+        self.ydata = None
 
     def init_graph(self):
         """Initialise the graph."""
         self.figure.clf()
 
-        ax1 = self.figure.add_subplot(211)
-        self.ax1 = ax1
-        self.compute_initial_figure()
-
-        ax2 = self.figure.add_subplot(212)
-        self.ax2 = ax2
+        self.ax2 = self.figure.add_subplot(111)
         self.compute_spectra()
 
         self.figure.canvas.draw()
@@ -115,6 +112,7 @@ class GraphMap(FigureCanvasQTAgg):
         ax2.format_coord = lambda x, y: f"Wavelength: {x:1.2f}, Y: {y:1.2f}"
         ax2.grid(True)
         ax2.set_xlabel("Wavelength")
+        ax2.set_xlabel("Reflectance")
 
         if self.remhull is True:
             hull = phull(prof)
@@ -166,6 +164,9 @@ class GraphMap(FigureCanvasQTAgg):
 
     def compute_initial_figure(self):
         """Compute initial figure."""
+        ax1 = self.figure.add_subplot(111)
+        self.ax1 = ax1
+
         clippercu = 1
         clippercl = 1
         dat = self.datarr
@@ -204,6 +205,11 @@ class GraphMap(FigureCanvasQTAgg):
 
         self.im1 = imshow(self.ax1, data, extent=extent)
 
+        if self.xdata is not None:
+            # self.ax1.plot(self.xdata, self.ydata, "k+")
+            self.ax1.axvline(self.xdata)
+            self.ax1.axhline(self.ydata)
+
         if self.rgb is True:
             self.im1.rgbmode = "RGB Ternary"
             self.im1.rgbclip = [
@@ -215,15 +221,21 @@ class GraphMap(FigureCanvasQTAgg):
             self.im1.rgbmode = "None"
             self.im1.set_clim(lclip, uclip)
 
-        if dat[self.mindx].crs.is_geographic:
-            self.ax1.set_xlabel("Longitude")
-            self.ax1.set_ylabel("Latitude")
-        else:
-            self.ax1.set_xlabel("Eastings")
-            self.ax1.set_ylabel("Northings")
+        self.ax1.set_xticks([])
+        self.ax1.set_yticks([])
 
-        self.ax1.xaxis.set_major_formatter(frm)
-        self.ax1.yaxis.set_major_formatter(frm)
+        # set_axes(self.ax1, dat[self.mindx].crs)
+
+        # if dat[self.mindx].crs.is_geographic:
+        #     self.ax1.set_xlabel("Longitude")
+        #     self.ax1.set_ylabel("Latitude")
+        # else:
+        #     self.ax1.set_xlabel("Eastings")
+        #     self.ax1.set_ylabel("Northings")
+
+        # self.ax1.xaxis.set_major_formatter(frm)
+        # self.ax1.yaxis.set_major_formatter(frm)
+        self.figure.canvas.draw()
 
 
 class AnalSpec(BasicModule):
@@ -251,6 +263,7 @@ class AnalSpec(BasicModule):
         self.feature = features.feature
 
         self.map = GraphMap()
+        self.graph = GraphMap()
         self.cmb_1 = QtWidgets.QComboBox()
         self.cmb_feature = QtWidgets.QComboBox()
         self.mpl_toolbar = NavigationToolbar2QT(self.map, self.parent)
@@ -290,6 +303,7 @@ class AnalSpec(BasicModule):
         gl_main.addWidget(pb_speclib, 3, 1, 1, 3)
         gl_main.addWidget(self.lw_speclib, 4, 1, 1, 3)
         gl_main.addWidget(pb_specd, 5, 1, 1, 3)
+        gl_main.addWidget(self.graph, 6, 1, 1, 3)
 
         gl_main.addWidget(self.map, 0, 0, 10, 1)
         gl_main.addWidget(self.mpl_toolbar, 11, 0)
@@ -328,28 +342,32 @@ class AnalSpec(BasicModule):
 
         dat = self.map.datarr[self.map.mindx]
 
-        self.map.row = int((dat.extent[-1] - event.ydata) // dat.ydim)
-        self.map.col = int((event.xdata - dat.extent[0]) // dat.xdim)
+        self.graph.row = int((dat.extent[-1] - event.ydata) // dat.ydim)
+        self.graph.col = int((event.xdata - dat.extent[0]) // dat.xdim)
 
-        self.map.update_graph()
+        self.map.xdata = event.xdata
+        self.map.ydata = event.ydata
+
+        self.graph.update_graph()
+        self.map.compute_initial_figure()
 
     def disp_splib(self):
         """Change library spectra for display."""
-        self.map.currentspectra = self.lw_speclib.currentItem().text()
+        self.graph.currentspectra = self.lw_speclib.currentItem().text()
 
-        self.map.update_graph()
+        self.graph.update_graph()
 
     def feature_change(self):
         """Change depth marker combo."""
         txt = self.cmb_feature.currentText()
-        self.map.feature = [txt[1:].replace("p", "")] + self.feature[txt]
+        self.graph.feature = [txt[1:].replace("p", "")] + self.feature[txt]
 
-        self.map.update_graph()
+        self.graph.update_graph()
 
     def hull(self):
         """Change whether hull is removed or not."""
-        self.map.remhull = self.cb_hull.isChecked()
-        self.map.update_graph()
+        self.graph.remhull = self.cb_hull.isChecked()
+        self.graph.update_graph()
 
     def load_splib(
         self,
@@ -390,12 +408,12 @@ class AnalSpec(BasicModule):
             self.lw_speclib.addItems(tmp)
             self.lw_speclib.currentRowChanged.connect(self.disp_splib)
 
-        self.map.spectra = self.spectra
+        self.graph.spectra = self.spectra
 
     def on_combo(self):
         """On combo."""
         self.map.mindx = self.cmb_1.currentIndex()
-        self.map.init_graph()
+        self.map.compute_initial_figure()
 
     def toggle_rgb_view(self):
         """Toggle RGB view and single band view."""
@@ -405,12 +423,12 @@ class AnalSpec(BasicModule):
         else:
             self.cmb_1.setDisabled(False)
 
-        self.map.init_graph()
+        self.map.compute_initial_figure()
 
     def overlay(self):
         """Change whether hull is removed or not."""
-        self.map.overlay = self.cb_overlay.isChecked()
-        self.map.update_graph()
+        self.graph.overlay = self.cb_overlay.isChecked()
+        self.graph.update_graph()
 
     def settings(
         self,
@@ -469,7 +487,9 @@ class AnalSpec(BasicModule):
         dat = [i for _, i in sorted(zip(wavelengths, dat2))]
 
         if "reflectance_scale_factor" in dat[0].metadata["Raster"]:
-            self.map.refl = float(dat[0].metadata["Raster"]["reflectance_scale_factor"])
+            self.graph.refl = float(
+                dat[0].metadata["Raster"]["reflectance_scale_factor"]
+            )
 
         wvl = []
         for j in dat:
@@ -480,8 +500,14 @@ class AnalSpec(BasicModule):
         self.map.datarr = dat
         self.map.nodata = dat[0].nodata
         self.map.wvl = np.array(wvl)
-        if self.map.wvl.max() < 20:
-            self.map.wvl = self.map.wvl * 1000.0
+
+        self.graph.datarr = dat
+        self.graph.nodata = dat[0].nodata
+        self.graph.wvl = np.array(wvl)
+
+        if self.graph.wvl.max() < 20:
+            self.graph.wvl = self.graph.wvl * 1000.0
+            self.map.wvl = self.graph.wvl
             self.showlog(
                 "Wavelengths appear to be in nanometers. Converting to micrometers."
             )
@@ -495,13 +521,14 @@ class AnalSpec(BasicModule):
         self.cmb_update(self.cmb_feature, ftxt)
 
         txt = self.cmb_feature.currentText()
-        self.map.feature = [txt[1:].replace("p", "")] + self.feature[txt]
-        self.map.init_graph()
+        self.graph.feature = [txt[1:].replace("p", "")] + self.feature[txt]
+        self.graph.init_graph()
+        self.map.compute_initial_figure()
 
         if self.filename != "":
             self.load_splib(nofile=False)
-            self.map.currentspectra = self.lw_speclib.selectedItems()[0].text()
-            self.map.update_graph()
+            self.graph.currentspectra = self.lw_speclib.selectedItems()[0].text()
+            self.graph.update_graph()
         else:
             self.lw_speclib.addItem("None")
 
