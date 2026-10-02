@@ -32,6 +32,7 @@ from collections.abc import Callable, Iterable
 import matplotlib.patches as mpatches
 import numexpr as ne
 import numpy as np
+import pandas as pd
 from bs4 import BeautifulSoup
 from matplotlib.backend_bases import MouseEvent
 from matplotlib.backends.backend_qt import NavigationToolbar2QT
@@ -44,7 +45,7 @@ from PySide6 import QtCore, QtWidgets
 from scipy.interpolate import interp1d
 from scipy.spatial import ConvexHull
 
-from pygmi.maps import frm, set_axes
+from pygmi.maps import frm
 from pygmi.misc import BasicModule
 from pygmi.raster.datatypes import Data, numpy_to_pygmi
 from pygmi.raster.iodefs import export_raster
@@ -55,7 +56,7 @@ from pygmi.rsense.render_html import render_in_browser as ren
 from pygmi.rsense.usgs import SPECPR
 
 
-class GraphMap(FigureCanvasQTAgg):
+class Graph(FigureCanvasQTAgg):
     """Graph Map widget."""
 
     def __init__(self):
@@ -81,59 +82,48 @@ class GraphMap(FigureCanvasQTAgg):
         self.refl = 1.0
         self.rotate = False
         self.nodata = 0.0
-        self.ax1 = None
-        self.ax2 = None
         self.im1 = None
         self.xdata = None
         self.ydata = None
+        self.oxdata = None
+        self.oydata = None
 
-    def init_graph(self):
-        """Initialise the graph."""
-        self.figure.clf()
-
-        self.ax2 = self.figure.add_subplot(111)
-        self.compute_spectra()
-
-        self.figure.canvas.draw()
-
-    def update_graph(self):
-        """Update the graph."""
-        self.compute_spectra()
-        self.figure.canvas.draw()
+        self.ax = self.figure.add_subplot(111)
 
     def compute_spectra(self):
         """Compute the spectra."""
-        ax2 = self.ax2
-        ax2.cla()
-        prof = [i.data[self.row, self.col] for i in self.datarr]
+        self.ax.cla()
 
+        prof = [i.data[self.row, self.col] for i in self.datarr]
         prof = np.ma.stack(prof).filled(0) / self.refl
 
-        ax2.format_coord = lambda x, y: f"Wavelength: {x:1.2f}, Y: {y:1.2f}"
-        ax2.grid(True)
-        ax2.set_xlabel("Wavelength")
-        ax2.set_xlabel("Reflectance")
+        self.ax.format_coord = lambda x, y: f"λ: {x:1.2f}, ρ: {y:1.2f}"
+        self.ax.grid(True)
+        self.ax.set_xlabel("Wavelength (λ)")
+        self.ax.set_ylabel("Reflectance (ρ)")
 
         if self.remhull is True:
             hull = phull(prof)
-            ax2.plot(self.wvl, prof / hull)
+            self.ax.plot(self.wvl, prof / hull, "C0")
         else:
-            ax2.plot(self.wvl, prof)
+            self.ax.plot(self.wvl, prof, "C0")
 
         if not self.overlay:
             self.orow = self.row
             self.ocol = self.col
+            self.oxdata = self.xdata
+            self.oydata = self.ydata
         else:
             prof = [i.data[self.orow, self.ocol] for i in self.datarr]
             prof = np.ma.stack(prof).filled(0) / self.refl
             if self.remhull is True:
                 hull = phull(prof)
-                ax2.plot(self.wvl, prof / hull)
+                self.ax.plot(self.wvl, prof / hull, "C1")
             else:
-                ax2.plot(self.wvl, prof)
+                self.ax.plot(self.wvl, prof, "C1")
 
-        ax2.xaxis.set_major_formatter(frm)
-        ax2.yaxis.set_major_formatter(frm)
+        self.ax.xaxis.set_major_formatter(frm)
+        self.ax.yaxis.set_major_formatter(frm)
 
         if self.currentspectra != "None":
             spec = self.spectra[self.currentspectra]
@@ -145,14 +135,14 @@ class GraphMap(FigureCanvasQTAgg):
 
             if self.remhull is True:
                 hull = phull(prof2)
-                ax2.plot(wvl, prof2 / hull, color="black")
-                ax2.set_ylim(top=1.01)
+                self.ax.plot(wvl, prof2 / hull, color="black")
+                self.ax.set_ylim(top=1.01)
             else:
-                ax2.plot(wvl, prof2, color="black")
+                self.ax.plot(wvl, prof2, color="black")
 
         if self.feature[0] != "None":
-            ax2.axvline(int(self.feature[0]), ls="--", c="r")
-            zmin, zmax = ax2.get_ylim()
+            self.ax.axvline(int(self.feature[0]), ls="--", c="r")
+            zmin, zmax = self.ax.get_ylim()
 
             bmin = self.feature[1]
             bmax = self.feature[2]
@@ -160,20 +150,55 @@ class GraphMap(FigureCanvasQTAgg):
             rect = mpatches.Rectangle((bmin, zmin), bmax - bmin, zmax - zmin)
             rect.set_facecolor([0, 1, 0])
             rect.set_alpha(0.5)
-            ax2.add_patch(rect)
+            self.ax.add_patch(rect)
+        self.figure.canvas.draw()
+
+
+class Map(FigureCanvasQTAgg):
+    """Graph Map widget."""
+
+    def __init__(self):
+        self.figure = Figure(layout="tight")
+
+        super().__init__(self.figure)
+        self.rgb = True
+
+        self.datarr = []
+        self.wvl = []
+        self.mindx = 0
+        self.csp = None
+        self.format_coord = None
+        self.feature = None
+        self.row = 20
+        self.col = 20
+        self.orow = 20
+        self.ocol = 20
+        self.remhull = False
+        self.overlay = False
+        self.currentspectra = "None"
+        self.spectra = None
+        self.refl = 1.0
+        self.rotate = False
+        self.nodata = 0.0
+        self.im1 = None
+        self.xdata = None
+        self.ydata = None
+        self.oxdata = None
+        self.oydata = None
+
+        self.ax = self.figure.add_subplot(111)
 
     def compute_initial_figure(self):
         """Compute initial figure."""
-        ax1 = self.figure.add_subplot(111)
-        self.ax1 = ax1
+        self.ax.cla()
 
-        clippercu = 1
-        clippercl = 1
+        # clippercu = 0
+        # clippercl = 0
         dat = self.datarr
 
-        redidx = (np.abs(self.wvl - 630)).argmin()
-        greenidx = (np.abs(self.wvl - 532)).argmin()
-        blueidx = (np.abs(self.wvl - 465)).argmin()
+        redidx = (np.abs(self.wvl - 635)).argmin()
+        greenidx = (np.abs(self.wvl - 530)).argmin()
+        blueidx = (np.abs(self.wvl - 455)).argmin()
 
         if self.rgb is True:
             red = dat[redidx].data / self.refl
@@ -183,58 +208,58 @@ class GraphMap(FigureCanvasQTAgg):
             data = [red, green, blue]
             data = np.ma.array(data)
             data = np.moveaxis(data, 0, -1)
-            lclip = [0, 0, 0]
-            uclip = [0, 0, 0]
 
-            lclip[0], uclip[0] = np.percentile(
-                red.compressed(), [clippercl, 100 - clippercu]
-            )
-            lclip[1], uclip[1] = np.percentile(
-                green.compressed(), [clippercl, 100 - clippercu]
-            )
-            lclip[2], uclip[2] = np.percentile(
-                blue.compressed(), [clippercl, 100 - clippercu]
-            )
+            # lclip = [0, 0, 0]
+            # uclip = [0, 0, 0]
+
+            # lclip[0], uclip[0] = np.percentile(
+            #     red.compressed(), [clippercl, 100 - clippercu]
+            # )
+            # lclip[1], uclip[1] = np.percentile(
+            #     green.compressed(), [clippercl, 100 - clippercu]
+            # )
+            # lclip[2], uclip[2] = np.percentile(
+            #     blue.compressed(), [clippercl, 100 - clippercu]
+            # )
         else:
             data = dat[self.mindx].data / self.refl
-            lclip, uclip = np.percentile(
-                data.compressed(), [clippercl, 100 - clippercu]
-            )
+            # lclip, uclip = np.percentile(
+            #     data.compressed(), [clippercl, 100 - clippercu]
+            # )
 
         extent = dat[self.mindx].extent
 
-        self.im1 = imshow(self.ax1, data, extent=extent)
+        self.im1 = imshow(self.ax, data, extent=extent)
+
+        self.im1.format_cursor_data = lambda z: (
+            f"{np.array2string(z, formatter={'float': lambda x: f'{x:.3f}'})}"
+        )
 
         if self.xdata is not None:
-            # self.ax1.plot(self.xdata, self.ydata, "k+")
-            self.ax1.axvline(self.xdata)
-            self.ax1.axhline(self.ydata)
+            self.ax.axvline(self.xdata, c="C0")
+            self.ax.axhline(self.ydata, c="C0")
+
+        if not self.overlay:
+            self.oxdata = self.xdata
+            self.oydata = self.ydata
+        elif self.oxdata is not None:
+            self.ax.axvline(self.oxdata, c="C1")
+            self.ax.axhline(self.oydata, c="C1")
 
         if self.rgb is True:
             self.im1.rgbmode = "RGB Ternary"
-            self.im1.rgbclip = [
-                [lclip[0], uclip[0]],
-                [lclip[1], uclip[1]],
-                [lclip[2], uclip[2]],
-            ]
+            # self.im1.rgbclip = [
+            #     [lclip[0], uclip[0]],
+            #     [lclip[1], uclip[1]],
+            #     [lclip[2], uclip[2]],
+            # ]
         else:
             self.im1.rgbmode = "None"
-            self.im1.set_clim(lclip, uclip)
+            # self.im1.set_clim(lclip, uclip)
 
-        self.ax1.set_xticks([])
-        self.ax1.set_yticks([])
+        self.ax.set_xticks([])
+        self.ax.set_yticks([])
 
-        # set_axes(self.ax1, dat[self.mindx].crs)
-
-        # if dat[self.mindx].crs.is_geographic:
-        #     self.ax1.set_xlabel("Longitude")
-        #     self.ax1.set_ylabel("Latitude")
-        # else:
-        #     self.ax1.set_xlabel("Eastings")
-        #     self.ax1.set_ylabel("Northings")
-
-        # self.ax1.xaxis.set_major_formatter(frm)
-        # self.ax1.yaxis.set_major_formatter(frm)
         self.figure.canvas.draw()
 
 
@@ -262,11 +287,12 @@ class AnalSpec(BasicModule):
 
         self.feature = features.feature
 
-        self.map = GraphMap()
-        self.graph = GraphMap()
+        self.map = Map()
+        self.graph = Graph()
         self.cmb_1 = QtWidgets.QComboBox()
         self.cmb_feature = QtWidgets.QComboBox()
         self.mpl_toolbar = NavigationToolbar2QT(self.map, self.parent)
+        self.mpl_toolbar2 = NavigationToolbar2QT(self.graph, self.parent)
         self.cb_hull = QtWidgets.QCheckBox("Remove Hull")
         self.cb_rgb = QtWidgets.QCheckBox("True Colour Ternary")
         self.cb_overlay = QtWidgets.QCheckBox("Overlay second spectrum")
@@ -285,6 +311,7 @@ class AnalSpec(BasicModule):
 
         pb_speclib = QtWidgets.QPushButton("Load Spectral Library")
         pb_specd = QtWidgets.QPushButton("Current Spectrum Description")
+        pb_specout = QtWidgets.QPushButton("Export Displayed Spectra")
         self.cb_rgb.setChecked(True)
         self.cmb_1.setDisabled(True)
         self.cb_overlay.setChecked(False)
@@ -302,11 +329,13 @@ class AnalSpec(BasicModule):
         gl_main.addWidget(self.cb_overlay, 2, 3)
         gl_main.addWidget(pb_speclib, 3, 1, 1, 3)
         gl_main.addWidget(self.lw_speclib, 4, 1, 1, 3)
-        gl_main.addWidget(pb_specd, 5, 1, 1, 3)
-        gl_main.addWidget(self.graph, 6, 1, 1, 3)
+        gl_main.addWidget(pb_specd, 5, 1, 1, 1)
+        gl_main.addWidget(pb_specout, 5, 3, 1, 1)
+        gl_main.addWidget(self.graph, 6, 1, 4, 3)
 
         gl_main.addWidget(self.map, 0, 0, 10, 1)
         gl_main.addWidget(self.mpl_toolbar, 11, 0)
+        gl_main.addWidget(self.mpl_toolbar2, 11, 1, 1, 3)
 
         gl_main.addWidget(self.buttonbox, 12, 0, 1, 4)
 
@@ -316,6 +345,7 @@ class AnalSpec(BasicModule):
         self.cb_overlay.clicked.connect(self.overlay)
         pb_speclib.clicked.connect(self.load_splib)
         pb_specd.clicked.connect(self.showtext)
+        pb_specout.clicked.connect(self.export)
         self.lw_speclib.currentRowChanged.connect(self.disp_splib)
         self.cmb_1.currentIndexChanged.connect(self.on_combo)
 
@@ -337,7 +367,7 @@ class AnalSpec(BasicModule):
         if event.button != 1:
             return
 
-        if event.inaxes != self.map.ax1:
+        if event.inaxes != self.map.ax:
             return
 
         dat = self.map.datarr[self.map.mindx]
@@ -347,27 +377,83 @@ class AnalSpec(BasicModule):
 
         self.map.xdata = event.xdata
         self.map.ydata = event.ydata
+        self.graph.xdata = event.xdata
+        self.graph.ydata = event.ydata
 
-        self.graph.update_graph()
+        self.graph.compute_spectra()
         self.map.compute_initial_figure()
 
     def disp_splib(self):
         """Change library spectra for display."""
         self.graph.currentspectra = self.lw_speclib.currentItem().text()
 
-        self.graph.update_graph()
+        self.graph.compute_spectra()
+
+    def export(self):
+        """Export displayed spectra."""
+        filename, _ = QtWidgets.QFileDialog.getSaveFileName(
+            self.parent, "Save File", ".", "Excel (*.xlsx)"
+        )
+
+        if filename == "":
+            return
+        row = self.graph.row
+        orow = self.graph.orow
+        col = self.graph.col
+        ocol = self.graph.ocol
+
+        pdict = {}
+
+        prof = [i.data[row, col] for i in self.graph.datarr]
+        prof = np.ma.stack(prof).filled(0) / self.graph.refl
+        hull = phull(prof)
+        hprof = prof / hull
+        wvl = self.graph.wvl
+        pdict["Wavelength"] = wvl
+        pdict["X1"] = [self.graph.xdata] * len(wvl)
+        pdict["Y1"] = [self.graph.ydata] * len(wvl)
+        pdict["Spectrum 1"] = prof
+        pdict["Hull removed spectrum 1"] = hprof
+
+        if row != orow:
+            prof = [i.data[orow, ocol] for i in self.graph.datarr]
+            prof = np.ma.stack(prof).filled(0) / self.graph.refl
+            hull = phull(prof)
+            hprof = prof / hull
+
+            pdict["X2"] = [self.graph.oxdata] * len(wvl)
+            pdict["Y2"] = [self.graph.oydata] * len(wvl)
+            pdict["Spectrum 2"] = prof
+            pdict["Hull removed spectrum 2"] = hprof
+
+        if self.graph.currentspectra != "None":
+            spec = self.graph.spectra[self.graph.currentspectra]
+            sprof = spec["refl"]
+
+            filt = ~np.isnan(sprof)
+            swvl = spec["wvl"][filt]
+            sprof = sprof[filt]
+
+            sprof = np.interp(wvl, swvl, sprof)
+            hull = phull(sprof)
+            hsprof = sprof / hull
+            pdict[self.graph.currentspectra] = sprof
+            pdict["Hull removed " + self.graph.currentspectra] = hsprof
+
+        df = pd.DataFrame(pdict)
+        df.to_excel(filename, index=False)
 
     def feature_change(self):
         """Change depth marker combo."""
         txt = self.cmb_feature.currentText()
         self.graph.feature = [txt[1:].replace("p", "")] + self.feature[txt]
 
-        self.graph.update_graph()
+        self.graph.compute_spectra()
 
     def hull(self):
         """Change whether hull is removed or not."""
         self.graph.remhull = self.cb_hull.isChecked()
-        self.graph.update_graph()
+        self.graph.compute_spectra()
 
     def load_splib(
         self,
@@ -418,17 +504,16 @@ class AnalSpec(BasicModule):
     def toggle_rgb_view(self):
         """Toggle RGB view and single band view."""
         self.map.rgb = self.cb_rgb.isChecked()
-        if self.cb_rgb.isChecked():
-            self.cmb_1.setDisabled(True)
-        else:
-            self.cmb_1.setDisabled(False)
+        self.cmb_1.setDisabled(self.map.rgb)
 
         self.map.compute_initial_figure()
 
     def overlay(self):
-        """Change whether hull is removed or not."""
+        """Change whether to display extra spectrum."""
         self.graph.overlay = self.cb_overlay.isChecked()
-        self.graph.update_graph()
+        self.map.overlay = self.cb_overlay.isChecked()
+        self.graph.compute_spectra()
+        self.map.compute_initial_figure()
 
     def settings(
         self,
@@ -449,11 +534,7 @@ class AnalSpec(BasicModule):
 
         """
         if "Raster" not in self.indata:
-            self.showlog(
-                "Error: You must have a multi-band raster "
-                "dataset in addition to your cluster "
-                "analysis results"
-            )
+            self.showlog("Error: You must have a multi-band raster dataset")
             return False
 
         if "wavelength" not in self.indata["Raster"][0].metadata["Raster"]:
@@ -477,25 +558,27 @@ class AnalSpec(BasicModule):
             )
             return False
 
-        wavelengths = []
+        wvl = []
         dat2 = []
         for i in dat:
             if "wavelength" in i.metadata["Raster"]:
-                wavelengths.append(i.metadata["Raster"]["wavelength"])
+                wvl.append(i.metadata["Raster"]["wavelength"])
                 dat2.append(i)
 
-        dat = [i for _, i in sorted(zip(wavelengths, dat2))]
+        if not wvl:
+            self.showlog("Error: You have no wavelengths in your metadata.")
+            return False
+
+        dat = [i for _, i in sorted(zip(wvl, dat2))]
 
         if "reflectance_scale_factor" in dat[0].metadata["Raster"]:
             self.graph.refl = float(
                 dat[0].metadata["Raster"]["reflectance_scale_factor"]
             )
+            self.map.refl = self.graph.refl
 
-        wvl = []
-        for j in dat:
-            wvl.append(float(j.metadata["Raster"]["wavelength"]))
-
-        dat2 = np.ma.array(dat2)
+        # Get sorted wavelengths
+        wvl = [float(j.metadata["Raster"]["wavelength"]) for j in dat]
 
         self.map.datarr = dat
         self.map.nodata = dat[0].nodata
@@ -512,7 +595,7 @@ class AnalSpec(BasicModule):
                 "Wavelengths appear to be in nanometers. Converting to micrometers."
             )
 
-        bands = [i.dataid for i in self.indata["Raster"]]
+        bands = [i.dataid for i in dat]
 
         self.cmb_update(self.cmb_1, bands)
 
@@ -522,13 +605,13 @@ class AnalSpec(BasicModule):
 
         txt = self.cmb_feature.currentText()
         self.graph.feature = [txt[1:].replace("p", "")] + self.feature[txt]
-        self.graph.init_graph()
+        self.graph.compute_spectra()
         self.map.compute_initial_figure()
 
         if self.filename != "":
             self.load_splib(nofile=False)
             self.graph.currentspectra = self.lw_speclib.selectedItems()[0].text()
-            self.graph.update_graph()
+            self.graph.compute_spectra()
         else:
             self.lw_speclib.addItem("None")
 
@@ -1546,6 +1629,7 @@ def _testfn2():
     from pygmi.rsense.iodefs import get_data
 
     ifile = r"D:\Workdata\PyGMI Test Data\Remote Sensing\Import\hyperspectral\Cu-hyperspec-testarea.tif"
+    os.chdir(os.path.dirname(ifile))
 
     data = get_data(ifile)
 
