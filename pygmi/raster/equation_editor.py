@@ -289,10 +289,11 @@ def eqedit(
 
     mask = None
     for i in usedbands:
+        masktmp = np.ma.getmaskarray(localdict[i])
         if mask is None:
-            mask = localdict[i].mask
+            mask = masktmp
         else:
-            mask = np.logical_or(mask, localdict[i].mask)
+            mask = np.logical_or(mask, masktmp)
 
     neweq = eq_fix(indata, equation, showlog)
 
@@ -318,7 +319,7 @@ def eqedit(
         showlog("Error: Nothing processed! Your equation most likely had an error.")
         return False
 
-    mask = np.ma.getmaskarray(findat)
+    # mask = np.ma.getmaskarray(findat)
 
     outdata = []
 
@@ -654,12 +655,13 @@ def _test():
     """Test."""
     import sys
 
-    # import matplotlib.pyplot as plt
+    import matplotlib.pyplot as plt
+
     from pygmi.raster.iodefs import get_raster
 
     print("Starting")
 
-    ifile = r"D:\workdata\modelling\regional\Model_mag.hdr"
+    ifile = r"D:\Workdata\PyGMI Test Data\Raster\testdata.tif"
 
     dat = get_raster(ifile)
 
@@ -669,14 +671,14 @@ def _test():
     EE = EquationEditor()
     EE.indata["Raster"] = dat
     EE.textbrowser.setText("detrend(i0,40,-10)")
-
+    # EE.textbrowser.setText("iall*2")
     EE.settings()
 
     _out = EE.outdata["Raster"]
 
-    # plt.figure(dpi=300)
-    # plt.imshow(_out[0].data)
-    # plt.show()
+    plt.figure(dpi=300)
+    plt.imshow(_out[0].data)
+    plt.show()
 
 
 if __name__ == "__main__":
