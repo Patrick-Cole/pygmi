@@ -26,7 +26,7 @@
 
 from PySide6 import QtGui, QtWidgets
 
-from pygmi.mt import birrp, dataprep, graphs, iodefs
+from pygmi.mt import dataprep, graphs, iodefs
 
 
 class MenuWidget:
@@ -107,7 +107,7 @@ class MenuWidget:
 
     def birrp(self):
         """BIRRP."""
-        self.parent.item_insert("Step", "BIRRP", birrp.BIRRP)
+        # self.parent.item_insert("Step", "BIRRP", birrp.BIRRP)
 
     def export_data(self):
         """Export data."""

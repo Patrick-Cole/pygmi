@@ -338,7 +338,7 @@ def _testfn():
 
     ifile = r"c:\workdata\PyGMI Test Data\Magnetics\IGRF\MAGMICROLEVEL.ers"
     # ifile = r"D:\workdata\PyGMI Test Data\Magnetics\Tilt\tilt.tif"
-    # ifile = r"D:\workdata\PyGMI Test Data\Magnetics\Matched Filtering\mod400200.tif"
+    ifile = r"D:\workdata\PyGMI Test Data\Magnetics\Matched Filtering\mod400200.tif"
 
     dat = get_raster(ifile)
 

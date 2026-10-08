@@ -782,6 +782,7 @@ class MainWidget(QtWidgets.QMainWindow):
 
         raster_menu = menus.pop(menus.index("pygmi.raster.menu"))
         vector_menu = menus.pop(menus.index("pygmi.vector.menu"))
+
         menus = [raster_menu, vector_menu] + menus
         menus = [i for i in menus if "menu" in i[-5:]]
 

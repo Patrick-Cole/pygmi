@@ -963,10 +963,10 @@ def _testfn():
     from pygmi.raster.iodefs import get_raster
 
     ifile = r"D:\workdata\PyGMI Test Data\Raster\testdata.tif"
-    ifile = r"D:\workdata\PyGMI Test Data\Raster\landscape.tif"
-    ifile = r"D:\workdata\PyGMI Test Data\Magnetics\Matched Filtering\mod400.tif"
-    ifile = r"D:\UBC_Files\section.tif"
-    ifile = r"D:\Workdata\PyGMI Test Data\Raster\GeoTIFF\Geoscience_000001.tif"
+    # ifile = r"D:\workdata\PyGMI Test Data\Raster\landscape.tif"
+    # ifile = r"D:\workdata\PyGMI Test Data\Magnetics\Matched Filtering\mod400.tif"
+    # ifile = r"D:\UBC_Files\section.tif"
+    # ifile = r"D:\Workdata\PyGMI Test Data\Raster\GeoTIFF\Geoscience_000001.tif"
 
     app = QtWidgets.QApplication(sys.argv)
     app.setStyle(QtWidgets.QStyleFactory.create("Fusion"))

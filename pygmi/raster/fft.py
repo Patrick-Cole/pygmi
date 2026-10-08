@@ -160,6 +160,8 @@ def calculate_raps(dat: Data) -> tuple[NDArray, NDArray, NDArray, tuple]:
     dx = dat.xdim
     dy = dat.ydim
 
+    data = np.nan_to_num(data, posinf=0, neginf=0)
+
     # 1. Take the 2D FFT of the input data.
     # The output is a complex array.
     F = fft2(data)
