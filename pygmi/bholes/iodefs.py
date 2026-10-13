@@ -206,7 +206,6 @@ class ImportData(BasicModule):
 
     def fillcombos(self):
         """Load in data and fill combo boxes."""
-
         lithfile = self.le_lithfile.text()
         headfile = self.le_headfile.text()
 

@@ -221,7 +221,10 @@ class Data:
 
         """
         data = Data()
-        data.__dict__ = {key: deepcopy(value) for key, value in self.__dict__.items()}
+        data.__dict__ = {
+            key: (deepcopy(value) if key != "transform" else value)
+            for key, value in self.__dict__.items()
+        }
 
         if resetmeta is True:
             data.metadata = {

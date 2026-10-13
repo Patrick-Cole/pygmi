@@ -26,21 +26,17 @@
 
 from collections.abc import Callable
 from itertools import pairwise
+from typing import ClassVar
 
 import matplotlib.pyplot as plt
 import numpy as np
 import pyproj
 from matplotlib import patches, rcParams
 from matplotlib.axes import Axes
+from matplotlib.backends.backend_qt import NavigationToolbar2QT
 from matplotlib.backends.backend_qtagg import FigureCanvasQTAgg
 from matplotlib.figure import Figure
-from matplotlib.ticker import (
-    # FixedFormatter,
-    # FixedLocator,
-    FuncFormatter,
-    # LinearLocator,
-    MaxNLocator,
-)
+from matplotlib.ticker import FuncFormatter, MaxNLocator
 from matplotlib_map_utils.core.north_arrow import north_arrow
 from matplotlib_map_utils.core.scale_bar import scale_bar
 from matplotlib_map_utils.validation.scale_bar import units_standard
@@ -49,6 +45,63 @@ from pyproj.crs import CRS
 from PySide6 import QtCore, QtWidgets
 
 rcParams["savefig.dpi"] = 300
+
+
+class CustomToolbar(NavigationToolbar2QT):
+    """Custom toolbar."""
+
+    # Control which standard buttons appear and their order.
+    # Each name must match an entry in NavigationToolbar2QT.toolitems.
+    wanted: ClassVar = [
+        "Home",
+        "Back",
+        "Forward",
+        "Pan",
+        "Zoom",
+        "Save",
+    ]
+
+    toolitems: ClassVar = [
+        item
+        for name in wanted
+        for item in NavigationToolbar2QT.toolitems
+        if item[0] == name
+    ]
+
+    def __init__(self, canvas, parent=None):
+        super().__init__(canvas, parent)
+
+        # Icons only, without text labels.
+        self.setToolButtonStyle(QtCore.Qt.ToolButtonStyle.ToolButtonIconOnly)
+
+        # Rename a standard button (its tooltip is also updated).
+        # for action in self.actions():
+        #     if action.text() == "Home":
+        #         action.setText("Reset view")
+        #         action.setToolTip("Reset plot view")
+        #         action.setStatusTip("Reset plot view")
+
+        # Add a custom action with a Qt standard icon.
+
+    def add_map_btn(self, update):
+        """Add map button."""
+        self.addSeparator()
+
+        self.refresh_action = self.addAction(
+            self.style().standardIcon(QtWidgets.QStyle.StandardPixmap.SP_BrowserReload),
+            "Refresh plot",
+        )
+        self.refresh_action.setToolTip("Refresh plot")
+        self.refresh_action.setStatusTip("Refresh plot")
+        self.refresh_action.triggered.connect(self.refresh_plot)
+        self.cupdate = update
+
+    def refresh_plot(self):
+        """Refresh plot."""
+        self.canvas.show_north_arrow = not self.canvas.show_north_arrow
+
+        self.cupdate()
+        self.canvas.axes.autoscale()
 
 
 class CanvasModule(FigureCanvasQTAgg):
@@ -65,7 +118,7 @@ class CanvasModule(FigureCanvasQTAgg):
             self.showlog = parent.showlog
 
         fig = Figure(layout="compressed")
-        self.axes = fig.add_subplot(111)
+        # self.axes = fig.add_subplot(111)
         super().__init__(fig)
 
         self.resize_timer = QtCore.QTimer(self)
@@ -74,6 +127,7 @@ class CanvasModule(FigureCanvasQTAgg):
         self.custom_resize = False
 
         self._pending_size = None
+        self.show_north_arrow = False
 
     def resizeEvent(
         self,
@@ -106,6 +160,13 @@ class CanvasModule(FigureCanvasQTAgg):
 
             self.draw_idle()
             self._pending_size = None
+
+    def set_map_axes(self, axes, crs):
+        """Set the map axes and north arrow."""
+        set_axes(axes, crs)
+
+        if self.show_north_arrow is True:
+            set_northscale(axes, crs, self.showlog)
 
 
 def dd2txt(
@@ -280,7 +341,7 @@ def get_neat_intervals(
 
 def set_axes(
     ax: Axes,
-    crs: CRS,
+    crs: CRS | None,
 ):
     """
     Set the axes.
@@ -292,7 +353,15 @@ def set_axes(
     crs
         PyProj crs of data
     """
-    crs = pyproj.CRS.from_wkt(crs.to_wkt())
+    if crs is None:
+        crs = CRS.from_string(
+            'LOCAL_CS["Arbitrary",UNIT["metre",1,'
+            'AUTHORITY["EPSG","9001"]],'
+            'AXIS["Easting",EAST],'
+            'AXIS["Northing",NORTH]]'
+        )
+    else:
+        crs = CRS.from_wkt(crs.to_wkt())
 
     ax.set_aspect("equal")
     ax.yaxis.tick_right()
@@ -332,6 +401,8 @@ def set_axes(
     secax1.tick_params(axis="y", labelrotation=90, labelsize=9)
 
     ylabels_dd(secax1, crs, xmin)
+    ax.set_xlabel("")
+    ax.set_ylabel("")
 
 
 def xlabels_dd(ax, crs, y, pad=15):
@@ -352,7 +423,7 @@ def xlabels_dd(ax, crs, y, pad=15):
         ticks = [transformeri.transform(x, ymaxd)[0] for x in deg_ticks]
 
         ax.set_xticks(ticks, labels=labels, ha="center", va="center")
-        fig.canvas.draw()
+        fig.draw_without_rendering()
 
         text_boxes = [label.get_window_extent() for label in ax.get_xticklabels()]
         overlap = any(b1.x1 + pad > b2.x0 for b1, b2 in pairwise(text_boxes))
@@ -371,7 +442,7 @@ def xlabels_m(ax, pad=15):
     while True:
         ax.xaxis.set_major_locator(MaxNLocator(nbins=num))
 
-        fig.canvas.draw()
+        fig.draw_without_rendering()
         text_boxes = [label.get_window_extent() for label in ax.get_xticklabels()]
         overlap = any(b1.x1 + pad > b2.x0 for b1, b2 in pairwise(text_boxes))
 
@@ -399,7 +470,7 @@ def ylabels_dd(ax, crs, x, pad=20):
         ticks = [transformeri.transform(xd, y)[1] for y in deg_ticks]
 
         ax.set_yticks(ticks, labels=labels, ha="center", va="center")
-        fig.canvas.draw()
+        fig.draw_without_rendering()
 
         text_boxes = [label.get_window_extent() for label in ax.get_yticklabels()]
         overlap = any(b1.y1 + pad > b2.y0 for b1, b2 in pairwise(text_boxes))
@@ -418,7 +489,7 @@ def ylabels_m(ax, pad=15):
     while True:
         ax.yaxis.set_major_locator(MaxNLocator(nbins=num))
 
-        fig.canvas.draw()
+        fig.draw_without_rendering()
         text_boxes = [label.get_window_extent() for label in ax.get_yticklabels()]
 
         overlap = any(b1.y1 + pad > b2.y0 for b1, b2 in pairwise(text_boxes))
@@ -431,7 +502,7 @@ def ylabels_m(ax, pad=15):
 
 def set_northscale(
     ax: Axes,
-    crs: CRS,
+    crs: CRS | None,
     showlog: Callable[..., None] = print,
 ):
     """
@@ -446,8 +517,15 @@ def set_northscale(
     showlog
         Show information using a function, by default print
     """
-    crs = pyproj.CRS.from_wkt(crs.to_wkt())
-
+    if crs is None:
+        crs = CRS.from_string(
+            'LOCAL_CS["Arbitrary",UNIT["metre",1,'
+            'AUTHORITY["EPSG","9001"]],'
+            'AXIS["Easting",EAST],'
+            'AXIS["Northing",NORTH]]'
+        )
+    else:
+        crs = CRS.from_wkt(crs.to_wkt())
     north_arrow(
         ax,
         scale=0.2,
@@ -523,10 +601,10 @@ def _testfn():
     """Test function."""
     import geopandas as gpd
 
-    from pygmi.raster.iodefs import get_raster
+    # from pygmi.raster.iodefs import get_raster
 
     sfile = r"D:\workdata\PyGMI Test Data\Vector\Rose\2329AC_lin_wgs84sutm35.shp"
-    ifile = r"D:\Workdata\PyGMI Test Data\Raster\testdata.tif"
+    # ifile = r"D:\Workdata\PyGMI Test Data\Raster\testdata.tif"
 
     plt.figure(layout="compressed")
     ax = plt.gca()

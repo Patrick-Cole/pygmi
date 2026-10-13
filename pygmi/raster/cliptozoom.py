@@ -31,70 +31,14 @@ This module allows a raster dataset to be clipped to the current zoomed extents.
 import geopandas as gpd
 from matplotlib import colormaps
 from matplotlib.backends.backend_qt import NavigationToolbar2QT
-from matplotlib.backends.backend_qtagg import FigureCanvasQTAgg
-from matplotlib.figure import Figure
 from PySide6 import QtCore, QtWidgets
 from shapely import Polygon
 
-from pygmi.maps import frm
+from pygmi.maps import CanvasModule
 from pygmi.misc import BasicModule
 from pygmi.raster.datatypes import Data
 from pygmi.raster.misc import cut_raster
 from pygmi.raster.modest_image import imshow
-
-
-class MyMplCanvas(FigureCanvasQTAgg):
-    """Matplotlib canvas widget for the actual plot."""
-
-    def __init__(self):
-        fig = Figure(layout="tight")
-        self.axes = fig.add_subplot(111)
-        super().__init__(fig)
-
-    def update_raster(
-        self,
-        data1: Data,
-        cmap: str,
-    ):
-        """
-        Update the raster plot.
-
-        Parameters
-        ----------
-        data1
-            Raster dataset to be used
-        cmap
-            Matplotlib colormap description
-
-        """
-        self.figure.clear()
-
-        self.axes = self.figure.add_subplot(111)
-        self.axes.tick_params(axis="x", rotation=90)
-        self.axes.tick_params(axis="y", rotation=0)
-
-        rdata = imshow(
-            self.axes,
-            data1.data,
-            extent=data1.extent,
-            cmap=colormaps[cmap],
-            interpolation="nearest",
-        )
-
-        if not data1.isrgb:
-            rdata.set_clim_std(2.5)
-
-        if data1.crs is not None and data1.crs.is_geographic:
-            self.axes.set_xlabel("Longitude")
-            self.axes.set_ylabel("Latitude")
-        else:
-            self.axes.set_xlabel("Eastings")
-            self.axes.set_ylabel("Northings")
-
-        self.axes.xaxis.set_major_formatter(frm)
-        self.axes.yaxis.set_major_formatter(frm)
-
-        self.figure.canvas.draw()
 
 
 class ClipToZoom(BasicModule):
@@ -117,8 +61,9 @@ class ClipToZoom(BasicModule):
 
         vbl = QtWidgets.QVBoxLayout(self)  # self is where layout is assigned
         hbl = QtWidgets.QHBoxLayout()
-        self.mmc = MyMplCanvas()
+        self.mmc = CanvasModule(self)
         mpl_toolbar = NavigationToolbar2QT(self.mmc, self.parent)
+        self.axes = self.mmc.figure.add_subplot(111)
 
         self.buttonbox.htmlfile = "raster.dm.cliptozoom"
         self.buttonbox.buttonbox.hide()
@@ -153,7 +98,7 @@ class ClipToZoom(BasicModule):
         cmap = self.cmb_2.currentText()
         if "Raster" in self.indata:
             data = self.indata["Raster"]
-            self.mmc.update_raster(data[i], cmap)
+            self.update_raster(data[i], cmap)
 
     def settings(
         self,
@@ -189,8 +134,8 @@ class ClipToZoom(BasicModule):
         if tmp == 0:
             return False
 
-        ylim = self.mmc.axes.get_ylim()
-        xlim = self.mmc.axes.get_xlim()
+        ylim = self.axes.get_ylim()
+        xlim = self.axes.get_xlim()
         x0, x1 = xlim
         y0, y1 = ylim
 
@@ -215,6 +160,40 @@ class ClipToZoom(BasicModule):
         """Save project data from class."""
         self.saveobj(self.cmb_1)
         self.saveobj(self.cmb_2)
+
+    def update_raster(
+        self,
+        data1: Data,
+        cmap: str,
+    ):
+        """
+        Update the raster plot.
+
+        Parameters
+        ----------
+        data1
+            Raster dataset to be used
+        cmap
+            Matplotlib colormap description
+
+        """
+        self.mmc.figure.clear()
+
+        self.axes = self.mmc.figure.add_subplot(111)
+
+        rdata = imshow(
+            self.axes,
+            data1.data,
+            extent=data1.extent,
+            cmap=colormaps[cmap],
+            interpolation="nearest",
+        )
+
+        if not data1.isrgb:
+            rdata.set_clim_std(2.5)
+
+        self.mmc.set_map_axes(self.axes, data1.crs)
+        self.mmc.draw_idle()
 
 
 def _testfn():

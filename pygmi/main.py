@@ -1583,10 +1583,10 @@ def main():
     wid = MainWidget()
     wid.resize(width, height)
 
-    wid.setWindowState(
-        wid.windowState() & ~QtCore.Qt.WindowState.WindowMinimized
-        | QtCore.Qt.WindowState.WindowActive
-    )
+    # wid.setWindowState(
+    #     wid.windowState() & ~QtCore.Qt.WindowState.WindowMinimized
+    #     | QtCore.Qt.WindowState.WindowActive
+    # )
 
     wid.show()
     wid.activateWindow()

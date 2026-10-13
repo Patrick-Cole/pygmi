@@ -32,7 +32,6 @@ import pandas as pd
 from geopandas import GeoDataFrame
 from matplotlib import rcParams
 from matplotlib.axes import Axes
-from matplotlib.backend_bases import MouseEvent, PickEvent, ResizeEvent
 from matplotlib.backends.backend_qt import NavigationToolbar2QT
 from matplotlib.colorbar import Colorbar
 from matplotlib.colors import BoundaryNorm
@@ -43,18 +42,22 @@ from PySide6 import QtCore, QtWidgets
 from scipy.stats import median_abs_deviation
 from sklearn.cluster import KMeans
 
-from pygmi.maps import CanvasModule, discrete_colorbar, frm, set_axes, set_northscale
+from pygmi.maps import CanvasModule, discrete_colorbar, frm
 from pygmi.misc import ContextModule
 from pygmi.raster.colormaps import colormaps
 
 rcParams["savefig.dpi"] = 300
 
 
-class MyMplCanvas(CanvasModule):
+class PlotCCoef(ContextModule):
     """
-    Matplotlib canvas widget for the actual plot.
+    GUI to plot correlation coefficients.
 
-    This routine will also allow the picking and movement of nodes of data.
+    Parameters
+    ----------
+    parent
+        Reference to the parent routine. The default is None.
+
     """
 
     def __init__(
@@ -62,35 +65,45 @@ class MyMplCanvas(CanvasModule):
         parent=None,
     ):
         super().__init__(parent)
+        self.setAttribute(QtCore.Qt.WidgetAttribute.WA_DeleteOnClose)
+        self.setWindowTitle("Vector Plot")
 
-        self.line = None
-        self.ind = None
-        self.background = None
-        self.pickevents = False
-        self.cmap = colormaps["viridis"]
-
+        self.data = None
+        self.texts = None
         self.ccoeflbls = []
         self.dmat = np.array([])
-        self.texts = None
 
-    def button_release_callback(
-        self,
-        event: MouseEvent,
-    ):
-        """
-        Mouse button release callback.
+        vbl = QtWidgets.QVBoxLayout(self)
+        hbl = QtWidgets.QHBoxLayout()
+        self.mmc = CanvasModule(self)
 
-        Parameters
-        ----------
-        event
-            Button release event.
+        mpl_toolbar = NavigationToolbar2QT(self.mmc, self.parent)
 
-        """
-        if event.inaxes is None:
+        self.cmb_1 = QtWidgets.QComboBox()
+        lbl_1 = QtWidgets.QLabel("Style:")
+
+        self.cmb_1.addItems(["Normal", "Positive correlation highlights"])
+
+        self.buttonbox.htmlfile = "vector.cm.pltcorr"
+        self.buttonbox.buttonbox.hide()
+        hbl.addWidget(self.buttonbox)
+        hbl.addWidget(lbl_1, 0, QtCore.Qt.AlignmentFlag.AlignRight)
+        hbl.addWidget(self.cmb_1)
+
+        vbl.addWidget(self.mmc)
+        vbl.addWidget(mpl_toolbar)
+        vbl.addLayout(hbl)
+
+        self.setFocus()
+
+        self.cmb_1.currentIndexChanged.connect(self.change_band)
+
+    def change_band(self):
+        """Combo box to choose band."""
+        if self.data is None:
             return
-        if event.button != 1:
-            return
-        self.ind = None
+
+        self.update_ccoef()
 
     def format_coord(
         self,
@@ -127,79 +140,12 @@ class MyMplCanvas(CanvasModule):
 
             return f"{xlbl}, {ylbl} correlation: {z}%"
 
-    def motion_notify_callback(
-        self,
-        event: MouseEvent,
-    ):
-        """
-        Move mouse callback.
+    def run(self):
+        """Entry point into the routine, used to run context menu item."""
+        self.data = self.indata["Vector"][0]
 
-        Parameters
-        ----------
-        event
-            Motion notify event.
-
-        """
-        if event.inaxes is None:
-            return
-        if event.button != 1:
-            return
-        if self.ind is None:
-            return
-
-        dtmp = self.line.get_data()
-        dtmp[1][self.ind] = event.ydata
-        self.line.set_data(dtmp[0], dtmp[1])
-
-        self.figure.canvas.restore_region(self.background)
-        self.axes.draw_artist(self.line)
-        self.figure.canvas.update()
-
-    def onpick(
-        self,
-        event: PickEvent,
-    ) -> bool:
-        """
-        Picker event.
-
-        Parameters
-        ----------
-        event
-            Pick event.
-
-        Returns
-        -------
-        bool
-            Return TRUE if pick succeeded, False otherwise.
-
-        """
-        if event.mouseevent.inaxes is None:
-            return False
-        if event.mouseevent.button != 1:
-            return False
-        if event.artist != self.line:
-            return True
-
-        self.ind = event.ind
-        self.ind = self.ind[len(self.ind) // 2]  # get center-ish value
-
-        return True
-
-    def resizeline(
-        self,
-        event: ResizeEvent,
-    ):
-        """
-        Resize event.
-
-        Parameters
-        ----------
-        event
-            Resize event.
-
-        """
-        r, data = self.line.get_data()
-        self.update_lines(r, data)
+        self.change_band()
+        self.show()
 
     def textresize(
         self,
@@ -232,48 +178,37 @@ class MyMplCanvas(CanvasModule):
             else:
                 i.set_visible(False)
 
-    def update_ccoef(
-        self,
-        data: GeoDataFrame,
-        style: str = "Normal",
-    ):
-        """
-        Update the plot from point data.
+    def update_ccoef(self):
+        """Update the plot from point data."""
+        style = self.cmb_1.currentText()
 
-        Parameters
-        ----------
-        data
-            GeoPandas data in a dictionary.
-        style
-            Style of colour mapping, the default is "Normal".
+        fig = self.mmc.figure
+        fig.clear()
 
-        """
-        self.figure.clear()
-
-        self.axes = self.figure.add_subplot(111, label="map")
-        cb_registry = self.axes.callbacks
+        axes = fig.add_subplot(111, label="map")
+        cb_registry = axes.callbacks
         cb_registry.connect("ylim_changed", self.textresize)
         cb_registry.connect("xlim_changed", self.textresize)
 
-        self.axes.tick_params(axis="x", rotation=90)
-        self.axes.tick_params(axis="y", rotation=0)
-        self.axes.axis("scaled")
-        self.axes.set_title("Correlation Coefficients")
+        axes.tick_params(axis="x", rotation=90)
+        axes.tick_params(axis="y", rotation=0)
+        axes.axis("scaled")
+        axes.set_title("Correlation Coefficients")
 
         # calculate correlations
-        corr = data.corr(numeric_only=True)
+        corr = self.data.corr(numeric_only=True)
         corr = (corr * 100).round(0)
 
         corr = corr.dropna(axis=0, how="all").dropna(axis=1, how="all")
         corr = corr.replace(np.nan, 0)
         corr = corr.astype(int)
 
-        dmat = corr.to_numpy()
-        dmat = np.ma.array(dmat, mask=~np.tri(*dmat.shape).astype(bool))
+        self.dmat = corr.to_numpy()
+        self.dmat = np.ma.array(self.dmat, mask=~np.tri(*self.dmat.shape).astype(bool))
 
-        self.axes.format_coord = self.format_coord
+        axes.format_coord = self.format_coord
         self.ccoeflbls = corr.columns.tolist()
-        self.dmat = dmat[::-1]
+        self.dmat = self.dmat[::-1]
 
         annot_kws = {"size": 35 / np.sqrt(len(corr))}
 
@@ -292,7 +227,7 @@ class MyMplCanvas(CanvasModule):
             self.dmat,
             self.ccoeflbls[::-1],
             self.ccoeflbls,
-            self.axes,
+            axes,
             cmap=cmap,
             cbarlabel="Correlation",
             norm=norm,
@@ -300,9 +235,235 @@ class MyMplCanvas(CanvasModule):
 
         im.format_cursor_data = lambda x: ""
 
-        self.texts = annotate_heatmap(im, valfmt="{x:.0f}", **annot_kws)
+        self.texts = annotate_heatmap(im, ivalfmt="{x:.0f}", **annot_kws)
 
-        self.figure.canvas.draw()
+        self.mmc.draw_idle()
+
+
+class PlotHist(ContextModule):
+    """
+    GUI to plot histogram from vectors.
+
+    Parameters
+    ----------
+    parent
+        Reference to the parent routine. The default is None.
+
+    """
+
+    def __init__(
+        self,
+        parent=None,
+    ):
+        super().__init__(parent)
+        self.setAttribute(QtCore.Qt.WidgetAttribute.WA_DeleteOnClose)
+        self.setWindowTitle("Histogram")
+
+        vbl = QtWidgets.QVBoxLayout(self)
+        hbl = QtWidgets.QHBoxLayout()
+        self.mmc = CanvasModule(self)
+        mpl_toolbar = NavigationToolbar2QT(self.mmc, self.parent)
+
+        self.cmb_1 = QtWidgets.QComboBox()
+        lbl_1 = QtWidgets.QLabel("Bands:")
+        self.cb_log = QtWidgets.QCheckBox("Log Y Axis:")
+        self.cb_cum = QtWidgets.QCheckBox("Cumulative:")
+
+        self.buttonbox.htmlfile = "vector.cm.showhist"
+        self.buttonbox.buttonbox.hide()
+        hbl.addWidget(self.buttonbox)
+
+        hbl.addWidget(self.cb_log)
+        hbl.addWidget(self.cb_cum)
+        hbl.addWidget(lbl_1, 0, QtCore.Qt.AlignmentFlag.AlignRight)
+        hbl.addWidget(self.cmb_1)
+
+        vbl.addWidget(self.mmc)
+        vbl.addWidget(mpl_toolbar)
+        vbl.addLayout(hbl)
+
+        self.setFocus()
+
+        self.cmb_1.currentIndexChanged.connect(self.change_band)
+        self.cb_log.stateChanged.connect(self.change_band)
+        self.cb_cum.stateChanged.connect(self.change_band)
+
+    def change_band(self):
+        """Combo box to choose band."""
+        data = self.indata["Vector"][0]
+        col = self.cmb_1.currentText()
+        ylog = self.cb_log.isChecked()
+        iscum = self.cb_cum.isChecked()
+        self.update_hist(data, col, ylog, iscum)
+
+    def run(self):
+        """Entry point into the routine, used to run context menu item."""
+        data = self.indata["Vector"][0]
+        cols = data.select_dtypes(include=np.number).columns.tolist()
+
+        if not cols:
+            self.showlog("No numerical columns.")
+            return
+
+        self.cmb_update(self.cmb_1, cols)
+
+        self.change_band()
+        self.show()
+
+    def update_hist(
+        self,
+        data: GeoDataFrame,
+        col: str,
+        ylog: bool,
+        iscum: bool,
+    ):
+        """
+        Update the histogram plot.
+
+        Parameters
+        ----------
+        data
+            Input GeoDataFrame.
+        col
+            Label for column to extract.
+        ylog
+            Boolean for a log scale on y-axis.
+        iscum
+            Boolean for a cumulative distribution.
+
+        """
+        fig = self.mmc.figure
+        fig.clear()
+
+        axes = fig.add_subplot(111)
+        axes.tick_params(axis="x", rotation=90)
+        axes.tick_params(axis="y", rotation=0)
+
+        dattmp = data.loc[:, col]
+
+        axes.hist(
+            dattmp, bins="sqrt", cumulative=iscum, histtype="stepfilled", edgecolor="k"
+        )
+        axes.set_title(col)
+        axes.set_xlabel("Data Value")
+        axes.set_ylabel("Counts")
+
+        axes.xaxis.set_major_formatter(frm)
+        axes.yaxis.set_major_formatter(frm)
+
+        if ylog is True:
+            axes.set_yscale("log")
+
+        self.mmc.draw_idle()
+
+
+class PlotLines(ContextModule):
+    """
+    GUI to plot lines.
+
+    Parameters
+    ----------
+    parent
+        Reference to the parent routine. The default is None.
+
+    """
+
+    def __init__(
+        self,
+        parent=None,
+    ):
+        super().__init__(parent)
+        self.setAttribute(QtCore.Qt.WidgetAttribute.WA_DeleteOnClose)
+        self.setWindowTitle("Plot Profiles")
+
+        self.data = None
+
+        vbl = QtWidgets.QVBoxLayout(self)
+        hbl = QtWidgets.QHBoxLayout()
+        self.mmc = CanvasModule(self)
+
+        mpl_toolbar = NavigationToolbar2QT(self.mmc, self.parent)
+
+        self.cmb_1 = QtWidgets.QComboBox()
+        self.cmb_2 = QtWidgets.QComboBox()
+        lbl_1 = QtWidgets.QLabel("Line:")
+        lbl_2 = QtWidgets.QLabel("Column:")
+
+        self.buttonbox.htmlfile = "vector.cm.showprof"
+        self.buttonbox.buttonbox.hide()
+        hbl.addWidget(self.buttonbox)
+
+        hbl.addWidget(lbl_1, 0, QtCore.Qt.AlignmentFlag.AlignRight)
+        hbl.addWidget(self.cmb_1)
+        hbl.addWidget(lbl_2, 0, QtCore.Qt.AlignmentFlag.AlignRight)
+        hbl.addWidget(self.cmb_2)
+
+        vbl.addWidget(self.mmc)
+        vbl.addWidget(mpl_toolbar)
+        vbl.addLayout(hbl)
+
+        self.setFocus()
+
+        self.cmb_1.currentIndexChanged.connect(self.change_band)
+        self.cmb_2.currentIndexChanged.connect(self.change_band)
+
+        self.xcol = ""
+        self.ycol = ""
+
+    def change_band(self):
+        """Combo box to choose band."""
+        if self.data is None:
+            return
+
+        line = self.cmb_1.currentText()
+        col = self.cmb_2.currentText()
+
+        data2 = self.data[self.data.line == line]
+        data2 = data2.dropna(subset=col)
+        x = data2.geometry.x.values
+        y = data2.geometry.y.values
+
+        data2 = data2[col].values
+
+        r = np.sqrt((x[1:] - x[:-1]) ** 2 + (y[1:] - y[:-1]) ** 2)
+        r = np.cumsum(r)
+        r = np.concatenate(([0.0], r))
+
+        self.update_lines(r, data2)
+
+    def run(self):
+        """Entry point into the routine, used to run context menu item."""
+        self.data = None
+        for i in self.indata["Vector"]:
+            if i.geom_type.iloc[0] == "Point":
+                self.data = i
+                break
+
+        if self.data is None:
+            self.showlog("No point type data.")
+            return
+
+        self.cmb_1.currentIndexChanged.disconnect()
+        self.cmb_2.currentIndexChanged.disconnect()
+
+        self.show()
+
+        filt = (self.data.columns != "geometry") & (self.data.columns != "line")
+        cols = list(self.data.columns[filt])
+        lines = self.data.line[self.data.line != "nan"].unique()
+
+        self.cmb_1.clear()
+        self.cmb_2.clear()
+        self.cmb_1.addItems(lines)
+        self.cmb_2.addItems(cols)
+
+        self.cmb_1.setCurrentIndex(0)
+        self.cmb_2.setCurrentIndex(0)
+
+        self.change_band()
+
+        self.cmb_1.currentIndexChanged.connect(self.change_band)
+        self.cmb_2.currentIndexChanged.connect(self.change_band)
 
     def update_lines(
         self,
@@ -320,42 +481,127 @@ class MyMplCanvas(CanvasModule):
             Array of data to be plotted on the y-axis
 
         """
-        if self.pickevents is False:
-            self.figure.canvas.mpl_connect("pick_event", self.onpick)
-            self.figure.canvas.mpl_connect(
-                "button_release_event", self.button_release_callback
-            )
-            self.figure.canvas.mpl_connect(
-                "motion_notify_event", self.motion_notify_callback
-            )
-            self.figure.canvas.mpl_connect("resize_event", self.resizeline)
-            self.pickevents = True
+        fig = self.mmc.figure
+        fig.clear()
 
-        self.figure.clear()
+        axes = fig.add_subplot(111, label="Profile")
+        axes.tick_params(axis="x", rotation=90)
+        axes.tick_params(axis="y", rotation=0)
 
-        self.axes = self.figure.add_subplot(111, label="Profile")
-        self.axes.tick_params(axis="x", rotation=90)
-        self.axes.tick_params(axis="y", rotation=0)
+        axes.set_title("Profile")
+        axes.set_xlabel("Distance")
+        axes.set_ylabel("Value")
 
-        self.axes.set_title("Profile")
-        self.axes.set_xlabel("Distance")
-        self.axes.set_ylabel("Value")
+        axes.xaxis.set_major_formatter(frm)
+        axes.yaxis.set_major_formatter(frm)
 
-        self.axes.xaxis.set_major_formatter(frm)
-        self.axes.yaxis.set_major_formatter(frm)
+        axes.plot(r, data, ".-")
 
-        self.figure.canvas.draw()
-        self.background = self.figure.canvas.copy_from_bbox(self.axes.bbox)
+        self.mmc.draw_idle()
 
-        (self.line,) = self.axes.plot(r, data, ".-")
-        self.line.set_picker(True)
-        self.line.set_pickradius(5)
 
-        self.figure.canvas.draw()
+class PlotLineMap(ContextModule):
+    """
+    GUI to plot a line map.
+
+    Parameters
+    ----------
+    parent
+        Reference to the parent routine. The default is None.
+
+    """
+
+    def __init__(
+        self,
+        parent=None,
+    ):
+        super().__init__(parent)
+        self.setWindowTitle("Profile Map")
+        self.setAttribute(QtCore.Qt.WidgetAttribute.WA_DeleteOnClose)
+
+        self.data = None
+
+        vbl = QtWidgets.QVBoxLayout(self)
+        hbl = QtWidgets.QHBoxLayout()
+        self.mmc = CanvasModule(self)
+
+        mpl_toolbar = NavigationToolbar2QT(self.mmc, self.parent)
+
+        self.cmb_1 = QtWidgets.QComboBox()
+        self.spinbox = QtWidgets.QSpinBox()
+        self.lbl_1 = QtWidgets.QLabel("Column:")
+        self.lbl_3 = QtWidgets.QLabel("Scale:")
+        self.cb_1 = QtWidgets.QCheckBox("Show Line Labels:")
+
+        self.buttonbox.htmlfile = "vector.cm.showmapprof"
+        self.buttonbox.buttonbox.hide()
+        hbl.addWidget(self.buttonbox)
+
+        hbl.addWidget(self.lbl_1, 0, QtCore.Qt.AlignmentFlag.AlignRight)
+        hbl.addWidget(self.cmb_1)
+        hbl.addWidget(self.lbl_3, 0, QtCore.Qt.AlignmentFlag.AlignRight)
+        hbl.addWidget(self.spinbox)
+
+        vbl.addWidget(self.mmc)
+        vbl.addWidget(mpl_toolbar)
+        vbl.addWidget(self.cb_1)
+        vbl.addLayout(hbl)
+
+        self.setFocus()
+
+        self.cmb_1.currentIndexChanged.connect(self.change_band)
+        self.cb_1.stateChanged.connect(self.change_band)
+        self.spinbox.valueChanged.connect(self.change_band)
+
+    def change_band(self):
+        """Combo box to choose band."""
+        if self.data is None:
+            return
+
+        scale = self.spinbox.value()
+        i = self.cmb_1.currentText()
+        data = self.data.dropna(subset=i)
+
+        self.update_lmap(data, i, scale, self.cb_1.isChecked())
+
+    def run(self):
+        """Entry point into the routine, used to run context menu item."""
+        self.data = None
+        for i in self.indata["Vector"]:
+            if i.geom_type.iloc[0] == "Point":
+                self.data = i
+                break
+
+        if self.data is None:
+            self.showlog("No point type data.")
+            return
+
+        self.cmb_1.currentIndexChanged.disconnect()
+        self.spinbox.valueChanged.disconnect()
+        self.cb_1.stateChanged.disconnect()
+
+        self.show()
+
+        filt = (self.data.columns != "geometry") & (self.data.columns != "line")
+        cols = list(self.data.columns[filt])
+        self.cmb_1.clear()
+        self.cmb_1.addItems(cols)
+
+        self.spinbox.setMinimum(1)
+        self.spinbox.setMaximum(1000000)
+        self.spinbox.setValue(100)
+
+        self.cmb_1.setCurrentIndex(0)
+
+        self.change_band()
+
+        self.cmb_1.currentIndexChanged.connect(self.change_band)
+        self.spinbox.valueChanged.connect(self.change_band)
+        self.cb_1.stateChanged.connect(self.change_band)
 
     def update_lmap(
         self,
-        data: pd.DataFrame,
+        data: GeoDataFrame,
         ival: str | float,
         scale: float,
         uselabels: bool,
@@ -375,14 +621,10 @@ class MyMplCanvas(CanvasModule):
             Boolean choice whether to use labels or not.
 
         """
-        self.custom_resize = True
-        self.figure.clear()
-        ax1 = self.figure.add_subplot(111, label="Map")
-
-        self.axes = ax1
-
-        self.figure.canvas.draw()
-        self.background = self.figure.canvas.copy_from_bbox(ax1.bbox)
+        fig = self.mmc.figure
+        self.mmc.custom_resize = True
+        fig.clear()
+        ax1 = fig.add_subplot(111, label="Map")
 
         zdata = data[ival]
         med = np.median(zdata)
@@ -441,121 +683,100 @@ class MyMplCanvas(CanvasModule):
             ax1.plot(x, y, "c")
             ax1.plot(qx, qy, "k")
 
-        set_axes(self.axes, data.crs)
-        set_northscale(self.axes, data.crs, self.showlog)
-        self.figure.canvas.draw()
+        self.mmc.set_map_axes(ax1, data.crs)
+        self.mmc.draw_idle()
 
-    def update_vector(
+
+class PlotRose(ContextModule):
+    """
+    GUI to plot rose diagrams.
+
+    Parameters
+    ----------
+    parent
+        Reference to the parent routine. The default is None.
+
+    """
+
+    def __init__(
         self,
-        data: GeoDataFrame,
-        col: str,
-        style: bool | None = None,
+        parent=None,
     ):
-        """
-        Update the plot from vector data.
+        super().__init__(parent)
+        self.setAttribute(QtCore.Qt.WidgetAttribute.WA_DeleteOnClose)
 
-        Parameters
-        ----------
-        data
-            GeoDataFrame.
-        col
-            Label for column to extract.
-        style
-            Style of colour mapping.
+        self.data = None
 
-        """
-        self.custom_resize = True
-        self.figure.clear()
+        vbl = QtWidgets.QVBoxLayout(self)
+        hbl = QtWidgets.QHBoxLayout()
+        self.mmc = CanvasModule(self)
 
-        self.axes = self.figure.add_subplot(111, label="map")
+        mpl_toolbar = NavigationToolbar2QT(self.mmc, self.parent)
 
-        if "LineString" in data.geom_type.iloc[0]:
-            tmp = []
-            for i in data.geometry:
-                tmp.append(np.transpose(i.coords.xy))
+        self.cmb_1 = QtWidgets.QComboBox()
+        self.spinbox = QtWidgets.QSpinBox()
+        self.lbl_1 = QtWidgets.QLabel("Rose Diagram Type:")
+        self.lbl_3 = QtWidgets.QLabel("Value:")
+        self.cb_1 = QtWidgets.QCheckBox("Equal Area Rose Diagram")
+        self.cb_2 = QtWidgets.QCheckBox("Use one colour only")
 
-            lcol = mc.LineCollection(tmp)
-            self.axes.add_collection(lcol)
-            self.axes.autoscale()
+        self.buttonbox.htmlfile = "vector.cm.showrose"
+        self.buttonbox.buttonbox.hide()
+        hbl.addWidget(self.buttonbox)
 
-        elif "Polygon" in data.geom_type.iloc[0]:
-            tmp = []
-            for j in data.geometry:
-                tmp.append(np.array(j.exterior.coords[:])[:, :2].tolist())
+        hbl.addWidget(self.lbl_1, 0, QtCore.Qt.AlignmentFlag.AlignRight)
+        hbl.addWidget(self.cmb_1)
+        hbl.addWidget(self.lbl_3, 0, QtCore.Qt.AlignmentFlag.AlignRight)
+        hbl.addWidget(self.spinbox)
 
-            lcol = mc.LineCollection(tmp)
-            self.axes.add_collection(lcol)
-            self.axes.autoscale()
+        vbl.addWidget(self.mmc)
+        vbl.addWidget(mpl_toolbar)
+        vbl.addWidget(self.cb_1)
+        vbl.addWidget(self.cb_2)
+        vbl.addLayout(hbl)
 
-        elif "Point" in data.geom_type.iloc[0]:
-            if col != "" and style is None or "Normal" in style:
-                dstd = data[col].std()
-                dmean = data[col].mean()
-                vmin = max(dmean - 2 * dstd, data[col].min())
-                vmax = min(dmean + 2 * dstd, data[col].max())
+        self.setFocus()
 
-                scat = self.axes.scatter(
-                    data.geometry.x,
-                    data.geometry.y,
-                    c=data[col],
-                    vmin=vmin,
-                    vmax=vmax,
-                    cmap=self.cmap,
-                    marker=".",
-                )
-                self.figure.colorbar(scat, ax=self.axes, format=frm)
-            elif col != "" and "Standard" in style:
-                m3 = data[col].mean()
-                s3 = data[col].std()
-                x1 = data[col].min()
-                x2 = data[col].max()
-                eps = (x2 - x1) * 0.000001
+        self.cmb_1.currentIndexChanged.connect(self.change_band)
+        self.spinbox.valueChanged.connect(self.change_band)
+        self.cb_1.stateChanged.connect(self.change_band)
+        self.cb_2.stateChanged.connect(self.change_band)
 
-                r2 = int((x2 - m3) // s3)
-                r2 = min(3, r2)
+        self.spinbox.setValue(8)
+        self.spinbox.setMinimum(2)
+        self.spinbox.setMaximum(360)
 
-                bnds = [m3 + i * s3 for i in range(r2 + 1)]
-                lbls = [f"{i} to {i + 1}" for i in range(r2)]
-                bnds = [x1 - eps] + bnds + [x2]
-                lbls[0] = "mean" + lbls[0][1:]
-                lbls = ["min to mean"] + lbls + [f"{r2} to max"]
+        self.setWindowTitle("Rose Diagram")
 
-                z3 = pd.cut(data[col], bnds, labels=False)
-                scat = self.axes.scatter(
-                    data.geometry.x, data.geometry.y, c=z3, cmap=self.cmap, marker="."
-                )
-                discrete_colorbar(self.axes, scat, z3, lbls)
+    def change_band(self):
+        """Combo box to choose band."""
+        if self.data is None:
+            return
 
-            elif col != "" and "Quartile" in style:
-                z3 = pd.qcut(data[col], 4, labels=False, duplicates="drop")
+        i = self.cmb_1.currentIndex()
+        equal = self.cb_1.isChecked()
+        mono = self.cb_2.isChecked()
 
-                scat = self.axes.scatter(
-                    data.geometry.x,
-                    data.geometry.y,
-                    c=z3 + 1,
-                    cmap=self.cmap,
-                    marker=".",
-                )
-                discrete_colorbar(self.axes, scat, z3 + 1)
+        self.update_rose(self.data, i, self.spinbox.value(), equal, mono)
 
-            elif col != "" and "K-Means" in style:
-                z1 = np.array(data[col]).reshape(-1, 1)
-                z3 = KMeans(n_clusters=5, n_init="auto").fit_predict(z1)
-                scat = self.axes.scatter(
-                    data.geometry.x,
-                    data.geometry.y,
-                    c=z3 + 1,
-                    cmap=self.cmap,
-                    marker=".",
-                )
-                discrete_colorbar(self.axes, scat, z3 + 1)
-            else:
-                self.axes.scatter(data.geometry.x, data.geometry.y)
+    def run(self):
+        """Entry point into the routine, used to run context menu item."""
+        self.data = None
+        for i in self.indata["Vector"]:
+            if i.geom_type.iloc[0] == "LineString":
+                self.data = i
+                break
 
-        set_axes(self.axes, data.crs)
-        set_northscale(self.axes, data.crs, self.showlog)
+        if self.data is None:
+            self.showlog("No line type data.")
+            return
 
-        self.figure.canvas.draw()
+        cols = ["Average Angle per Feature", "Angle per segment in Feature"]
+        self.cmb_update(self.cmb_1, cols)
+
+        self.change_band()
+
+        self.show()
 
     def update_rose(
         self,
@@ -582,17 +803,17 @@ class MyMplCanvas(CanvasModule):
             Option for a monochrome rose diagram. The default is False.
 
         """
-        self.custom_resize = True
-        self.figure.clear()
+        self.mmc.show_north_arrow = False
+        self.mmc.custom_resize = True
+        fig = self.mmc.figure
+        fig.clear()
 
-        ax1 = self.figure.add_subplot(121, polar=True, label="Rose")
+        ax1 = fig.add_subplot(121, polar=True, label="Rose")
         ax1.set_theta_direction(-1)
         ax1.set_theta_zero_location("N")
         ax1.yaxis.set_ticklabels([])
 
-        self.axes = ax1
-
-        ax2 = self.figure.add_subplot(122, label="Map")
+        ax2 = fig.add_subplot(122, label="Map")
 
         fangle = []
         fcnt = []
@@ -658,491 +879,8 @@ class MyMplCanvas(CanvasModule):
         ax2.add_collection(lcol)
         ax2.autoscale(enable=True)
 
-        set_axes(ax2, data.crs)
-        set_northscale(ax2, data.crs, self.showlog)
-
-        self.figure.canvas.draw()
-
-    def update_hist(
-        self,
-        data: GeoDataFrame,
-        col: str,
-        ylog: bool,
-        iscum: bool,
-    ):
-        """
-        Update the histogram plot.
-
-        Parameters
-        ----------
-        data
-            Input GeoDataFrame.
-        col
-            Label for column to extract.
-        ylog
-            Boolean for a log scale on y-axis.
-        iscum
-            Boolean for a cumulative distribution.
-
-        """
-        self.figure.clear()
-        self.axes = self.figure.add_subplot(111)
-        self.axes.tick_params(axis="x", rotation=90)
-        self.axes.tick_params(axis="y", rotation=0)
-
-        dattmp = data.loc[:, col]
-
-        self.axes.hist(
-            dattmp, bins="sqrt", cumulative=iscum, histtype="stepfilled", edgecolor="k"
-        )
-        self.axes.set_title(col)
-        self.axes.set_xlabel("Data Value")
-        self.axes.set_ylabel("Counts")
-
-        self.axes.xaxis.set_major_formatter(frm)
-        self.axes.yaxis.set_major_formatter(frm)
-
-        if ylog is True:
-            self.axes.set_yscale("log")
-
-        self.figure.canvas.draw()
-
-
-class PlotCCoef(ContextModule):
-    """
-    GUI to plot correlation coefficients.
-
-    Parameters
-    ----------
-    parent
-        Reference to the parent routine. The default is None.
-
-    """
-
-    def __init__(
-        self,
-        parent=None,
-    ):
-        super().__init__(parent)
-        self.setAttribute(QtCore.Qt.WidgetAttribute.WA_DeleteOnClose)
-        self.setWindowTitle("Vector Plot")
-
-        self.data = None
-
-        vbl = QtWidgets.QVBoxLayout(self)
-        hbl = QtWidgets.QHBoxLayout()
-        self.mmc = MyMplCanvas(self)
-
-        mpl_toolbar = NavigationToolbar2QT(self.mmc, self.parent)
-
-        self.cmb_1 = QtWidgets.QComboBox()
-        lbl_1 = QtWidgets.QLabel("Style:")
-
-        self.cmb_1.addItems(["Normal", "Positive correlation highlights"])
-
-        self.buttonbox.htmlfile = "vector.cm.pltcorr"
-        self.buttonbox.buttonbox.hide()
-        hbl.addWidget(self.buttonbox)
-        hbl.addWidget(lbl_1, 0, QtCore.Qt.AlignmentFlag.AlignRight)
-        hbl.addWidget(self.cmb_1)
-
-        vbl.addWidget(self.mmc)
-        vbl.addWidget(mpl_toolbar)
-        vbl.addLayout(hbl)
-
-        self.setFocus()
-
-        self.cmb_1.currentIndexChanged.connect(self.change_band)
-
-    def change_band(self):
-        """Combo box to choose band."""
-        if self.data is None:
-            return
-
-        style = self.cmb_1.currentText()
-        self.mmc.update_ccoef(self.data, style)
-
-    def run(self):
-        """Entry point into the routine, used to run context menu item."""
-        self.data = self.indata["Vector"][0]
-
-        self.change_band()
-        self.show()
-
-
-class PlotHist(ContextModule):
-    """
-    GUI to plot histogram from vectors.
-
-    Parameters
-    ----------
-    parent
-        Reference to the parent routine. The default is None.
-
-    """
-
-    def __init__(
-        self,
-        parent=None,
-    ):
-        super().__init__(parent)
-        self.setAttribute(QtCore.Qt.WidgetAttribute.WA_DeleteOnClose)
-        self.setWindowTitle("Histogram")
-
-        vbl = QtWidgets.QVBoxLayout(self)
-        hbl = QtWidgets.QHBoxLayout()
-        self.mmc = MyMplCanvas(self)
-        mpl_toolbar = NavigationToolbar2QT(self.mmc, self.parent)
-
-        self.cmb_1 = QtWidgets.QComboBox()
-        lbl_1 = QtWidgets.QLabel("Bands:")
-        self.cb_log = QtWidgets.QCheckBox("Log Y Axis:")
-        self.cb_cum = QtWidgets.QCheckBox("Cumulative:")
-
-        self.buttonbox.htmlfile = "vector.cm.showhist"
-        self.buttonbox.buttonbox.hide()
-        hbl.addWidget(self.buttonbox)
-
-        hbl.addWidget(self.cb_log)
-        hbl.addWidget(self.cb_cum)
-        hbl.addWidget(lbl_1, 0, QtCore.Qt.AlignmentFlag.AlignRight)
-        hbl.addWidget(self.cmb_1)
-
-        vbl.addWidget(self.mmc)
-        vbl.addWidget(mpl_toolbar)
-        vbl.addLayout(hbl)
-
-        self.setFocus()
-
-        self.cmb_1.currentIndexChanged.connect(self.change_band)
-        self.cb_log.stateChanged.connect(self.change_band)
-        self.cb_cum.stateChanged.connect(self.change_band)
-
-    def change_band(self):
-        """Combo box to choose band."""
-        data = self.indata["Vector"][0]
-        col = self.cmb_1.currentText()
-        ylog = self.cb_log.isChecked()
-        iscum = self.cb_cum.isChecked()
-        self.mmc.update_hist(data, col, ylog, iscum)
-
-    def run(self):
-        """Entry point into the routine, used to run context menu item."""
-        data = self.indata["Vector"][0]
-        cols = data.select_dtypes(include=np.number).columns.tolist()
-
-        if not cols:
-            self.showlog("No numerical columns.")
-            return
-
-        self.cmb_update(self.cmb_1, cols)
-
-        self.change_band()
-        self.show()
-
-
-class PlotLines(ContextModule):
-    """
-    GUI to plot lines.
-
-    Parameters
-    ----------
-    parent
-        Reference to the parent routine. The default is None.
-
-    """
-
-    def __init__(
-        self,
-        parent=None,
-    ):
-        super().__init__(parent)
-        self.setAttribute(QtCore.Qt.WidgetAttribute.WA_DeleteOnClose)
-        self.setWindowTitle("Plot Profiles")
-
-        self.data = None
-
-        vbl = QtWidgets.QVBoxLayout(self)
-        hbl = QtWidgets.QHBoxLayout()
-        self.mmc = MyMplCanvas(self)
-
-        mpl_toolbar = NavigationToolbar2QT(self.mmc, self.parent)
-
-        self.cmb_1 = QtWidgets.QComboBox()
-        self.cmb_2 = QtWidgets.QComboBox()
-        lbl_1 = QtWidgets.QLabel("Line:")
-        lbl_2 = QtWidgets.QLabel("Column:")
-
-        self.buttonbox.htmlfile = "vector.cm.showprof"
-        self.buttonbox.buttonbox.hide()
-        hbl.addWidget(self.buttonbox)
-
-        hbl.addWidget(lbl_1, 0, QtCore.Qt.AlignmentFlag.AlignRight)
-        hbl.addWidget(self.cmb_1)
-        hbl.addWidget(lbl_2, 0, QtCore.Qt.AlignmentFlag.AlignRight)
-        hbl.addWidget(self.cmb_2)
-
-        vbl.addWidget(self.mmc)
-        vbl.addWidget(mpl_toolbar)
-        vbl.addLayout(hbl)
-
-        self.setFocus()
-
-        self.cmb_1.currentIndexChanged.connect(self.change_band)
-        self.cmb_2.currentIndexChanged.connect(self.change_band)
-
-        self.xcol = ""
-        self.ycol = ""
-
-    def change_band(self):
-        """Combo box to choose band."""
-        if self.data is None:
-            return
-
-        line = self.cmb_1.currentText()
-        col = self.cmb_2.currentText()
-
-        data2 = self.data[self.data.line == line]
-        data2 = data2.dropna(subset=col)
-        x = data2.geometry.x.values
-        y = data2.geometry.y.values
-
-        data2 = data2[col].values
-
-        r = np.sqrt((x[1:] - x[:-1]) ** 2 + (y[1:] - y[:-1]) ** 2)
-        r = np.cumsum(r)
-        r = np.concatenate(([0.0], r))
-
-        self.mmc.update_lines(r, data2)
-
-    def run(self):
-        """Entry point into the routine, used to run context menu item."""
-        self.data = None
-        for i in self.indata["Vector"]:
-            if i.geom_type.iloc[0] == "Point":
-                self.data = i
-                break
-
-        if self.data is None:
-            self.showlog("No point type data.")
-            return
-
-        self.cmb_1.currentIndexChanged.disconnect()
-        self.cmb_2.currentIndexChanged.disconnect()
-
-        self.show()
-
-        filt = (self.data.columns != "geometry") & (self.data.columns != "line")
-        cols = list(self.data.columns[filt])
-        lines = self.data.line[self.data.line != "nan"].unique()
-
-        self.cmb_1.clear()
-        self.cmb_2.clear()
-        self.cmb_1.addItems(lines)
-        self.cmb_2.addItems(cols)
-
-        self.cmb_1.setCurrentIndex(0)
-        self.cmb_2.setCurrentIndex(0)
-
-        self.change_band()
-
-        self.cmb_1.currentIndexChanged.connect(self.change_band)
-        self.cmb_2.currentIndexChanged.connect(self.change_band)
-
-
-class PlotLineMap(ContextModule):
-    """
-    GUI to plot a line map.
-
-    Parameters
-    ----------
-    parent
-        Reference to the parent routine. The default is None.
-
-    """
-
-    def __init__(
-        self,
-        parent=None,
-    ):
-        super().__init__(parent)
-        self.setWindowTitle("Profile Map")
-        self.setAttribute(QtCore.Qt.WidgetAttribute.WA_DeleteOnClose)
-
-        self.data = None
-
-        vbl = QtWidgets.QVBoxLayout(self)
-        hbl = QtWidgets.QHBoxLayout()
-        self.mmc = MyMplCanvas(self)
-
-        mpl_toolbar = NavigationToolbar2QT(self.mmc, self.parent)
-
-        self.cmb_1 = QtWidgets.QComboBox()
-        self.spinbox = QtWidgets.QSpinBox()
-        self.lbl_1 = QtWidgets.QLabel("Column:")
-        self.lbl_3 = QtWidgets.QLabel("Scale:")
-        self.cb_1 = QtWidgets.QCheckBox("Show Line Labels:")
-
-        self.buttonbox.htmlfile = "vector.cm.showmapprof"
-        self.buttonbox.buttonbox.hide()
-        hbl.addWidget(self.buttonbox)
-
-        hbl.addWidget(self.lbl_1, 0, QtCore.Qt.AlignmentFlag.AlignRight)
-        hbl.addWidget(self.cmb_1)
-        hbl.addWidget(self.lbl_3, 0, QtCore.Qt.AlignmentFlag.AlignRight)
-        hbl.addWidget(self.spinbox)
-
-        vbl.addWidget(self.mmc)
-        vbl.addWidget(mpl_toolbar)
-        vbl.addWidget(self.cb_1)
-        vbl.addLayout(hbl)
-
-        self.setFocus()
-
-        self.cmb_1.currentIndexChanged.connect(self.change_band)
-        self.cb_1.stateChanged.connect(self.change_band)
-        self.spinbox.valueChanged.connect(self.change_band)
-
-    def change_band(self):
-        """Combo box to choose band."""
-        if self.data is None:
-            return
-
-        scale = self.spinbox.value()
-        i = self.cmb_1.currentText()
-        data = self.data.dropna(subset=i)
-
-        self.mmc.update_lmap(data, i, scale, self.cb_1.isChecked())
-
-    def run(self):
-        """Entry point into the routine, used to run context menu item."""
-        self.data = None
-        for i in self.indata["Vector"]:
-            if i.geom_type.iloc[0] == "Point":
-                self.data = i
-                break
-
-        if self.data is None:
-            self.showlog("No point type data.")
-            return
-
-        self.cmb_1.currentIndexChanged.disconnect()
-        self.spinbox.valueChanged.disconnect()
-        self.cb_1.stateChanged.disconnect()
-
-        self.show()
-
-        data = self.indata["Vector"][0]
-        filt = (data.columns != "geometry") & (data.columns != "line")
-        cols = list(data.columns[filt])
-        self.cmb_1.clear()
-        self.cmb_1.addItems(cols)
-
-        self.spinbox.setMinimum(1)
-        self.spinbox.setMaximum(1000000)
-        self.spinbox.setValue(100)
-
-        self.cmb_1.setCurrentIndex(0)
-
-        self.change_band()
-
-        self.cmb_1.currentIndexChanged.connect(self.change_band)
-        self.spinbox.valueChanged.connect(self.change_band)
-        self.cb_1.stateChanged.connect(self.change_band)
-
-
-class PlotRose(ContextModule):
-    """
-    GUI to plot rose diagrams.
-
-    Parameters
-    ----------
-    parent
-        Reference to the parent routine. The default is None.
-
-    """
-
-    def __init__(
-        self,
-        parent=None,
-    ):
-        super().__init__(parent)
-        self.setAttribute(QtCore.Qt.WidgetAttribute.WA_DeleteOnClose)
-
-        self.data = None
-
-        vbl = QtWidgets.QVBoxLayout(self)
-        hbl = QtWidgets.QHBoxLayout()
-        self.mmc = MyMplCanvas(self)
-
-        mpl_toolbar = NavigationToolbar2QT(self.mmc, self.parent)
-
-        self.cmb_1 = QtWidgets.QComboBox()
-        self.spinbox = QtWidgets.QSpinBox()
-        self.lbl_1 = QtWidgets.QLabel("Rose Diagram Type:")
-        self.lbl_3 = QtWidgets.QLabel("Value:")
-        self.cb_1 = QtWidgets.QCheckBox("Equal Area Rose Diagram")
-        self.cb_2 = QtWidgets.QCheckBox("Use one colour only")
-
-        self.buttonbox.htmlfile = "vector.cm.showrose"
-        self.buttonbox.buttonbox.hide()
-        hbl.addWidget(self.buttonbox)
-
-        hbl.addWidget(self.lbl_1, 0, QtCore.Qt.AlignmentFlag.AlignRight)
-        hbl.addWidget(self.cmb_1)
-        hbl.addWidget(self.lbl_3, 0, QtCore.Qt.AlignmentFlag.AlignRight)
-        hbl.addWidget(self.spinbox)
-
-        vbl.addWidget(self.mmc)
-        vbl.addWidget(mpl_toolbar)
-        vbl.addWidget(self.cb_1)
-        vbl.addWidget(self.cb_2)
-        vbl.addLayout(hbl)
-
-        self.setFocus()
-
-        self.cmb_1.currentIndexChanged.connect(self.change_band)
-        self.spinbox.valueChanged.connect(self.change_band)
-        self.cb_1.stateChanged.connect(self.change_band)
-        self.cb_2.stateChanged.connect(self.change_band)
-
-        self.spinbox.setValue(8)
-        self.spinbox.setMinimum(2)
-        self.spinbox.setMaximum(360)
-
-        self.setWindowTitle("Rose Diagram")
-
-    def change_band(self):
-        """Combo box to choose band."""
-        if self.data is None:
-            return
-
-        i = self.cmb_1.currentIndex()
-        equal = self.cb_1.isChecked()
-        mono = self.cb_2.isChecked()
-
-        self.mmc.update_rose(self.data, i, self.spinbox.value(), equal, mono)
-
-    def run(self):
-        """Entry point into the routine, used to run context menu item."""
-        self.data = None
-        if "Vector" not in self.indata:
-            return
-        for i in self.indata["Vector"]:
-            if i.geom_type.iloc[0] == "LineString":
-                self.data = i
-                break
-
-        if self.data is None:
-            self.showlog("No line type data.")
-            return
-
-        cols = ["Average Angle per Feature", "Angle per segment in Feature"]
-        self.cmb_update(self.cmb_1, cols)
-
-        self.change_band()
-
-        self.show()
+        self.mmc.set_map_axes(ax2, data.crs)
+        self.mmc.draw_idle()
 
 
 class PlotVector(ContextModule):
@@ -1164,10 +902,11 @@ class PlotVector(ContextModule):
         self.setAttribute(QtCore.Qt.WidgetAttribute.WA_DeleteOnClose)
 
         self.data = None
+        self.cmap = colormaps["viridis"]
 
         vbl = QtWidgets.QVBoxLayout(self)
         hbl = QtWidgets.QHBoxLayout()
-        self.mmc = MyMplCanvas(self)
+        self.mmc = CanvasModule(self)
 
         mpl_toolbar = NavigationToolbar2QT(self.mmc, self.parent)
 
@@ -1240,9 +979,9 @@ class PlotVector(ContextModule):
         style = self.cmb_2.currentText()
 
         txt = str(self.cmb_c.currentText())
-        self.mmc.cmap = colormaps[txt]
+        self.cmap = colormaps[txt]
 
-        self.mmc.update_vector(data, i, style)
+        self.update_vector(data, i, style)
 
     def run(self):
         """Entry point into the routine, used to run context menu item."""
@@ -1262,6 +1001,117 @@ class PlotVector(ContextModule):
         self.change_band()
 
         self.show()
+
+    def update_vector(
+        self,
+        data: GeoDataFrame,
+        col: str,
+        style: bool | None = None,
+    ):
+        """
+        Update the plot from vector data.
+
+        Parameters
+        ----------
+        data
+            GeoDataFrame.
+        col
+            Label for column to extract.
+        style
+            Style of colour mapping.
+
+        """
+        fig = self.mmc.figure
+        self.mmc.custom_resize = True
+        fig.clear()
+
+        axes = fig.add_subplot(111, label="map")
+
+        if "LineString" in data.geom_type.iloc[0]:
+            tmp = []
+            for i in data.geometry:
+                tmp.append(np.transpose(i.coords.xy))
+
+            lcol = mc.LineCollection(tmp)
+            axes.add_collection(lcol)
+            axes.autoscale()
+
+        elif "Polygon" in data.geom_type.iloc[0]:
+            tmp = []
+            for j in data.geometry:
+                tmp.append(np.array(j.exterior.coords[:])[:, :2].tolist())
+
+            lcol = mc.LineCollection(tmp)
+            axes.add_collection(lcol)
+            axes.autoscale()
+
+        elif "Point" in data.geom_type.iloc[0]:
+            if col != "" and style is None or "Normal" in style:
+                dstd = data[col].std()
+                dmean = data[col].mean()
+                vmin = max(dmean - 2 * dstd, data[col].min())
+                vmax = min(dmean + 2 * dstd, data[col].max())
+
+                scat = axes.scatter(
+                    data.geometry.x,
+                    data.geometry.y,
+                    c=data[col],
+                    vmin=vmin,
+                    vmax=vmax,
+                    cmap=self.cmap,
+                    marker=".",
+                )
+                fig.colorbar(scat, ax=axes, format=frm)
+            elif col != "" and "Standard" in style:
+                m3 = data[col].mean()
+                s3 = data[col].std()
+                x1 = data[col].min()
+                x2 = data[col].max()
+                eps = (x2 - x1) * 0.000001
+
+                r2 = int((x2 - m3) // s3)
+                r2 = min(3, r2)
+
+                bnds = [m3 + i * s3 for i in range(r2 + 1)]
+                lbls = [f"{i} to {i + 1}" for i in range(r2)]
+                bnds = [x1 - eps] + bnds + [x2]
+                lbls[0] = "mean" + lbls[0][1:]
+                lbls = ["min to mean"] + lbls + [f"{r2} to max"]
+
+                z3 = pd.cut(data[col], bnds, labels=False)
+                scat = axes.scatter(
+                    data.geometry.x, data.geometry.y, c=z3, cmap=self.cmap, marker="."
+                )
+                discrete_colorbar(axes, scat, z3, lbls)
+
+            elif col != "" and "Quartile" in style:
+                z3 = pd.qcut(data[col], 4, labels=False, duplicates="drop")
+
+                scat = axes.scatter(
+                    data.geometry.x,
+                    data.geometry.y,
+                    c=z3 + 1,
+                    cmap=self.cmap,
+                    marker=".",
+                )
+                discrete_colorbar(axes, scat, z3 + 1)
+
+            elif col != "" and "K-Means" in style:
+                z1 = np.array(data[col]).reshape(-1, 1)
+                z3 = KMeans(n_clusters=5, n_init="auto").fit_predict(z1)
+                scat = axes.scatter(
+                    data.geometry.x,
+                    data.geometry.y,
+                    c=z3 + 1,
+                    cmap=self.cmap,
+                    marker=".",
+                )
+                discrete_colorbar(axes, scat, z3 + 1)
+            else:
+                self.axes.scatter(data.geometry.x, data.geometry.y)
+
+        self.mmc.set_map_axes(axes, data.crs)
+        self.mmc.draw_idle()
 
 
 def heatmap(
@@ -1517,7 +1367,7 @@ def _testfn():
 
     from pygmi.vector.iodefs import ImportVector
 
-    sfile = r"C:\Workdata\PyGMI Test Data\Vector\Line Data\2427AB_portion_Mag.shp"
+    sfile = r"D:\Workdata\PyGMI Test Data\Vector\Line Data\2427AB_portion_Mag.shp"
 
     app = QtWidgets.QApplication(sys.argv)
     app.setStyle(QtWidgets.QStyleFactory.create("Fusion"))
@@ -1528,7 +1378,7 @@ def _testfn():
     IO.ifile = sfile
     IO.settings(True)
 
-    SC = PlotLineMap()
+    SC = PlotCCoef()
     SC.indata = IO.outdata
     SC.run()
 
@@ -1542,7 +1392,7 @@ def _testfn2():
 
     from pygmi.vector.iodefs import ImportVector
 
-    sfile = r"C:\Workdata\PyGMI Test Data\Vector\Rose\2329AC_lin_wgs84sutm35.shp"
+    sfile = r"D:\Workdata\PyGMI Test Data\Vector\Rose\2329AC_lin_wgs84sutm35.shp"
 
     app = QtWidgets.QApplication(sys.argv)
     app.setStyle(QtWidgets.QStyleFactory.create("Fusion"))

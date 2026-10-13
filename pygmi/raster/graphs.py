@@ -35,7 +35,6 @@ menu. The following are supported:
  * Scatterplots
 """
 
-import matplotlib.colors as mcolors
 import numpy as np
 import pyvista as pv
 from matplotlib import colors
@@ -44,372 +43,11 @@ from numpy.typing import NDArray
 from PySide6 import QtCore, QtWidgets
 from pyvistaqt import QtInteractor
 
-from pygmi.maps import CanvasModule, frm, set_axes, set_northscale
+from pygmi.maps import CanvasModule, CustomToolbar, frm
 from pygmi.misc import ContextModule
 from pygmi.raster.colormaps import colormaps
 from pygmi.raster.datatypes import Data
 from pygmi.raster.modest_image import imshow
-
-
-class MyMplCanvas(CanvasModule):
-    """Matplotlib canvas widget for the actual plot."""
-
-    def __init__(
-        self,
-        parent=None,
-    ):
-        super().__init__(parent)
-        self.data = None
-
-    def format_coord(
-        self,
-        x: float,
-        y: float,
-    ) -> str:
-        """
-        Set format coordinate for section plot.
-
-        Parameters
-        ----------
-        x
-            X coordinate.
-        y
-            Y coordinate.
-
-        Returns
-        -------
-        str
-            Output string to display.
-
-        """
-        scoords = self.data.metadata["Raster"]["SectionCoords"]
-        r1 = scoords[:, 2]
-        difference_array = np.absolute(r1 - x)
-        idx = difference_array.argmin()
-        x1 = scoords[idx, 0]
-        y1 = scoords[idx, 1]
-
-        text = f"X={x1:.2f}, Y={y1:.2f}, Z={y:.1f}"
-        return text
-
-    def update_ccoef(
-        self,
-        data1: Data,
-        dmat: NDArray,
-    ):
-        """
-        Update the correlation coefficient plot.
-
-        Parameters
-        ----------
-        data1
-            Raster dataset to be used.
-        dmat
-            Dummy matrix of numbers to be plotted using pcolor.
-
-        """
-        cmap = colormaps["viridis"]
-
-        self.figure.clear()
-        self.axes = self.figure.add_subplot(111)
-        rdata = self.axes.pcolormesh(dmat, cmap=cmap)
-        self.axes.axis("scaled")
-        self.axes.set_title("Correlation Coefficients")
-        for i in range(len(data1)):
-            for j in range(len(data1)):
-                ctmp = np.array([1.0, 1.0, 1.0, 0.0]) - np.array(cmap(dmat[i, j]))
-                ctmp = np.abs(ctmp)
-                ctmp = ctmp.tolist()
-
-                atext = f"{dmat[i, j]:.2f}"
-
-                self.axes.text(
-                    i + 0.5,
-                    j + 0.5,
-                    atext,
-                    c=ctmp,
-                    rotation=45,
-                    ha="center",
-                    va="center",
-                )
-        dat_mat = [i.dataid for i in data1]
-        self.axes.set_xticks(np.array(list(range(len(data1)))) + 0.5)
-
-        self.axes.set_xticklabels(dat_mat, rotation="vertical")
-        self.axes.set_yticks(np.array(list(range(len(data1)))) + 0.5)
-
-        self.axes.set_yticklabels(dat_mat, rotation="horizontal")
-        self.axes.set_xlim(0, len(data1))
-        self.axes.set_ylim(0, len(data1))
-
-        self.figure.colorbar(rdata, format=frm)
-
-        self.figure.canvas.draw()
-
-    def update_raster(
-        self,
-        data1: Data,
-        cmap: str,
-        plotlog: bool,
-        aspect: int = 1,
-    ):
-        """
-        Update the raster plot.
-
-        Parameters
-        ----------
-        data1
-            Raster dataset to be used in contouring
-        cmap
-            Matplotlib colormap description
-        plotlog
-            Use a logarithmic colour scale.
-        aspect
-            Aspect ratio of colour bar.
-
-        """
-        self.data = data1
-        self.figure.clear()
-        self.axes = self.figure.add_subplot(111)
-        self.custom_resize = True
-        is_section = data1.metadata["Raster"]["Section"]
-
-        if data1.isrgb is True:
-            rdata = imshow(
-                self.axes,
-                data1.data,
-                extent=data1.extent,
-                cmap=colormaps[cmap],
-                interpolation="none",
-            )
-        elif plotlog is True:
-            rdata = imshow(
-                self.axes,
-                data1.data,
-                extent=data1.extent,
-                cmap=colormaps[cmap],
-                interpolation="none",
-                norm=colors.LogNorm(vmin=data1.data.min(), vmax=data1.data.max()),
-            )
-        else:
-            rdata = imshow(
-                self.axes,
-                data1.data,
-                extent=data1.extent,
-                cmap=colormaps[cmap],
-                interpolation="none",
-            )
-            rdata.set_clim_std(2.5)
-
-        location = "right"
-        if not data1.isrgb:
-            pad = 0.1
-            caspect = 30
-
-            location = "right"
-            shrink = 1.0
-            anchor = (0.0, 0.5)
-
-            if is_section is True:
-                location = "bottom"
-                shrink = 0.8
-                pad = 0.15
-                anchor = (0.5, 1.0)
-                caspect = 40
-
-            cbar = self.figure.colorbar(
-                rdata,
-                format=frm,
-                location=location,
-                aspect=caspect,
-                shrink=shrink,
-                anchor=anchor,
-                pad=pad,
-            )
-            cbar.set_label(data1.units)
-
-        if is_section is True:
-            self.axes.set_xlabel("Distance")
-            self.axes.set_ylabel("Elevation")
-            self.axes.format_coord = self.format_coord
-            rdata.format_cursor_data = lambda x: f"Data: {x}"
-
-            self.axes.ticklabel_format(style="plain", axis="both", useOffset=False)
-            self.axes.tick_params(axis="x", rotation=0)
-            self.axes.tick_params(axis="y", rotation=0)
-
-            self.axes.xaxis.set_major_formatter(frm)
-            self.axes.yaxis.set_major_formatter(frm)
-            self.axes.set_aspect(aspect)
-        else:
-            set_axes(self.axes, data1.crs)
-            set_northscale(self.axes, data1.crs, self.showlog)
-
-        self.draw()
-
-    def update_hexbin(
-        self,
-        data1: Data,
-        data2: Data,
-    ):
-        """
-        Update the hexbin plot.
-
-        Parameters
-        ----------
-        data1
-            Raster dataset to be used
-        data2
-            Raster dataset to be used
-
-        """
-        self.figure.clear()
-        self.axes = self.figure.add_subplot(111)
-
-        self.axes.tick_params(axis="x", rotation=90)
-        self.axes.tick_params(axis="y", rotation=0)
-        self.axes.set_xlabel(data1.dataid)
-        self.axes.set_ylabel(data2.dataid)
-
-        x = data1.data.copy()
-        y = data2.data.copy()
-
-        msk = np.logical_or(x.mask, y.mask)
-        x.mask = msk
-        y.mask = msk
-        x = x.compressed()
-        y = y.compressed()
-
-        xmin = x.min()
-        xmax = x.max()
-        ymin = y.min()
-        ymax = y.max()
-
-        hbin = self.axes.hexbin(x, y, bins="log", cmap="inferno")
-        self.axes.axis([xmin, xmax, ymin, ymax])
-        self.axes.set_title("Hexbin Plot")
-        cbar = self.figure.colorbar(hbin, format=frm)
-        cbar.set_label("log10(N)")
-
-        self.axes.xaxis.set_major_formatter(frm)
-        self.axes.yaxis.set_major_formatter(frm)
-
-        if data1.units != "":
-            self.axes.set_xlabel(f"{data1.dataid} ({data1.units})")
-        if data2.units != "":
-            self.axes.set_ylabel(f"{data2.dataid} ({data2.units})")
-
-        self.figure.canvas.draw()
-
-    def update_surface(
-        self,
-        data: Data,
-        icmap: str,
-    ):
-        """
-        Update the surface plot.
-
-        Parameters
-        ----------
-        data
-            Raster dataset to be used
-        icmap
-            Matplotlib colormap description
-
-        """
-        rows, cols = data.data.shape
-
-        dtlx = data.extent[0]
-        dtly = data.extent[-1]
-        x = dtlx + np.arange(cols) * data.xdim + data.xdim / 2
-        y = dtly - np.arange(rows) * data.ydim - data.ydim / 2
-        x, y = np.meshgrid(x, y)
-        z = data.data.copy()
-        vmin, vmax = np.percentile(z.compressed(), [1, 99])
-
-        if not np.ma.is_masked(z):
-            z = np.ma.array(z)
-
-        x = np.ma.array(x, mask=z.mask)
-        y = np.ma.array(y, mask=z.mask)
-
-        cmap = colormaps[icmap]
-
-        norml = mcolors.Normalize(vmin=vmin, vmax=vmax)
-
-        z.data[z.mask] = np.nan
-        z = z.data
-
-        self.figure.clear()
-        self.axes = self.figure.add_subplot(111, projection="3d")
-
-        vmin, vmax = np.percentile(z, [1, 99])
-
-        surf = self.axes.plot_surface(
-            x,
-            y,
-            z,
-            cmap=cmap,
-            norm=norml,
-            vmin=vmin,
-            vmax=vmax,
-            shade=False,
-            antialiased=False,
-        )
-
-        self.figure.colorbar(surf, format=frm)
-
-        self.axes.xaxis.set_major_formatter(frm)
-        self.axes.yaxis.set_major_formatter(frm)
-        self.axes.zaxis.set_major_formatter(frm)
-
-        self.axes.set_title("")
-        self.axes.set_xlabel("X")
-        self.axes.set_ylabel("Y")
-        self.axes.set_zlabel("Z")
-
-        self.figure.canvas.draw()
-
-    def update_hist(
-        self,
-        data1: Data,
-        ylog: bool,
-        iscum: bool,
-    ):
-        """
-        Update the histogram plot.
-
-        Parameters
-        ----------
-        data1
-            Raster dataset to be used
-        ylog
-            Boolean for a log scale on y-axis.
-        iscum
-            Boolean for a cumulative distribution.
-
-        """
-        self.figure.clear()
-        self.axes = self.figure.add_subplot(111)
-
-        self.axes.tick_params(axis="x", rotation=90)
-        self.axes.tick_params(axis="y", rotation=0)
-
-        dattmp = data1.data[data1.data.mask == 0].flatten()
-        self.axes.hist(
-            dattmp, bins="sqrt", cumulative=iscum, histtype="stepfilled", edgecolor="k"
-        )
-        self.axes.set_title(data1.dataid)
-        self.axes.set_xlabel(data1.dataid)
-        self.axes.set_ylabel("Counts")
-
-        self.axes.xaxis.set_major_formatter(frm)
-        self.axes.yaxis.set_major_formatter(frm)
-
-        if ylog is True:
-            self.axes.set_yscale("log")
-
-        self.figure.canvas.draw()
 
 
 class PlotCCoef(ContextModule):
@@ -434,7 +72,7 @@ class PlotCCoef(ContextModule):
         vbl = QtWidgets.QVBoxLayout(self)
         hbl = QtWidgets.QHBoxLayout()
 
-        self.mmc = MyMplCanvas(self)
+        self.mmc = CanvasModule(self)
         mpl_toolbar = NavigationToolbar2QT(self.mmc, self.parent)
         self.buttonbox.buttonbox.hide()
         self.buttonbox.htmlfile = "raster.cm.showcorr"
@@ -450,10 +88,7 @@ class PlotCCoef(ContextModule):
 
     def run(self):
         """Entry point into the routine, used to run context menu item."""
-        if "Raster" in self.indata:
-            data = self.indata["Raster"]
-        else:
-            return
+        data = self.indata["Raster"]
 
         if data[0].metadata["Raster"]["Section"] is True:
             self.showlog("Sections are not supported.")
@@ -478,7 +113,63 @@ class PlotCCoef(ContextModule):
         dummy_mat = [[corr2d(i.data, j.data) for j in data] for i in data]
         dummy_mat = np.array(dummy_mat)
 
-        self.mmc.update_ccoef(data, dummy_mat)
+        self.update_ccoef(data, dummy_mat)
+
+    def update_ccoef(
+        self,
+        data1: Data,
+        dmat: NDArray,
+    ):
+        """
+        Update the correlation coefficient plot.
+
+        Parameters
+        ----------
+        data1
+            Raster dataset to be used.
+        dmat
+            Dummy matrix of numbers to be plotted using pcolor.
+
+        """
+        cmap = colormaps["viridis"]
+
+        fig = self.mmc.figure
+        fig.clear()
+        axes = fig.add_subplot(111)
+
+        rdata = axes.pcolormesh(dmat, cmap=cmap)
+        axes.axis("scaled")
+        axes.set_title("Correlation Coefficients")
+        for i in range(len(data1)):
+            for j in range(len(data1)):
+                ctmp = np.array([1.0, 1.0, 1.0, 0.0]) - np.array(cmap(dmat[i, j]))
+                ctmp = np.abs(ctmp)
+                ctmp = ctmp.tolist()
+
+                atext = f"{dmat[i, j]:.2f}"
+
+                axes.text(
+                    i + 0.5,
+                    j + 0.5,
+                    atext,
+                    c=ctmp,
+                    rotation=45,
+                    ha="center",
+                    va="center",
+                )
+        dat_mat = [i.dataid for i in data1]
+        axes.set_xticks(np.array(list(range(len(data1)))) + 0.5)
+
+        axes.set_xticklabels(dat_mat, rotation="vertical")
+        axes.set_yticks(np.array(list(range(len(data1)))) + 0.5)
+
+        axes.set_yticklabels(dat_mat, rotation="horizontal")
+        axes.set_xlim(0, len(data1))
+        axes.set_ylim(0, len(data1))
+
+        fig.colorbar(rdata, format=frm)
+
+        self.mmc.draw_idle()
 
 
 class PlotRaster(ContextModule):
@@ -502,8 +193,9 @@ class PlotRaster(ContextModule):
 
         vbl = QtWidgets.QVBoxLayout(self)
         hbl = QtWidgets.QHBoxLayout()
-        self.mmc = MyMplCanvas(parent)
-        mpl_toolbar = NavigationToolbar2QT(self.mmc)
+
+        self.mmc = CanvasModule(self)
+        self.mpl_toolbar = CustomToolbar(self.mmc, self)
 
         self.buttonbox.buttonbox.hide()
         self.buttonbox.htmlfile = "raster.cm.showsimple"
@@ -544,7 +236,7 @@ class PlotRaster(ContextModule):
         )
 
         vbl.addWidget(self.mmc)
-        vbl.addWidget(mpl_toolbar)
+        vbl.addWidget(self.mpl_toolbar)
         vbl.addLayout(hbl)
 
         self.setFocus()
@@ -560,34 +252,165 @@ class PlotRaster(ContextModule):
         plotlog = self.cb_log.isChecked()
         aspect = self.sb_aspect.value()
 
-        if "Raster" in self.indata:
-            data = self.indata["Raster"]
-            if "Section" in data[i].metadata["Raster"]:
-                is_section = data[i].metadata["Raster"]["Section"]
-            else:
-                is_section = False
-            if is_section is True:
-                self.sb_aspect.show()
-                self.lbl_a.show()
-            else:
-                self.lbl_a.hide()
-                self.sb_aspect.hide()
+        data = self.indata["Raster"]
+        if "Section" in data[i].metadata["Raster"]:
+            is_section = data[i].metadata["Raster"]["Section"]
+        else:
+            is_section = False
+        if is_section is True or is_section == "True":
+            self.sb_aspect.show()
+            self.lbl_a.show()
+        else:
+            self.lbl_a.hide()
+            self.sb_aspect.hide()
 
-            self.mmc.update_raster(data[i], cmap, plotlog, aspect)
+        self.update_raster(data[i], cmap, plotlog, aspect)
+
+    def format_coord(
+        self,
+        x: float,
+        y: float,
+    ) -> str:
+        """
+        Set format coordinate for section plot.
+
+        Parameters
+        ----------
+        x
+            X coordinate.
+        y
+            Y coordinate.
+
+        Returns
+        -------
+        str
+            Output string to display.
+
+        """
+        scoords = self.mmc.data.metadata["Raster"]["SectionCoords"]
+        r1 = scoords[:, 2]
+        difference_array = np.absolute(r1 - x)
+        idx = difference_array.argmin()
+        x1 = scoords[idx, 0]
+        y1 = scoords[idx, 1]
+
+        text = f"X={x1:.2f}, Y={y1:.2f}, Z={y:.1f}"
+        return text
 
     def run(self):
         """Entry point into the routine, used to run context menu item."""
-        data = []
-        if "Raster" in self.indata:
-            data = self.indata["Raster"]
-        elif "Cluster" in self.indata:
-            data = self.indata["Cluster"]
+        data = self.indata["Raster"]
 
         cols = [i.dataid for i in data]
         self.cmb_update(self.cmb_1, cols)
 
+        if data[0].metadata["Raster"]["Section"] is False:
+            self.mpl_toolbar.add_map_btn(self.change_band)
+
         self.change_band()
         self.show()
+
+    def update_raster(
+        self,
+        data1: Data,
+        cmap: str,
+        plotlog: bool,
+        aspect: int = 1,
+    ):
+        """
+        Update the raster plot.
+
+        Parameters
+        ----------
+        data1
+            Raster dataset to be used in contouring
+        cmap
+            Matplotlib colormap description
+        plotlog
+            Use a logarithmic colour scale.
+        aspect
+            Aspect ratio of colour bar.
+
+        """
+        self.mmc.data = data1
+
+        fig = self.mmc.figure
+        fig.clear()
+        axes = fig.add_subplot(111)
+        self.mmc.custom_resize = True
+        is_section = data1.metadata["Raster"]["Section"]
+
+        if data1.isrgb is True:
+            rdata = imshow(
+                axes,
+                data1.data,
+                extent=data1.extent,
+                cmap=colormaps[cmap],
+                interpolation="none",
+            )
+        elif plotlog is True:
+            rdata = imshow(
+                axes,
+                data1.data,
+                extent=data1.extent,
+                cmap=colormaps[cmap],
+                interpolation="none",
+                norm=colors.LogNorm(vmin=data1.data.min(), vmax=data1.data.max()),
+            )
+        else:
+            rdata = imshow(
+                axes,
+                data1.data,
+                extent=data1.extent,
+                cmap=colormaps[cmap],
+                interpolation="none",
+            )
+            rdata.set_clim_std(2.5)
+
+        location = "right"
+        if not data1.isrgb:
+            pad = 0.1
+            caspect = 30
+
+            location = "right"
+            shrink = 1.0
+            anchor = (0.0, 0.5)
+
+            if is_section is True:
+                location = "bottom"
+                shrink = 0.8
+                pad = 0.15
+                anchor = (0.5, 1.0)
+                caspect = 40
+
+            cbar = fig.colorbar(
+                rdata,
+                format=frm,
+                location=location,
+                aspect=caspect,
+                shrink=shrink,
+                anchor=anchor,
+                pad=pad,
+            )
+            cbar.set_label(data1.units)
+
+        if is_section is True:
+            axes.set_xlabel("Distance")
+            axes.set_ylabel("Elevation")
+            axes.format_coord = self.format_coord
+            rdata.format_cursor_data = lambda x: f"Data: {x}"
+
+            axes.ticklabel_format(style="plain", axis="both", useOffset=False)
+            axes.tick_params(axis="x", rotation=0)
+            axes.tick_params(axis="y", rotation=0)
+
+            axes.xaxis.set_major_formatter(frm)
+            axes.yaxis.set_major_formatter(frm)
+            axes.set_aspect(aspect)
+        else:
+            self.mmc.set_map_axes(axes, data1.crs)
+
+        self.mmc.draw_idle()
 
 
 class PlotSurface(ContextModule):
@@ -643,7 +466,7 @@ class PlotSurface(ContextModule):
         )
 
         hbl2.addWidget(self.vslider)
-        hbl2.addWidget(self.plotter)
+        hbl2.addWidget(self.plotter.interactor)
 
         vbl.addLayout(hbl2)
         vbl.addLayout(hbl)
@@ -699,6 +522,11 @@ class PlotSurface(ContextModule):
 
         self.plotter.set_scale(zscale=20)
 
+    def closeEvent(self, event):
+        """Close event."""
+        self.plotter.close()
+        super().closeEvent(event)
+
     def run(self):
         """Entry point into the routine, used to run context menu item."""
         if "Raster" in self.indata:
@@ -748,7 +576,7 @@ class PlotScatter(ContextModule):
 
         vbl = QtWidgets.QVBoxLayout(self)  # self is where layout is assigned
         hbl = QtWidgets.QHBoxLayout()
-        self.mmc = MyMplCanvas(self)
+        self.mmc = CanvasModule(self)
         mpl_toolbar = NavigationToolbar2QT(self.mmc, self.parent)
 
         self.buttonbox.buttonbox.hide()
@@ -791,14 +619,11 @@ class PlotScatter(ContextModule):
             )
             return
 
-        self.mmc.update_hexbin(x, y)
+        self.update_hexbin(x, y)
 
     def run(self):
         """Entry point into the routine, used to run context menu item."""
-        if "Raster" in self.indata:
-            data = self.indata["Raster"]
-        else:
-            return
+        data = self.indata["Raster"]
 
         if data[0].metadata["Raster"]["Section"] is True:
             self.showlog("Sections are not supported.")
@@ -815,6 +640,61 @@ class PlotScatter(ContextModule):
 
         self.change_band()
         self.show()
+
+    def update_hexbin(
+        self,
+        data1: Data,
+        data2: Data,
+    ):
+        """
+        Update the hexbin plot.
+
+        Parameters
+        ----------
+        data1
+            Raster dataset to be used
+        data2
+            Raster dataset to be used
+
+        """
+        fig = self.mmc.figure
+        fig.clear()
+        axes = fig.add_subplot(111)
+
+        axes.tick_params(axis="x", rotation=90)
+        axes.tick_params(axis="y", rotation=0)
+        axes.set_xlabel(data1.dataid)
+        axes.set_ylabel(data2.dataid)
+
+        x = data1.data.copy()
+        y = data2.data.copy()
+
+        msk = np.logical_or(x.mask, y.mask)
+        x.mask = msk
+        y.mask = msk
+        x = x.compressed()
+        y = y.compressed()
+
+        xmin = x.min()
+        xmax = x.max()
+        ymin = y.min()
+        ymax = y.max()
+
+        hbin = axes.hexbin(x, y, bins="log", cmap="inferno")
+        axes.axis([xmin, xmax, ymin, ymax])
+        axes.set_title("Hexbin Plot")
+        cbar = fig.colorbar(hbin, format=frm)
+        cbar.set_label("log10(N)")
+
+        axes.xaxis.set_major_formatter(frm)
+        axes.yaxis.set_major_formatter(frm)
+
+        if data1.units != "":
+            axes.set_xlabel(f"{data1.dataid} ({data1.units})")
+        if data2.units != "":
+            axes.set_ylabel(f"{data2.dataid} ({data2.units})")
+
+        self.mmc.draw_idle()
 
 
 class PlotHist(ContextModule):
@@ -837,7 +717,7 @@ class PlotHist(ContextModule):
 
         vbl = QtWidgets.QVBoxLayout(self)  # self is where layout is assigned
         hbl = QtWidgets.QHBoxLayout()
-        self.mmc = MyMplCanvas(self)
+        self.mmc = CanvasModule(self)
         mpl_toolbar = NavigationToolbar2QT(self.mmc, self.parent)
 
         self.buttonbox.buttonbox.hide()
@@ -869,14 +749,11 @@ class PlotHist(ContextModule):
         i = self.cmb_1.currentIndex()
         ylog = self.cb_log.isChecked()
         iscum = self.cb_cum.isChecked()
-        self.mmc.update_hist(data[i], ylog, iscum)
+        self.update_hist(data[i], ylog, iscum)
 
     def run(self):
         """Entry point into the routine, used to run context menu item."""
-        if "Raster" in self.indata:
-            data = self.indata["Raster"]
-        else:
-            return
+        data = self.indata["Raster"]
 
         if self.indata["Raster"][0].isrgb:
             self.showlog("RGB images cannot be used in this module.")
@@ -887,6 +764,48 @@ class PlotHist(ContextModule):
 
         self.change_band()
         self.show()
+
+    def update_hist(
+        self,
+        data1: Data,
+        ylog: bool,
+        iscum: bool,
+    ):
+        """
+        Update the histogram plot.
+
+        Parameters
+        ----------
+        data1
+            Raster dataset to be used
+        ylog
+            Boolean for a log scale on y-axis.
+        iscum
+            Boolean for a cumulative distribution.
+
+        """
+        fig = self.mmc.figure
+        fig.clear()
+        axes = fig.add_subplot(111)
+
+        axes.tick_params(axis="x", rotation=90)
+        axes.tick_params(axis="y", rotation=0)
+
+        dattmp = data1.data[data1.data.mask == 0].flatten()
+        axes.hist(
+            dattmp, bins="sqrt", cumulative=iscum, histtype="stepfilled", edgecolor="k"
+        )
+        axes.set_title(data1.dataid)
+        axes.set_xlabel(data1.dataid)
+        axes.set_ylabel("Counts")
+
+        axes.xaxis.set_major_formatter(frm)
+        axes.yaxis.set_major_formatter(frm)
+
+        if ylog is True:
+            axes.set_yscale("log")
+
+        self.mmc.draw_idle()
 
 
 def check_bands(data: list[Data]) -> bool:
@@ -975,6 +894,7 @@ def _testfn():
     data[0].units = "hope"
 
     tmp = PlotRaster()
+    # tmp = PlotSurface()
     tmp.indata["Raster"] = data
     tmp.run()
     tmp.exec()

@@ -33,263 +33,14 @@ import numpy as np
 from matplotlib import collections as mc
 from matplotlib import colormaps
 from matplotlib.backends.backend_qt import NavigationToolbar2QT
-from matplotlib.backends.backend_qtagg import FigureCanvasQTAgg
 from matplotlib.colors import LinearSegmentedColormap
-from matplotlib.figure import Figure
 from numpy.typing import NDArray
 from PySide6 import QtCore, QtWidgets
 
-from pygmi.maps import frm
+from pygmi.maps import CanvasModule
 from pygmi.misc import ContextModule
 from pygmi.raster.datatypes import Data
 from pygmi.raster.misc import currentshader, histcomp, norm2
-
-
-class MyMplCanvas(FigureCanvasQTAgg):
-    """Matplotlib canvas widget for the actual plot."""
-
-    def __init__(self):
-        fig = Figure(layout="tight")
-        super().__init__(fig)
-
-        self.axes = fig.add_subplot(111)
-        self.scale = 7
-        self.rotang = 10
-        self.red1 = None
-        self.blue1 = None
-        self.red = None
-        self.blue = None
-        self.extent = None
-        self.x = None
-        self.z = None
-        self.cnum = 10
-
-        FigureCanvasQTAgg.setSizePolicy(
-            self,
-            QtWidgets.QSizePolicy.Policy.Expanding,
-            QtWidgets.QSizePolicy.Policy.Expanding,
-        )
-        FigureCanvasQTAgg.updateGeometry(self)
-
-    def update_contours(
-        self,
-        data1: Data,
-        scale: float = 7,
-        rotang: float = 10,
-    ):
-        """
-        Update the contour plot.
-
-        Parameters
-        ----------
-        data1
-            raster dataset to be used in contouring.
-        scale
-            Scale. The default is 7.
-        rotang
-            Rotation in degrees. The default is 10.
-
-        """
-        self.scale = scale
-        self.rotang = rotang
-        self.extent = data1.extent
-
-        self.z = data1.data * scale
-        dxy = data1.xdim
-        y, x = np.indices(self.z.shape)
-        self.x = x * int(dxy) + data1.extent[0]
-        y = data1.extent[-1] - y * int(dxy)
-
-        self.figure.clear()
-        self.axes = self.figure.add_subplot(111)
-
-        tmp = self.axes.contour(self.x, y, self.z, self.cnum)
-
-        self.figure.clear()
-        self.axes = self.figure.add_subplot(111)
-
-        asegs = tmp.get_paths()
-        lvls = tmp.levels
-        xmin = self.x.min()
-        xmax = self.x.max()
-        a = np.deg2rad(rotang)
-        m = [[np.cos(a), 0, np.sin(a)], [0, 1, 0], [-np.sin(a), 0, np.cos(a)]]
-
-        lines = []
-        for i, lvl in enumerate(asegs):
-            if not lvl:
-                continue
-
-            cnt = np.split(lvl.vertices, np.where(lvl.codes == 1)[0][1:])
-            for j in cnt:
-                x1 = j[:, 0]
-                y1 = j[:, 1]
-                z1 = [lvls[i]] * x1.size
-                x1 = x1 - xmin
-                t = np.transpose([x1, y1, z1])
-                x1, y1, _ = np.transpose(t @ m)
-                x1 = x1 + xmin
-                lines.append(np.transpose([x1, y1]))
-
-        lc = mc.LineCollection(lines, colors=[1, 0, 0, 0.5])
-        self.axes.add_collection(lc)
-
-        a = np.deg2rad(-rotang)
-        m = [[np.cos(a), 0, np.sin(a)], [0, 1, 0], [-np.sin(a), 0, np.cos(a)]]
-
-        lines = []
-        for i, lvl in enumerate(asegs):
-            if not lvl:
-                continue
-            cnt = np.split(lvl.vertices, np.where(lvl.codes == 1)[0][1:])
-            for j in cnt:
-                x1 = j[:, 0]
-                y1 = j[:, 1]
-                z1 = [lvls[i]] * x1.size
-                x1 = x1 - xmax
-                t = np.transpose([x1, y1, z1])
-                x1, y1, _ = np.transpose(t @ m)
-                x1 = x1 + xmax
-                lines.append(np.transpose([x1, y1]))
-
-        lc = mc.LineCollection(lines, colors=[0, 1, 1, 0.5])
-        self.axes.add_collection(lc)
-
-        self.axes.autoscale()
-        self.axes.set_aspect("equal")
-
-        self.axes.set_xlabel("Eastings")
-        self.axes.set_ylabel("Northings")
-
-        self.axes.xaxis.set_major_formatter(frm)
-        self.axes.yaxis.set_major_formatter(frm)
-        self.axes.tick_params(axis="y", labelrotation=0)
-        self.axes.tick_params(axis="x", labelrotation=90)
-
-        self.figure.canvas.draw()
-
-    def update_raster(
-        self,
-        data1: Data,
-        *,
-        scale: float = 7,
-        rotang: float = 10,
-        atype: str = "dubois",
-        cmap: LinearSegmentedColormap = colormaps["jet"],
-        shade: bool = False,
-    ):
-        """
-        Update the raster plot.
-
-        Parameters
-        ----------
-        data1
-            Raster dataset to be used in contouring
-        scale
-            Scale. The default is 7.
-        rotang
-            Rotation in degrees. The default is 10.
-        atype
-            Anaglyph type. The default is 'dubois'.
-        cmap
-            Matplotlib colormap. The default is jet.
-        shade
-            Option to choose sunshading. The default is False.
-
-        """
-        self.scale = scale
-        self.rotang = rotang
-
-        self.extent = data1.extent
-
-        self.z = data1.data * scale
-        dxy = data1.xdim
-        y, x = np.indices(self.z.shape)
-        self.x = x * int(dxy)
-        y = y * int(dxy)
-
-        self.red1 = rot_and_clean(self.x, y, self.z, rotang, "red")
-        self.blue1 = rot_and_clean(self.x, y, self.z, rotang, "blue")
-
-        self.update_colors(shade, cmap, atype)
-
-    def update_colors(
-        self,
-        doshade: bool = False,
-        cmap: LinearSegmentedColormap = colormaps["jet"],
-        atype: str = "dubois",
-    ):
-        """
-        Update colors.
-
-        Parameters
-        ----------
-        doshade
-            Option to choose sunshading. The default is False.
-        cmap
-            Matplotlib colormap. The default is jet.
-        atype
-            Anaglyph type. The default is 'dubois'.
-
-        """
-        if not doshade:
-            zmin = -2 * np.std(self.z)
-            zmax = 2 * np.std(self.z)
-
-            tmp = norm2(self.red1, zmin, zmax)
-            tmp[tmp < 0] = 0.0
-            tmp[tmp > 1] = 1.0
-            self.red = cmap(tmp)
-            self.red[:, :, 3] = np.logical_not(np.ma.getmaskarray(self.red1))
-
-            tmp = norm2(self.blue1, zmin, zmax)
-            tmp[tmp < 0] = 0.0
-            tmp[tmp > 1] = 1.0
-            self.blue = cmap(tmp)
-            self.blue[:, :, 3] = np.logical_not(np.ma.getmaskarray(self.blue1))
-        else:
-            alpha = 0
-            cell = 100
-            azim = np.deg2rad(45)
-            elev = np.deg2rad(45)
-            self.red = sunshade(
-                self.red1, azim=azim, elev=elev, alpha=alpha, cell=cell, cmap=cmap
-            )
-            self.blue = sunshade(
-                self.blue1, azim=azim, elev=elev, alpha=alpha, cell=cell, cmap=cmap
-            )
-
-        self.update_atype(atype)
-
-    def update_atype(
-        self,
-        atype: str = "dubois",
-    ):
-        """
-        Update anaglyph type.
-
-        Parameters
-        ----------
-        atype
-            Anaglyph type. The default is 'dubois'.
-
-        """
-        self.figure.clear()
-        self.axes = self.figure.add_subplot(111)
-
-        adata = anaglyph(self.red, self.blue, atype)
-
-        self.axes.imshow(adata, extent=self.extent, interpolation="nearest")
-
-        self.axes.set_xlabel("Eastings")
-        self.axes.set_ylabel("Northings")
-
-        self.axes.tick_params(axis="y", labelrotation=0)
-        self.axes.tick_params(axis="x", labelrotation=90)
-        self.axes.xaxis.set_major_formatter(frm)
-        self.axes.yaxis.set_major_formatter(frm)
-
-        self.figure.canvas.draw()
 
 
 class PlotAnaglyph(ContextModule):
@@ -322,7 +73,7 @@ class PlotAnaglyph(ContextModule):
         vbl_right = QtWidgets.QVBoxLayout()
 
         # Define Widgets
-        self.mmc = MyMplCanvas()
+        self.mmc = CanvasModule(self)
         mpl_toolbar = NavigationToolbar2QT(self.mmc, self.parent)
         self.cmb_1 = QtWidgets.QComboBox()
         self.cmb_2 = QtWidgets.QComboBox()
@@ -413,6 +164,16 @@ class PlotAnaglyph(ContextModule):
         self.slider_angle.sliderReleased.connect(self.change_all)
         self.slider_cnt.sliderReleased.connect(self.change_contours)
 
+        self.axes = self.mmc.figure.add_subplot(111)
+        self.red1 = None
+        self.blue1 = None
+        self.red = None
+        self.blue = None
+        self.extent = None
+        self.x = None
+        self.z = None
+        self.cnum = 10
+
     def change_all(self):
         """Update from all combos."""
         i = self.cmb_1.currentIndex()
@@ -424,10 +185,10 @@ class PlotAnaglyph(ContextModule):
 
         if self.rb_docontour.isChecked():
             data = self.indata["Raster"]
-            self.mmc.update_contours(data[i], scale=scale, rotang=rotang)
+            self.update_contours(data[i], scale=scale, rotang=rotang)
         else:
             data = self.indata["Raster"]
-            self.mmc.update_raster(
+            self.update_raster(
                 data[i],
                 atype=self.cmb_2.currentText(),
                 cmap=cbar,
@@ -442,11 +203,11 @@ class PlotAnaglyph(ContextModule):
         cbar = colormaps[txt]
         shade = self.cb_shade.isChecked()
 
-        self.mmc.update_colors(atype=self.cmb_2.currentText(), cmap=cbar, doshade=shade)
+        self.update_colors(atype=self.cmb_2.currentText(), cmap=cbar, doshade=shade)
 
     def change_atype(self):
         """Update anaglyph type."""
-        self.mmc.update_atype(atype=self.cmb_2.currentText())
+        self.update_atype(atype=self.cmb_2.currentText())
 
     def change_contours(self):
         """Update contours."""
@@ -463,8 +224,8 @@ class PlotAnaglyph(ContextModule):
 
         data = self.indata["Raster"]
 
-        self.mmc.cnum = self.slider_cnt.value()
-        self.mmc.update_contours(data[i], scale=scale, rotang=rotang)
+        self.cnum = self.slider_cnt.value()
+        self.update_contours(data[i], scale=scale, rotang=rotang)
 
     def change_image(self):
         """Change Image, setting defaults."""
@@ -493,6 +254,204 @@ class PlotAnaglyph(ContextModule):
         self.change_all()
 
         self.exec()
+
+    def update_contours(
+        self,
+        data1: Data,
+        scale: float = 7,
+        rotang: float = 10,
+    ):
+        """
+        Update the contour plot.
+
+        Parameters
+        ----------
+        data1
+            raster dataset to be used in contouring.
+        scale
+            Scale. The default is 7.
+        rotang
+            Rotation in degrees. The default is 10.
+
+        """
+        self.extent = data1.extent
+
+        self.z = data1.data * scale
+        dxy = data1.xdim
+        y, x = np.indices(self.z.shape)
+        self.x = x * int(dxy) + data1.extent[0]
+        y = data1.extent[-1] - y * int(dxy)
+
+        self.mmc.figure.clear()
+        self.axes = self.mmc.figure.add_subplot(111)
+
+        tmp = self.axes.contour(self.x, y, self.z, self.cnum)
+
+        self.mmc.figure.clear()
+        self.axes = self.mmc.figure.add_subplot(111)
+
+        asegs = tmp.get_paths()
+        lvls = tmp.levels
+        xmin = self.x.min()
+        xmax = self.x.max()
+        a = np.deg2rad(rotang)
+        m = [[np.cos(a), 0, np.sin(a)], [0, 1, 0], [-np.sin(a), 0, np.cos(a)]]
+
+        lines = []
+        for i, lvl in enumerate(asegs):
+            if not lvl:
+                continue
+
+            cnt = np.split(lvl.vertices, np.where(lvl.codes == 1)[0][1:])
+            for j in cnt:
+                x1 = j[:, 0]
+                y1 = j[:, 1]
+                z1 = [lvls[i]] * x1.size
+                x1 = x1 - xmin
+                t = np.transpose([x1, y1, z1])
+                x1, y1, _ = np.transpose(t @ m)
+                x1 = x1 + xmin
+                lines.append(np.transpose([x1, y1]))
+
+        lc = mc.LineCollection(lines, colors=[1, 0, 0, 0.5])
+        self.axes.add_collection(lc)
+
+        a = np.deg2rad(-rotang)
+        m = [[np.cos(a), 0, np.sin(a)], [0, 1, 0], [-np.sin(a), 0, np.cos(a)]]
+
+        lines = []
+        for i, lvl in enumerate(asegs):
+            if not lvl:
+                continue
+            cnt = np.split(lvl.vertices, np.where(lvl.codes == 1)[0][1:])
+            for j in cnt:
+                x1 = j[:, 0]
+                y1 = j[:, 1]
+                z1 = [lvls[i]] * x1.size
+                x1 = x1 - xmax
+                t = np.transpose([x1, y1, z1])
+                x1, y1, _ = np.transpose(t @ m)
+                x1 = x1 + xmax
+                lines.append(np.transpose([x1, y1]))
+
+        lc = mc.LineCollection(lines, colors=[0, 1, 1, 0.5])
+        self.axes.add_collection(lc)
+
+        self.mmc.set_map_axes(self.axes, self.indata["Raster"][0].crs)
+        self.mmc.draw_idle()
+
+    def update_raster(
+        self,
+        data1: Data,
+        *,
+        scale: float = 7,
+        rotang: float = 10,
+        atype: str = "dubois",
+        cmap: LinearSegmentedColormap = colormaps["jet"],
+        shade: bool = False,
+    ):
+        """
+        Update the raster plot.
+
+        Parameters
+        ----------
+        data1
+            Raster dataset to be used in contouring
+        scale
+            Scale. The default is 7.
+        rotang
+            Rotation in degrees. The default is 10.
+        atype
+            Anaglyph type. The default is 'dubois'.
+        cmap
+            Matplotlib colormap. The default is jet.
+        shade
+            Option to choose sunshading. The default is False.
+
+        """
+        self.extent = data1.extent
+
+        self.z = data1.data * scale
+        dxy = data1.xdim
+        y, x = np.indices(self.z.shape)
+        self.x = x * int(dxy)
+        y = y * int(dxy)
+
+        self.red1 = rot_and_clean(self.x, y, self.z, rotang, "red")
+        self.blue1 = rot_and_clean(self.x, y, self.z, rotang, "blue")
+
+        self.update_colors(shade, cmap, atype)
+
+    def update_colors(
+        self,
+        doshade: bool = False,
+        cmap: LinearSegmentedColormap = colormaps["jet"],
+        atype: str = "dubois",
+    ):
+        """
+        Update colors.
+
+        Parameters
+        ----------
+        doshade
+            Option to choose sunshading. The default is False.
+        cmap
+            Matplotlib colormap. The default is jet.
+        atype
+            Anaglyph type. The default is 'dubois'.
+
+        """
+        if not doshade:
+            zmin = -2 * np.std(self.z)
+            zmax = 2 * np.std(self.z)
+
+            tmp = norm2(self.red1, zmin, zmax)
+            tmp[tmp < 0] = 0.0
+            tmp[tmp > 1] = 1.0
+            self.red = cmap(tmp)
+            self.red[:, :, 3] = np.logical_not(np.ma.getmaskarray(self.red1))
+
+            tmp = norm2(self.blue1, zmin, zmax)
+            tmp[tmp < 0] = 0.0
+            tmp[tmp > 1] = 1.0
+            self.blue = cmap(tmp)
+            self.blue[:, :, 3] = np.logical_not(np.ma.getmaskarray(self.blue1))
+        else:
+            alpha = 0
+            cell = 100
+            azim = np.deg2rad(45)
+            elev = np.deg2rad(45)
+            self.red = sunshade(
+                self.red1, azim=azim, elev=elev, alpha=alpha, cell=cell, cmap=cmap
+            )
+            self.blue = sunshade(
+                self.blue1, azim=azim, elev=elev, alpha=alpha, cell=cell, cmap=cmap
+            )
+
+        self.update_atype(atype)
+
+    def update_atype(
+        self,
+        atype: str = "dubois",
+    ):
+        """
+        Update anaglyph type.
+
+        Parameters
+        ----------
+        atype
+            Anaglyph type. The default is 'dubois'.
+
+        """
+        self.mmc.figure.clear()
+        self.axes = self.mmc.figure.add_subplot(111)
+
+        adata = anaglyph(self.red, self.blue, atype)
+
+        self.axes.imshow(adata, extent=self.extent, interpolation="nearest")
+
+        self.mmc.set_map_axes(self.axes, self.indata["Raster"][0].crs)
+        self.mmc.draw_idle()
 
 
 def sunshade(

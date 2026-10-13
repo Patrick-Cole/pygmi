@@ -29,152 +29,12 @@ import datetime
 import matplotlib.animation as manimation
 import pandas as pd
 from matplotlib.backends.backend_qt import NavigationToolbar2QT
-from matplotlib.backends.backend_qtagg import FigureCanvasQTAgg
-from matplotlib.figure import Figure
 from PySide6 import QtCore, QtWidgets
 
-from pygmi.maps import set_axes
+from pygmi.maps import CanvasModule
 from pygmi.misc import BasicModule
 from pygmi.raster.datatypes import Data
 from pygmi.raster.modest_ioimage import imshow
-
-
-class MyMplCanvas(FigureCanvasQTAgg):
-    """
-    Matplotlib canvas widget for the actual plot.
-
-    Parameters
-    ----------
-    parent
-        Reference to the parent routine. The default is None.
-    width
-        Width of the plot.
-    height
-        Height of the plot.
-    dpi
-        Dots per inch of the plot
-
-    """
-
-    def __init__(self, parent, width: float = 10, height: float = 8, dpi: int = 100):
-        self.fig = Figure(figsize=(width, height), dpi=dpi)
-
-        self.ax1 = self.fig.add_subplot(111)
-        self.im1 = None
-        self.bands = [0, 1, 2]
-        self.rcid = None
-        self.manip = "RGB Ternary"
-        self.cbar = None
-        self.capture_active = False
-        self.writer = None
-        self.piter = parent.piter
-        self.showlog = parent.showlog
-
-        super().__init__(self.fig)
-
-        FigureCanvasQTAgg.setSizePolicy(
-            self,
-            QtWidgets.QSizePolicy.Policy.Expanding,
-            QtWidgets.QSizePolicy.Policy.Expanding,
-        )
-        FigureCanvasQTAgg.updateGeometry(self)
-
-    def capture(self):
-        """Capture."""
-        self.capture_active = not self.capture_active
-
-        if self.capture_active:
-            ext = "GIF (*.gif)"
-            wfile, _ = QtWidgets.QFileDialog.getSaveFileName(
-                None, "Save File", ".", ext
-            )
-            if wfile == "":
-                self.capture_active = not self.capture_active
-                return
-
-            self.writer = manimation.PillowWriter(fps=4)
-            self.writer.setup(self.fig, wfile)
-        else:
-            self.writer.finish()
-
-    def compute_initial_figure(
-        self,
-        dat: Data,
-        dates: str,
-    ):
-        """
-        Compute initial figure.
-
-        Parameters
-        ----------
-        dat
-            PyGMI dataset.
-        dates
-            Dates to show on title.
-
-        """
-        if "Ternary" in self.manip:
-            red = dat.banddict[self.bands[0]]
-            green = dat.banddict[self.bands[1]]
-            blue = dat.banddict[self.bands[2]]
-
-            data = [red, green, blue]
-        else:
-            data = [dat.banddict[self.bands[0]]]
-
-        extent = dat.banddict[self.bands[0]].extent
-
-        self.im1 = imshow(
-            self.ax1, data, extent=extent, piter=self.piter, showlog=self.showlog
-        )
-        self.im1.rgbmode = self.manip
-        self.im1.rgbclip = None
-        self.cbar = None
-
-        set_axes(self.ax1, data[0].crs)
-
-        self.fig.suptitle(dates)
-
-    def update_plot(
-        self,
-        dat: Data,
-        dates: str,
-    ):
-        """
-        Update plot.
-
-        Parameters
-        ----------
-        dat : pygmi.raster.datatypes.Data
-            PyGMI dataset.
-        dates : str
-            Dates to show on title.
-
-        """
-        if self.im1 is None:
-            return
-        extent = dat.banddata[0].extent
-        self.im1.rgbmode = self.manip
-
-        if "Ternary" in self.manip:
-            red = dat.banddict[self.bands[0]]
-            green = dat.banddict[self.bands[1]]
-            blue = dat.banddict[self.bands[2]]
-
-            data = [red, green, blue]
-        else:
-            data = [dat.banddict[self.bands[0]]]
-
-        extent = dat.banddict[self.bands[0]].extent
-
-        self.im1.set_data(data)
-        self.im1.set_extent(extent)
-        self.im1.rgbclip = None
-        self.fig.suptitle(dates)
-
-        set_axes(self.ax1, data[0].crs)
-
-        self.fig.canvas.draw()
 
 
 class SceneViewer(BasicModule):
@@ -194,12 +54,21 @@ class SceneViewer(BasicModule):
     ):
         super().__init__(parent)
 
+        self.im1 = None
+        self.bands = [0, 1, 2]
+        self.rcid = None
+        self.manip = "RGB Ternary"
+        self.cbar = None
+        self.capture_active = False
+        self.writer = None
         self.df = None
         self.curimage = 0
 
-        self.canvas = MyMplCanvas(self, width=5, height=4, dpi=100)
+        self.mmc = CanvasModule(self)
+        self.fig = self.mmc.figure
+        self.ax1 = self.fig.add_subplot(111)
 
-        self.mpl_toolbar = NavigationToolbar2QT(self.canvas, self)
+        self.mpl_toolbar = NavigationToolbar2QT(self.mmc, self)
         self.slider = QtWidgets.QSlider()
         self.slider.setOrientation(QtCore.Qt.Orientation.Horizontal)
 
@@ -252,7 +121,7 @@ class SceneViewer(BasicModule):
         hbl.addWidget(self.button2)
         hbl.addWidget(self.button3)
 
-        vbl_1.addWidget(self.canvas)
+        vbl_1.addWidget(self.mmc)
         vbl_1.addWidget(self.mpl_toolbar)
         vbl_1.addWidget(self.slider)
         vbl_1.addLayout(hbl)
@@ -320,14 +189,14 @@ class SceneViewer(BasicModule):
         self.cmb_update(self.cmb_band2, bands)
         self.cmb_update(self.cmb_band3, bands)
 
-        self.canvas.bands = [
+        self.bands = [
             self.cmb_band1.currentText(),
             self.cmb_band2.currentText(),
             self.cmb_band3.currentText(),
         ]
 
-        self.canvas.manip = self.cmb_manip.currentText()
-        self.canvas.compute_initial_figure(dat, dates)
+        self.manip = self.cmb_manip.currentText()
+        self.compute_initial_figure(dat, dates)
 
         if not nodialog:
             tmp = self.exec()
@@ -335,6 +204,180 @@ class SceneViewer(BasicModule):
             if tmp != 1:
                 return False
         return True
+
+    def capture(self):
+        """Capture all scenes in the current view as an animation."""
+        self.showlog("Starting capture...")
+        self.slider.valueChanged.disconnect()
+
+        self.ccapture()
+        if not self.capture_active:
+            return
+
+        for indx in self.df.index:
+            self.slider.setValue(indx)
+            QtWidgets.QApplication.processEvents()
+            self.newdata(indx)
+            self.writer.grab_frame()
+
+        self.ccapture()
+        self.slider.valueChanged.connect(self.newdata)
+        self.slider.setValue(self.curimage)
+
+        self.showlog("Capture complete.")
+
+    def ccapture(self):
+        """Capture."""
+        self.capture_active = not self.capture_active
+
+        if self.capture_active:
+            ext = "GIF (*.gif)"
+            wfile, _ = QtWidgets.QFileDialog.getSaveFileName(
+                None, "Save File", ".", ext
+            )
+            if wfile == "":
+                self.capture_active = not self.capture_active
+                return
+
+            self.writer = manimation.PillowWriter(fps=4)
+            self.writer.setup(self.fig, wfile)
+        else:
+            self.writer.finish()
+
+    def compute_initial_figure(
+        self,
+        dat: Data,
+        dates: str,
+    ):
+        """
+        Compute initial figure.
+
+        Parameters
+        ----------
+        dat
+            PyGMI dataset.
+        dates
+            Dates to show on title.
+
+        """
+        if "Ternary" in self.manip:
+            red = dat.banddict[self.bands[0]]
+            green = dat.banddict[self.bands[1]]
+            blue = dat.banddict[self.bands[2]]
+
+            data = [red, green, blue]
+        else:
+            data = [dat.banddict[self.bands[0]]]
+
+        extent = dat.banddict[self.bands[0]].extent
+
+        self.im1 = imshow(
+            self.ax1, data, extent=extent, piter=self.piter, showlog=self.showlog
+        )
+        self.im1.rgbmode = self.manip
+        self.im1.rgbclip = None
+        self.cbar = None
+
+        # self.mmc.set_map_axes(self.ax1, data[0].crs)
+        self.ax1.set_axis_off()
+
+        self.fig.suptitle(dates)
+
+    def manip_change(self):
+        """Change manipulation or bands."""
+        maniptxt = self.cmb_manip.currentText()
+
+        if "Ternary" in maniptxt:
+            self.cmb_band2.show()
+            self.cmb_band3.show()
+        else:
+            self.cmb_band2.hide()
+            self.cmb_band3.hide()
+
+        self.bands = [
+            self.cmb_band1.currentText(),
+            self.cmb_band2.currentText(),
+            self.cmb_band3.currentText(),
+        ]
+
+        self.manip = maniptxt
+        self.newdata(self.curimage)
+
+    def nextscene(self):
+        """Get next scene."""
+        self.slider.setValue(self.slider.value() + 1)
+
+    def prevscene(self):
+        """Get previous scene."""
+        self.slider.setValue(self.slider.value() - 1)
+
+    def newdata(
+        self,
+        indx: int,
+    ):
+        """
+        Get new dataset.
+
+        Parameters
+        ----------
+        indx
+            Current index.
+
+        """
+        self.curimage = indx
+
+        dates = self.df.Datetime[indx]
+        dat = self.df.Filename[indx]
+        dat.banddict = {}
+        for i in dat.banddata:
+            dat.banddict[i.dataid] = i
+
+        if self.bands[0] not in dat.banddict:
+            self.showlog("Band name not in dataset.")
+            return
+
+        self.update_plot(dat, dates)
+
+    def update_plot(
+        self,
+        dat: Data,
+        dates: str,
+    ):
+        """
+        Update plot.
+
+        Parameters
+        ----------
+        dat : pygmi.raster.datatypes.Data
+            PyGMI dataset.
+        dates : str
+            Dates to show on title.
+
+        """
+        if self.im1 is None:
+            return
+        extent = dat.banddata[0].extent
+        self.im1.rgbmode = self.manip
+
+        if "Ternary" in self.manip:
+            red = dat.banddict[self.bands[0]]
+            green = dat.banddict[self.bands[1]]
+            blue = dat.banddict[self.bands[2]]
+
+            data = [red, green, blue]
+        else:
+            data = [dat.banddict[self.bands[0]]]
+
+        extent = dat.banddict[self.bands[0]].extent
+
+        self.im1.set_data(data)
+        self.im1.set_extent(extent)
+        self.im1.rgbclip = None
+        self.fig.suptitle(dates)
+
+        # self.mmc.set_map_axes(self.ax1, data[0].crs)
+        self.ax1.set_axis_off()
+        self.mmc.draw_idle()
 
     def updatescenelist(self):
         """
@@ -389,82 +432,6 @@ class SceneViewer(BasicModule):
         self.saveobj(self.cmb_band2)
         self.saveobj(self.cmb_band3)
         self.saveobj(self.cmb_manip)
-
-    def manip_change(self):
-        """Change manipulation or bands."""
-        maniptxt = self.cmb_manip.currentText()
-
-        if "Ternary" in maniptxt:
-            self.cmb_band2.show()
-            self.cmb_band3.show()
-        else:
-            self.cmb_band2.hide()
-            self.cmb_band3.hide()
-
-        self.canvas.bands = [
-            self.cmb_band1.currentText(),
-            self.cmb_band2.currentText(),
-            self.cmb_band3.currentText(),
-        ]
-
-        self.canvas.manip = maniptxt
-        self.newdata(self.curimage)
-
-    def nextscene(self):
-        """Get next scene."""
-        self.slider.setValue(self.slider.value() + 1)
-
-    def prevscene(self):
-        """Get previous scene."""
-        self.slider.setValue(self.slider.value() - 1)
-
-    def newdata(
-        self,
-        indx: int,
-    ):
-        """
-        Get new dataset.
-
-        Parameters
-        ----------
-        indx
-            Current index.
-
-        """
-        self.curimage = indx
-
-        dates = self.df.Datetime[indx]
-        dat = self.df.Filename[indx]
-        dat.banddict = {}
-        for i in dat.banddata:
-            dat.banddict[i.dataid] = i
-
-        if self.canvas.bands[0] not in dat.banddict:
-            self.showlog("Band name not in dataset.")
-            return
-
-        self.canvas.update_plot(dat, dates)
-
-    def capture(self):
-        """Capture all scenes in the current view as an animation."""
-        self.showlog("Starting capture...")
-        self.slider.valueChanged.disconnect()
-
-        self.canvas.capture()
-        if not self.canvas.capture_active:
-            return
-
-        for indx in self.df.index:
-            self.slider.setValue(indx)
-            QtWidgets.QApplication.processEvents()
-            self.newdata(indx)
-            self.canvas.writer.grab_frame()
-
-        self.canvas.capture()
-        self.slider.valueChanged.connect(self.newdata)
-        self.slider.setValue(self.curimage)
-
-        self.showlog("Capture complete.")
 
 
 def _testfn():

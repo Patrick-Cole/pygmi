@@ -37,15 +37,171 @@ from matplotlib.figure import Figure
 from matplotlib.path import Path
 from PySide6 import QtCore, QtWidgets
 
+from pygmi.maps import CanvasModule
 from pygmi.misc import ContextModule
 
 
-class MyMplCanvas(FigureCanvasQTAgg):
-    """Matplotlib canvas widget for the actual plot."""
+class PlotLog(ContextModule):
+    """
+    Class to plot the borehole log.
 
-    def __init__(self):
-        fig = Figure()
-        super().__init__(fig)
+    Parameters
+    ----------
+    parent
+        Reference to the parent routine. The default is None.
+
+    """
+
+    def __init__(
+        self,
+        parent=None,
+    ):
+        super().__init__(parent)
+
+        self.hatch = None
+        self.clith = None
+        self.col = None
+        self.stratcol = None
+
+        self.setAttribute(QtCore.Qt.WidgetAttribute.WA_DeleteOnClose)
+        self.setWindowTitle("Borehole Log")
+
+        vbl = QtWidgets.QVBoxLayout(self)  # self is where layout is assigned
+        hbl_1 = QtWidgets.QHBoxLayout()
+        hbl_2 = QtWidgets.QHBoxLayout()
+        self.hbl = QtWidgets.QHBoxLayout()
+        self.mmc = CanvasModule(self)
+        self.mmc2 = CanvasModule(self)
+
+        self.lbl_topleft = QtWidgets.QLabel()
+        self.lbl_topright = QtWidgets.QLabel()
+        self.lbl_bottomleft = QtWidgets.QLabel()
+        self.lbl_bottomright = QtWidgets.QLabel()
+        self.lbl_topright.setAlignment(
+            QtCore.Qt.AlignmentFlag.AlignRight | QtCore.Qt.AlignmentFlag.AlignVCenter
+        )
+        self.lbl_bottomright.setAlignment(
+            QtCore.Qt.AlignmentFlag.AlignRight | QtCore.Qt.AlignmentFlag.AlignVCenter
+        )
+
+        self.scroll = QtWidgets.QScrollArea(self)
+        self.scroll.setHorizontalScrollBarPolicy(
+            QtCore.Qt.ScrollBarPolicy.ScrollBarAlwaysOff
+        )
+        self.scroll.setWidget(self.mmc)
+
+        self.buttonbox.htmlfile = "bholes.cm.showlog"
+        self.buttonbox.buttonbox.hide()
+        self.hbl.addWidget(self.buttonbox)
+
+        self.cmb_1 = QtWidgets.QComboBox()
+        self.lbl_1 = QtWidgets.QLabel("Borehole ID:")
+        self.hbl.addWidget(self.lbl_1, 0, QtCore.Qt.AlignmentFlag.AlignRight)
+        self.hbl.addWidget(self.cmb_1)
+
+        hbl_1.addWidget(self.lbl_topleft)
+        hbl_1.addWidget(self.lbl_topright)
+        hbl_2.addWidget(self.lbl_bottomleft)
+        hbl_2.addWidget(self.lbl_bottomright)
+        vbl.addLayout(hbl_1)
+        vbl.addWidget(self.scroll, stretch=2)
+        vbl.addLayout(hbl_2)
+        vbl.addWidget(self.mmc2, stretch=1)
+        vbl.addLayout(self.hbl)
+
+        self.setFocus()
+
+        self.cmb_1.currentIndexChanged.connect(self.change_band)
+
+    def change_band(self):
+        """Combo box to choose the borehole to display."""
+        i = self.cmb_1.currentText()
+
+        data = self.indata["Borehole"]
+        data = data.loc[data["Boreholeid"] == i]
+
+        dfrom = data["Depth from"].iloc[0]
+        dto = data["Depth to"].iloc[-1]
+        depth = int((dto - dfrom) * 10.0)
+        self.mmc.setFixedHeight(depth)
+
+        hcompanyno = data["Companyno"].iloc[0]
+        hfilt = (data["Companyno"] == hcompanyno).to_numpy().nonzero()[0][0]
+        hrow = data.iloc[hfilt].astype(str)
+        topleft = (
+            hrow["Company"] + "\n" + hrow["Farmname"] + " (" + hrow["Farmno"] + ")"
+        )
+        topright = "Hole no: " + hrow["Companyno"] + "\n Sheet 1 of 1"
+        if pd.isna(hrow["Drill date"]):
+            bottomleft = "Drill date: None"
+        else:
+            bottomleft = "Drill date: " + hrow["Drill date"].split()[0]
+        bottomleft += "\nDepth from: " + hrow["Depth from"]
+        bottomleft += "\nDepth to: " + f"{dto}"
+        bottomright = "Elevation: " + hrow["Elevation"]
+        bottomright += "\nLatitude: " + hrow["Declat"]
+        bottomright += "\nLongitude: " + hrow["Declon"]
+        self.lbl_topleft.setText(topleft)
+        self.lbl_topright.setText(topright)
+        self.lbl_bottomleft.setText(bottomleft)
+        self.lbl_bottomright.setText(bottomright)
+
+        self.update_legend(data, self.hatch, self.clith, self.col, self.stratcol)
+        self.update_log(data, self.hatch, self.col, self.stratcol)
+
+    def load_hatch(self):
+        """Load all hatchings."""
+        idir = __file__.rpartition("\\")[0]
+        logfile = idir + "\\logplot.xlsx"
+
+        xl = pd.ExcelFile(logfile)
+        usgs = xl.parse("USGS")
+        cgs = xl.parse("CGS")
+        cgslookup = xl.parse("250K Lookup")
+        colours = xl.parse("Colours")
+        xl.close()
+
+        usgs = usgs.set_index("code").to_dict()["description"]
+        cgslookup["COLOR_CODE"] = cgslookup["COLOR_CODE"].astype(str)
+        cgslookup["COLOR_CODE"] = cgslookup["COLOR_CODE"].apply("{0:0>3}".format)
+        stratcol = cgslookup.set_index("LITHO_NAME").to_dict()["COLOR_CODE"]
+        col = colours.set_index("code").to_dict()["colour"]
+        clith = cgs.set_index("lithology").to_dict()["lithology description"]
+        cgs = cgs.set_index("lithology").to_dict()["code"]
+        col["none"] = "ffffff"
+        col["nan"] = "ffffff"
+        stratcol["none"] = "none"
+
+        # Load in hatches
+        self.hatch = {}
+        for i in cgs:
+            if np.isnan(cgs[i]):
+                self.hatch[i] = [[], []]
+                continue
+            svgfile = idir + "\\svg\\" + str(int(cgs[i])) + ".svg"
+            pverts, pcodes = gethatch(svgfile)
+            self.hatch[i] = [pverts, pcodes]
+
+        self.clith = clith
+        self.col = col
+        self.stratcol = stratcol
+
+    def run(self):
+        """Entry point into the routine, used to run context menu item."""
+        data = []
+        if "Borehole" in self.indata:
+            data = self.indata["Borehole"]
+        else:
+            self.showlog("Error: You must have borehole data.")
+            return
+
+        self.cmb_update(self.cmb_1, data.Boreholeid.unique())
+
+        self.showlog("Loading Hatching...")
+        self.load_hatch()
+
+        self.show()
+        self.change_band()
 
     def update_legend(
         self,
@@ -71,7 +227,7 @@ class MyMplCanvas(FigureCanvasQTAgg):
         stratcol
             Stratigraphy colour.
         """
-        fig = self.figure
+        fig = self.mmc2.figure
         fig.clear()
         ax = fig.gca()
 
@@ -152,7 +308,7 @@ class MyMplCanvas(FigureCanvasQTAgg):
                     size=6,
                 )
 
-        self.figure.canvas.draw()
+        self.mmc2.draw_idle()
 
     def update_log(
         self,
@@ -176,13 +332,13 @@ class MyMplCanvas(FigureCanvasQTAgg):
             Stratigraphy colour.
 
         """
-        fig = self.figure
+        fig = self.mmc.figure
         fig.clear()
         ax = fig.gca()
-        fig.subplots_adjust(top=0.995)
-        fig.subplots_adjust(bottom=0.005)
-        fig.subplots_adjust(left=0.01)
-        fig.subplots_adjust(right=0.3)
+        # fig.subplots_adjust(top=0.995)
+        # fig.subplots_adjust(bottom=0.005)
+        # fig.subplots_adjust(left=0.01)
+        # fig.subplots_adjust(right=0.3)
 
         pageheight = 8
         dpp = 25  # depth per page
@@ -275,170 +431,7 @@ class MyMplCanvas(FigureCanvasQTAgg):
 
             ax.hlines(dto, 0, 4, "k")  # Bottom of log
 
-        self.figure.canvas.draw()
-
-
-class PlotLog(ContextModule):
-    """
-    Class to plot the borehole log.
-
-    Parameters
-    ----------
-    parent
-        Reference to the parent routine. The default is None.
-
-    """
-
-    def __init__(
-        self,
-        parent=None,
-    ):
-        super().__init__(parent)
-
-        self.hatch = None
-        self.clith = None
-        self.col = None
-        self.stratcol = None
-
-        self.setAttribute(QtCore.Qt.WidgetAttribute.WA_DeleteOnClose)
-        self.setWindowTitle("Borehole Log")
-
-        vbl = QtWidgets.QVBoxLayout(self)  # self is where layout is assigned
-        hbl_1 = QtWidgets.QHBoxLayout()
-        hbl_2 = QtWidgets.QHBoxLayout()
-        self.hbl = QtWidgets.QHBoxLayout()
-        self.mmc = MyMplCanvas()
-        self.mmc2 = MyMplCanvas()
-
-        self.lbl_topleft = QtWidgets.QLabel()
-        self.lbl_topright = QtWidgets.QLabel()
-        self.lbl_bottomleft = QtWidgets.QLabel()
-        self.lbl_bottomright = QtWidgets.QLabel()
-        self.lbl_topright.setAlignment(
-            QtCore.Qt.AlignmentFlag.AlignRight | QtCore.Qt.AlignmentFlag.AlignVCenter
-        )
-        self.lbl_bottomright.setAlignment(
-            QtCore.Qt.AlignmentFlag.AlignRight | QtCore.Qt.AlignmentFlag.AlignVCenter
-        )
-
-        self.scroll = QtWidgets.QScrollArea(self)
-        self.scroll.setHorizontalScrollBarPolicy(
-            QtCore.Qt.ScrollBarPolicy.ScrollBarAlwaysOff
-        )
-        self.scroll.setWidget(self.mmc)
-
-        self.buttonbox.htmlfile = "bholes.cm.showlog"
-        self.buttonbox.buttonbox.hide()
-        self.hbl.addWidget(self.buttonbox)
-
-        self.cmb_1 = QtWidgets.QComboBox()
-        self.lbl_1 = QtWidgets.QLabel("Borehole ID:")
-        self.hbl.addWidget(self.lbl_1, 0, QtCore.Qt.AlignmentFlag.AlignRight)
-        self.hbl.addWidget(self.cmb_1)
-
-        hbl_1.addWidget(self.lbl_topleft)
-        hbl_1.addWidget(self.lbl_topright)
-        hbl_2.addWidget(self.lbl_bottomleft)
-        hbl_2.addWidget(self.lbl_bottomright)
-        vbl.addLayout(hbl_1)
-        vbl.addWidget(self.scroll, stretch=2)
-        vbl.addLayout(hbl_2)
-        vbl.addWidget(self.mmc2, stretch=1)
-        vbl.addLayout(self.hbl)
-
-        self.setFocus()
-
-        self.cmb_1.currentIndexChanged.connect(self.change_band)
-
-    def change_band(self):
-        """Combo box to choose the borehole to display."""
-        i = self.cmb_1.currentText()
-
-        data = self.indata["Borehole"]
-        data = data.loc[data["Boreholeid"] == i]
-
-        dfrom = data["Depth from"].iloc[0]
-        dto = data["Depth to"].iloc[-1]
-        depth = int((dto - dfrom) * 10.0)
-        self.mmc.setFixedHeight(depth)
-
-        hcompanyno = data["Companyno"].iloc[0]
-        hfilt = (data["Companyno"] == hcompanyno).to_numpy().nonzero()[0][0]
-        hrow = data.iloc[hfilt].astype(str)
-        topleft = (
-            hrow["Company"] + "\n" + hrow["Farmname"] + " (" + hrow["Farmno"] + ")"
-        )
-        topright = "Hole no: " + hrow["Companyno"] + "\n Sheet 1 of 1"
-        if np.isnan(hrow["Drill date"]):
-            bottomleft = "Drill date: None"
-        else:
-            bottomleft = "Drill date: " + hrow["Drill date"].split()[0]
-        bottomleft += "\nDepth from: " + hrow["Depth from"]
-        bottomleft += "\nDepth to: " + f"{dto}"
-        bottomright = "Elevation: " + hrow["Elevation"]
-        bottomright += "\nLatitude: " + hrow["Declat"]
-        bottomright += "\nLongitude: " + hrow["Declon"]
-        self.lbl_topleft.setText(topleft)
-        self.lbl_topright.setText(topright)
-        self.lbl_bottomleft.setText(bottomleft)
-        self.lbl_bottomright.setText(bottomright)
-
-        self.mmc2.update_legend(data, self.hatch, self.clith, self.col, self.stratcol)
-        self.mmc.update_log(data, self.hatch, self.col, self.stratcol)
-
-    def load_hatch(self):
-        """Load all hatchings."""
-        idir = __file__.rpartition("\\")[0]
-        logfile = idir + "\\logplot.xlsx"
-
-        xl = pd.ExcelFile(logfile)
-        usgs = xl.parse("USGS")
-        cgs = xl.parse("CGS")
-        cgslookup = xl.parse("250K Lookup")
-        colours = xl.parse("Colours")
-        xl.close()
-
-        usgs = usgs.set_index("code").to_dict()["description"]
-        cgslookup["COLOR_CODE"] = cgslookup["COLOR_CODE"].astype(str)
-        cgslookup["COLOR_CODE"] = cgslookup["COLOR_CODE"].apply("{0:0>3}".format)
-        stratcol = cgslookup.set_index("LITHO_NAME").to_dict()["COLOR_CODE"]
-        col = colours.set_index("code").to_dict()["colour"]
-        clith = cgs.set_index("lithology").to_dict()["lithology description"]
-        cgs = cgs.set_index("lithology").to_dict()["code"]
-        col["none"] = "ffffff"
-        col["nan"] = "ffffff"
-        stratcol["none"] = "none"
-
-        # Load in hatches
-        self.hatch = {}
-        for i in cgs:
-            if np.isnan(cgs[i]):
-                self.hatch[i] = [[], []]
-                continue
-            svgfile = idir + "\\svg\\" + str(int(cgs[i])) + ".svg"
-            pverts, pcodes = gethatch(svgfile)
-            self.hatch[i] = [pverts, pcodes]
-
-        self.clith = clith
-        self.col = col
-        self.stratcol = stratcol
-
-    def run(self):
-        """Entry point into the routine, used to run context menu item."""
-        data = []
-        if "Borehole" in self.indata:
-            data = self.indata["Borehole"]
-        else:
-            self.showlog("Error: You must have borehole data.")
-            return
-
-        self.cmb_update(self.cmb_1, data.Boreholeid.unique())
-
-        self.showlog("Loading Hatching...")
-        self.load_hatch()
-
-        self.show()
-        self.change_band()
+        self.mmc.draw_idle()
 
 
 def gethatch(svgfile: str) -> tuple[dict, dict]:

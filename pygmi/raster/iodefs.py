@@ -257,6 +257,12 @@ class ImportData(BasicModule):
                 )
             return False
 
+        for i in dat:
+            if i.metadata["Raster"]["Section"] == "False":
+                i.metadata["Raster"]["Section"] = False
+            elif i.metadata["Raster"]["Section"] == "True":
+                i.metadata["Raster"]["Section"] = True
+
         output_type = "Raster"
 
         if "Cluster" in dat[0].dataid:
@@ -911,6 +917,11 @@ def get_raster(
                 tmp = StringIO(tmp)
                 dat[-1].metadata["Raster"]["SectionCoords"] = np.loadtxt(tmp)
 
+    for i in dat:
+        if i.metadata["Raster"]["Section"] == "False":
+            i.metadata["Raster"]["Section"] = False
+        elif i.metadata["Raster"]["Section"] == "True":
+            i.metadata["Raster"]["Section"] = True
     return dat
 
 

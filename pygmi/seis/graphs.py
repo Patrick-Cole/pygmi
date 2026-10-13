@@ -33,8 +33,6 @@ import os
 import geopandas as gpd
 import numpy as np
 from matplotlib.backends.backend_qt import NavigationToolbar2QT
-from matplotlib.backends.backend_qtagg import FigureCanvasQTAgg
-from matplotlib.figure import Figure
 from matplotlib.patches import Ellipse
 from numpy.typing import NDArray
 from pyproj.crs import CRS
@@ -45,708 +43,9 @@ from scipy.stats import kstest, linregress, zscore
 from shapely.geometry import Polygon
 from shapelysmooth import catmull_rom_smooth
 
-from pygmi.maps import set_axes
+from pygmi.maps import CanvasModule
 from pygmi.misc import ContextModule
 from pygmi.vector.dataprep import gridxyz
-
-
-class MyMplCanvas(FigureCanvasQTAgg):
-    """Matplotlib canvas widget for the actual plot."""
-
-    def __init__(self):
-
-        fig = Figure(layout="tight")
-        self.axes = fig.add_subplot(111)
-
-        self.ellipses = []
-        self.isolines = None
-
-        super().__init__(fig)
-
-    def update_ellipse(
-        self,
-        datd: dict,
-        dats: list,
-        nodepth: bool = False,
-    ):
-        """
-        Update error ellipse plot.
-
-        Parameters
-        ----------
-        datd
-            Dictionary containing latitudes and longitudes
-        dats
-            Data list.
-        nodepth
-            Flag to determine if there are depths. The default is False.
-
-        """
-        self.figure.clear()
-        self.axes = self.figure.add_subplot(111)
-
-        if len(datd) == 0:
-            self.figure.canvas.draw()
-            return
-
-        x = np.ma.masked_invalid(datd["1_longitude"])
-        y = np.ma.masked_invalid(datd["1_latitude"])
-
-        xmin = x.min() - 0.5
-        xmax = x.max() + 0.5
-        ymin = y.min() - 0.5
-        ymax = y.max() + 0.5
-
-        self.axes.set_xlim(xmin, xmax)
-        self.axes.set_ylim(ymin, ymax)
-
-        for dat in dats:
-            if "E" not in dat:
-                continue
-
-            lon = dat["1"].longitude
-            lat = dat["1"].latitude
-
-            erx = dat["E"].longitude_error
-            ery = dat["E"].latitude_error
-            erz = dat["E"].depth_error
-            cvxy = dat["E"].cov_xy
-            cvxz = dat["E"].cov_xz
-            cvyz = dat["E"].cov_yz
-
-            if nodepth is True:
-                cvxz = 0
-                cvyz = 0
-                erz = 0
-
-            cov = np.array(
-                [
-                    [erx * erx, cvxy, cvxz],
-                    [cvxy, ery * ery, cvyz],
-                    [cvxz, cvyz, erz * erz],
-                ]
-            )
-
-            if True in np.isnan(cov):
-                continue
-
-            vals, vecs = eigsorted(cov)
-            abc = (
-                2
-                * np.sqrt(abs(vals))
-                * np.cos(
-                    np.arctan2(vecs[2, :], np.sqrt(vecs[0, :] ** 2 + vecs[1, :] ** 2))
-                )
-            )
-
-            idx = np.argmax(abc)
-            ang = np.rad2deg(np.arctan2(vecs[1, idx], vecs[0, idx]))
-
-            abc[::-1].sort()  # sort in reverse order
-            emaj = abc[0]
-            emin = abc[1]
-
-            # approx conversion to degrees
-            demin = emin / 110.93  # lat
-            # long from lat
-            demaj = emaj / (111.3 * np.cos(np.deg2rad(lat + demin)))
-
-            ell = Ellipse(
-                xy=(lon, lat), width=demaj, height=demin, angle=ang, color="black"
-            )
-            ell.set_facecolor("none")
-
-            self.ellipses.append(ell.get_verts())
-            self.axes.add_artist(ell)
-
-        set_axes(self.axes, CRS.from_epsg(4326))
-        self.figure.canvas.draw()
-
-    def update_hexbin(
-        self,
-        data1: NDArray,
-        data2: NDArray,
-        *,
-        xlbl: str = "Time",
-        ylbl: str = "ML",
-        xbin: int | None = None,
-        xrng: tuple[float, float] | None = None,
-    ):
-        """
-        Update the hexbin plot.
-
-        Parameters
-        ----------
-        data1
-            Raster dataset to be used
-        data2
-            Raster dataset to be used
-        xlbl
-            X-axis label. The default is 'Time'.
-        ylbl
-            Y-axis label. The default is 'ML'.
-        xbin
-            Number of bins in the x direction. The default is None.
-        xrng
-            X-range. The default is None.
-
-        """
-        self.figure.clear()
-        self.axes = self.figure.add_subplot(111)
-
-        if len(data1) == 0 or len(data2) == 0:
-            self.figure.canvas.draw()
-            return
-
-        x = np.ma.masked_invalid(data1)
-        y = np.ma.masked_invalid(data2)
-
-        if np.all(y.mask) or np.all(x.mask):
-            self.figure.canvas.draw()
-            return
-
-        xmin = x.min()
-        xmax = x.max()
-        ymin = y.min()
-        ymax = y.max()
-        if xmin == xmax:
-            xmin = xmin - 1
-            xmax = xmax + 1
-        if ymin == ymax:
-            ymin = ymin - 1
-            ymax = ymax + 1
-
-        bins = int(np.sqrt(x.size))
-        bins = (bins, bins)
-        rng = [[x.min() - 0.5, x.max() + 0.5], [y.min(), y.max()]]
-
-        if xbin is not None:
-            bins = (xbin, bins[1])
-            rng[0] = xrng
-        elif np.unique(x).size < bins[0]:
-            bins = (np.unique(x).size, bins[1])
-        if np.unique(y).size < bins[1]:
-            bins = (bins[0], np.unique(y).size)
-
-        hbin = self.axes.hist2d(x, y, bins=bins, cmin=1, range=rng)
-        self.axes.set_xlabel(xlbl, fontsize=8)
-        self.axes.set_ylabel(ylbl, fontsize=8)
-        self.axes.set_xticks(np.arange(x.min(), x.max() + 1))
-
-        for tick in self.axes.get_xticklabels():
-            tick.set_rotation(90)
-
-        cbar = self.figure.colorbar(hbin[3])
-        cbar.set_label("Number of Events")
-
-        self.figure.canvas.draw()
-
-    def update_hist(
-        self,
-        data1: NDArray,
-        *,
-        xlbl: str = "Data Value",
-        ylbl: str = "Number of Observations",
-        bins: str | int = "doane",
-        rng: tuple[float, float] | None = None,
-    ):
-        """
-        Update the histogram plot.
-
-        Parameters
-        ----------
-        data1
-            Raster dataset to be used
-        xlbl
-            X-axis label. The default is 'Data Value'.
-        ylbl
-            Y-axis label. The default is 'Number of Observations'.
-        bins
-            Number of bins or binning strategy. See matplotlib.pyplot.hist.
-            The default is 'doane'.
-        rng
-            Bin range. The default is None.
-
-        """
-        self.figure.clear()
-        self.axes = self.figure.add_subplot(111)
-        if len(data1) == 0:
-            self.figure.canvas.draw()
-            return
-
-        dattmp = np.array(data1)
-        dattmp = dattmp[~np.isnan(dattmp)]
-
-        if dattmp.size == 0:
-            self.figure.canvas.draw()
-            return
-
-        if np.unique(dattmp).size == 1:
-            bins = 5
-            rng = (np.unique(dattmp)[0] - 2.5, np.unique(dattmp)[0] + 2.5)
-
-        self.axes.hist(dattmp, bins, edgecolor="black", range=rng)
-        self.axes.set_xlabel(xlbl, fontsize=8)
-        self.axes.set_ylabel(ylbl, fontsize=8)
-
-        if rng is not None:
-            self.axes.set_xlim(rng[0], rng[1])
-            self.axes.set_xticks(np.arange(int(rng[0] + 1), int(rng[1]) + 1))
-
-        for tick in self.axes.get_xticklabels():
-            tick.set_rotation(90)
-
-        self.figure.canvas.draw()
-
-    def update_bvalue(
-        self,
-        data1a: NDArray,
-        bins: str | int = "doane",
-    ):
-        """
-        Update the b value plot.
-
-        Parameters
-        ----------
-        data1a
-            Data array.
-        bins
-            Number of bins or binning strategy. See matplotlib.pyplot.hist.
-            The default is 'doane'.
-
-        """
-        self.figure.clear()
-        self.axes = self.figure.add_subplot(111)
-        if len(data1a) == 0:
-            self.figure.canvas.draw()
-            return
-
-        out = bvalue(data1a)
-        data1 = np.ma.masked_invalid(data1a)
-        data1 = data1.compressed()
-
-        xtmp = out["binctr"][out["binctr"] >= out["cmax"]]
-
-        # Plotting
-        self.axes.hist(data1, bins, edgecolor="black", label="Actual distribution")
-        self.axes.set_yscale("log")
-
-        self.axes.plot(
-            out["binctr"], out["cumnum"], ".", label="Cumulative distribution"
-        )
-
-        self.axes.plot(
-            [out["cmax"], out["cmax"]],
-            [0, out["cumnum"].max()],
-            "k--",
-            label=f"Magnitude of completeness: {out['cmax']}\n",
-        )
-
-        txt = (
-            f"a-value (Least Squares): {out['aval']}\n"
-            f"b-value (Least Squares): {out['bval']}\n"
-            f"b-value (Maximum Likelihood): {out['b_mle']}"
-        )
-        self.axes.plot(xtmp, 10 ** np.poly1d(out["abvals"])(xtmp), "k", label=txt)
-
-        self.axes.set_xlabel("ML", fontsize=8)
-        self.axes.set_ylabel("Number of observations", fontsize=8)
-
-        self.axes.legend()
-
-        self.figure.canvas.draw()
-
-    def update_pres(
-        self,
-        data1: NDArray,
-        phase: str = "P",
-    ):
-        """
-        Update the plot.
-
-        Parameters
-        ----------
-        data1
-            Data array.
-        phase
-            Phase. The default is 'P'.
-
-        """
-        self.figure.clear()
-        self.axes = self.figure.add_subplot(111)
-        if len(data1) == 0:
-            self.figure.canvas.draw()
-            return
-
-        pid = np.array(data1["4_phase_id"])
-        tres = np.array(data1["4_travel_time_residual"])
-        weight = np.array(data1["4_weighting_indicator"])
-        pid = pid[weight != 9]
-        tres = tres[weight != 9]
-
-        pid = pid[~np.isnan(tres)]
-        tres = tres[~np.isnan(tres)].astype(float)
-
-        pid = np.strings.strip(pid)
-
-        if phase == "P":
-            ptres = tres[pid == "P"]
-        else:
-            ptres = tres[pid == "S"]
-
-        txt = "mean: " + str(np.around(ptres.mean(), 3))
-        txt += "\nstd: " + str(np.around(ptres.std(), 3))
-
-        weights = 100 * np.ones_like(ptres) / ptres.size
-        self.axes.text(0.75, 0.9, txt, transform=self.axes.transAxes)
-        self.axes.hist(ptres, 40, weights=weights, edgecolor="black")
-        self.axes.set_xlabel("Time Residual (seconds)")
-        self.axes.set_ylabel("Frequency (%)")
-
-        self.figure.canvas.draw()
-
-    def update_residual(
-        self,
-        dat: NDArray,
-        res: str = "ML",
-    ):
-        """
-        Update the residual plot.
-
-        Parameters
-        ----------
-        data1
-            Data array.
-        res
-            Response type. The default is 'ML'.
-
-        """
-        self.figure.clear()
-        self.axes = self.figure.add_subplot(111)
-        if len(dat) == 0:
-            self.figure.canvas.draw()
-            return
-
-        A = {}
-        T = {}
-        A1mean = 0
-
-        for event in dat:
-            A1 = {}
-            T1 = {}
-            for rec in event["4"]:
-                i = rec.station_name
-                if rec.magnitude is not None:
-                    if i not in A:
-                        A[i] = []
-                    A[i].append(rec.magnitude_residual)
-                elif (rec.quality + rec.phase_id).strip() in ["IAML", "AML", "ES", "E"]:
-                    if rec.amplitude is None or rec.epicentral_distance is None:
-                        continue
-                    ML = (
-                        np.log10(rec.amplitude)
-                        + 1.149 * np.log10(rec.epicentral_distance)
-                        + 0.00063 * rec.epicentral_distance
-                        - 2.04
-                    )
-                    A1[i] = ML
-                if rec.travel_time_residual is not None:
-                    T1[i] = rec.travel_time_residual
-            if A1:
-                if np.nonzero(~np.isnan(list(A1.values())))[0].size == 0:
-                    A1mean = 0
-                else:
-                    A1mean = np.nanmean(list(A1.values()))
-            for i, A1i in A1.items():
-                if i not in A:
-                    A[i] = []
-                A[i].append(A1i - A1mean)
-
-            for i, T1i in T1.items():
-                if i not in T:
-                    T[i] = []
-                T[i].append(T1i)
-
-        dmean = {}
-        dstd = {}
-
-        if res != "ML":
-            A = T
-
-        sname_list = list(A.keys())
-        sname_list.sort()
-
-        for j, i in enumerate(sname_list):
-            if np.nonzero(~np.isnan(A[i]))[0].size == 0:
-                continue
-            dmean[i] = np.nanmean(A[i])
-            dstd[i] = np.nanstd(A[i])
-
-            self.axes.errorbar(j, dmean[i], yerr=dstd[i], fmt="k+", capsize=5)
-
-        self.axes.set_xticks(range(len(sname_list)))
-        self.axes.set_xticklabels(sname_list, rotation=90)
-        self.axes.set_xlabel("Station Name")
-        if res != "ML":
-            self.axes.set_ylabel("Travel Time Residual (Seconds)")
-        else:
-            self.axes.set_ylabel("ML-mean(ML)")
-
-        self.figure.canvas.draw()
-
-    def update_wadati(
-        self,
-        dat: list,
-        min_wad: int = 5,
-        min_vps: float = 1.53,
-        max_vps: float = 1.93,
-    ):
-        """
-        Update the wadati plot.
-
-        Parameters
-        ----------
-        dat
-            List of events.
-        min_wad
-            Minimum data length for plot. The default is 5.
-        min_vps
-            Minimum VPS. The default is 1.53.
-        max_vps
-            Maximum VPS. The default is 1.93.
-
-        """
-        self.figure.clear()
-        self.axes = self.figure.add_subplot(111)
-        if len(dat) == 0:
-            self.figure.canvas.draw()
-            return
-
-        VPS = []
-        for event in dat:
-            P = {}
-            S = {}
-            for rec in event["4"]:
-                if rec.weighting_indicator == 9:
-                    continue
-                time = rec.hour * 3600 + rec.minutes * 60 + rec.seconds
-                if rec.phase_id.strip() == "P":
-                    P[rec.station_name] = time
-                if rec.phase_id.strip() == "S":
-                    S[rec.station_name] = time
-
-            # Make sure P and S times are from same stations
-            P2 = []
-            S2 = []
-            for i, Pi in P.items():
-                if i not in S:
-                    continue
-                P2.append(Pi)
-                S2.append(S[i])
-
-            if len(P2) <= min_wad:
-                continue
-
-            P2 = np.transpose([P2])
-            S2 = np.transpose([S2])
-
-            Pdist = cdist(P2, P2)
-            Sdist = cdist(S2, S2)
-
-            filt = np.triu(np.ones_like(Pdist, dtype=bool), 1)
-
-            Pdist = Pdist[filt]
-            Sdist = Sdist[filt]
-
-            PSfit = linregress(Pdist, Sdist)
-
-            if PSfit.slope < min_vps or PSfit.slope > max_vps:
-                continue
-
-            VPS.append(PSfit)
-            self.axes.plot(Pdist, Sdist, ".")
-
-        slope = np.mean([i.slope for i in VPS])
-        intercept = np.mean([i.intercept for i in VPS])
-
-        x = self.axes.get_xlim()
-        self.axes.plot(x, np.poly1d([slope, intercept])(x), "k")
-
-        txt = "Vp/Vs (Ave)=" + str(np.around(np.mean(slope), 4))
-        self.axes.text(0.1, 0.9, txt, transform=self.axes.transAxes)
-        self.axes.set_xlabel("P Time (seconds)")
-        self.axes.set_ylabel("S-P Time (seconds)")
-
-        self.figure.canvas.draw()
-
-    def update_isohull(
-        self,
-        datd: gpd.GeoDataFrame,
-    ):
-        """
-        Update isoseismic plot using convex hull method.
-
-        Parameters
-        ----------
-        datd
-            Macroseismic data.
-
-        """
-        df1 = datd
-
-        x = df1.lon.to_numpy()
-        y = df1.lat.to_numpy()
-
-        plist = []
-        uvals = np.sort(df1.intensity.unique())
-
-        for i in uvals:
-            df2 = df1[df1.intensity >= i]
-            hull = df2.union_all(method="unary").convex_hull
-            hull = catmull_rom_smooth(hull)
-
-            plist.append(hull)
-            if len(plist) > 1:
-                plist[-2] = plist[-2].difference(hull)
-
-        gdf = gpd.GeoDataFrame({"Intensity": uvals}, geometry=plist)
-
-        self.figure.clear()
-        self.axes = self.figure.add_subplot(111)
-        self.axes.plot(x, y, "k.")
-
-        gdf.plot(
-            ax=self.axes,
-            column="Intensity",
-            legend=True,
-            edgecolor="k",
-            legend_kwds={"label": "Intensity"},
-        )
-
-        self.figure.canvas.draw()
-
-        self.isolines = gdf
-
-    def update_isocontour(
-        self,
-        datd: gpd.GeoDataFrame,
-    ):
-        """
-        Update isoseismic plot using contours.
-
-        Parameters
-        ----------
-        datd
-            Macroseismic data.
-
-        """
-        df1 = datd
-
-        x = df1.lon.to_numpy()
-        y = df1.lat.to_numpy()
-        z = df1.intensity.to_numpy()
-        uvals = np.sort(df1.intensity.unique())
-
-        if uvals.size < 2:
-            return
-
-        X = np.transpose([x, y])
-        X = np.unique(X, axis=0)
-        r = pdist(X)
-        dxy = np.percentile(r, 10) / 10
-
-        dat = gridxyz(x, y, z, dxy, method="Linear", bdist=None)
-
-        xmin, xmax, ymin, ymax = dat.extent
-        rows, cols = dat.data.shape
-
-        xi = np.linspace(xmin, xmax, cols, endpoint=False) + dxy / 2
-        yi = np.linspace(ymin, ymax, rows, endpoint=False) + dxy / 2
-
-        xi, yi = np.meshgrid(xi, yi)
-        zi = dat.data
-
-        self.figure.clear()
-        self.axes = self.figure.add_subplot(111)
-
-        self.axes.plot(x, y, "k.")
-
-        zi = zi[::-1] + 0.0001
-        cntr1 = self.axes.contour(xi, yi, zi, levels=uvals, colors="k")
-        cntr = self.axes.contourf(xi, yi, zi, levels=uvals, extend="max")
-
-        self.figure.colorbar(cntr)
-        self.figure.canvas.draw()
-
-        pnts = np.transpose([x, y])
-        hull0 = ConvexHull(pnts)
-        gdict = {"Intensity": [0], "geometry": [Polygon(pnts[hull0.vertices])]}
-
-        plist, pvals = contourtopoly(cntr1)
-
-        gdict["Intensity"] += pvals
-        gdict["geometry"] += plist
-
-        gdf = gpd.GeoDataFrame(gdict)
-
-        self.isolines = gdf
-
-    def update_tempb(
-        self,
-        btot: NDArray,
-        datetot: list,
-    ):
-        """
-        Update temporal b value plot.
-
-        Parameters
-        ----------
-        btot
-            Array of b values.
-        datetot
-            List of dates.
-
-        """
-        self.figure.clear()
-        self.axes = self.figure.add_subplot(111)
-
-        self.axes.plot(datetot, btot, "g", label="b-value (maximum likelihood)")
-        self.axes.legend()
-        self.axes.set_xlabel("Date", fontsize=8)
-        self.axes.set_ylabel("b-value", fontsize=8)
-        self.axes.tick_params(axis="x", rotation=90)
-
-        self.figure.canvas.draw()
-
-    def update_spatialb(
-        self,
-        x: NDArray,
-        y: NDArray,
-        bval: NDArray,
-    ):
-        """
-        Update spatial b value plot.
-
-        Parameters
-        ----------
-        x
-            Array of x values.
-        y
-            Array of y values.
-        bval
-            Array of b values.
-
-        """
-        self.figure.clear()
-        self.axes = self.figure.add_subplot(111)
-
-        scatter = self.axes.scatter(x, y, c=bval)
-        self.axes.legend(*scatter.legend_elements(), title="b-value")
-        self.axes.set_xlabel("Longitude", fontsize=8)
-        self.axes.set_ylabel("Latitude", fontsize=8)
-        # self.axes.tick_params(axis='x', rotation=90)
-
-        self.figure.canvas.draw()
 
 
 class PlotQC(ContextModule):
@@ -767,13 +66,14 @@ class PlotQC(ContextModule):
         super().__init__(parent)
 
         self.datd = None
+        self.ellipses = []
 
         self.setAttribute(QtCore.Qt.WidgetAttribute.WA_DeleteOnClose)
         self.setWindowTitle("QC Plots")
 
         vbl = QtWidgets.QVBoxLayout(self)  # self is where layout is assigned
         self.hbl = QtWidgets.QHBoxLayout()
-        self.mmc = MyMplCanvas()
+        self.mmc = CanvasModule()
         mpl_toolbar = NavigationToolbar2QT(self.mmc, self.parent)
 
         self.btn_saveshp = QtWidgets.QPushButton("Save Shapefile")
@@ -802,18 +102,18 @@ class PlotQC(ContextModule):
 
         i = self.cmb_1.currentText()
         if i == "Hour Histogram":
-            self.mmc.update_hist(
+            self.update_hist(
                 self.datd["1_hour"], xlbl="Hour", bins=24, rng=(-0.5, 23.5)
             )
         elif i == "Month Histogram":
-            self.mmc.update_hist(
+            self.update_hist(
                 self.datd["1_month"], xlbl="Month", bins=12, rng=(0.5, 12.5)
             )
         elif i == "Year Histogram":
             bins = max(self.datd["1_year"]) - min(self.datd["1_year"]) + 1
             bmin = np.nanmin(self.datd["1_year"]) - 0.5
             bmax = np.nanmax(self.datd["1_year"]) + 0.5
-            self.mmc.update_hist(
+            self.update_hist(
                 self.datd["1_year"], xlbl="Year", bins=bins, rng=(bmin, bmax)
             )
         elif i == "Number of Stations":
@@ -826,7 +126,7 @@ class PlotQC(ContextModule):
 
             bins = np.unique(self.datd["1_number_of_stations_used"]).size
 
-            self.mmc.update_hist(
+            self.update_hist(
                 self.datd["1_number_of_stations_used"],
                 xlbl=i,
                 bins=bins,
@@ -834,9 +134,9 @@ class PlotQC(ContextModule):
             )
         elif i == "RMS of time residuals":
             rts = np.array(self.datd["1_rms_of_time_residuals"])
-            self.mmc.update_hist(rts, xlbl=i + " (sec)")
+            self.update_hist(rts, xlbl=i + " (sec)")
         elif i == "ML vs Time":
-            self.mmc.update_hexbin(
+            self.update_hexbin(
                 self.datd["1_ML_time"],
                 self.datd["1_ML"],
                 xlbl="Time (Hours)",
@@ -845,33 +145,33 @@ class PlotQC(ContextModule):
                 xrng=(-0.5, 24.5),
             )
         elif i == "ML vs Year":
-            self.mmc.update_hexbin(
+            self.update_hexbin(
                 self.datd["1_ML_year"], self.datd["1_ML"], xlbl="Year", ylbl="ML"
             )
         elif i == "Error Ellipse":
             self.btn_saveshp.show()
-            self.mmc.update_ellipse(self.datd, self.indata["Seis"])
+            self.update_ellipse(self.datd, self.indata["Seis"])
         elif i == "Error Ellipse (No depth errors)":
             self.btn_saveshp.show()
-            self.mmc.update_ellipse(self.datd, self.indata["Seis"], True)
+            self.update_ellipse(self.datd, self.indata["Seis"], True)
         elif i == "GAP":
-            self.mmc.update_hist(self.datd["E_gap"], xlbl=i + " (°)")
+            self.update_hist(self.datd["E_gap"], xlbl=i + " (°)")
         elif i == "Longitude Error":
-            self.mmc.update_hist(self.datd["E_longitude_error"], xlbl=i + " (km)")
+            self.update_hist(self.datd["E_longitude_error"], xlbl=i + " (km)")
         elif i == "Latitude Error":
-            self.mmc.update_hist(self.datd["E_latitude_error"], xlbl=i + " (km)")
+            self.update_hist(self.datd["E_latitude_error"], xlbl=i + " (km)")
         elif i == "b-Value":
-            self.mmc.update_bvalue(self.datd["1_ML"])
+            self.update_bvalue(self.datd["1_ML"])
         elif i == "P-Phase Residuals":
-            self.mmc.update_pres(self.datd, "P")
+            self.update_pres(self.datd, "P")
         elif i == "S-Phase Residuals":
-            self.mmc.update_pres(self.datd, "S")
+            self.update_pres(self.datd, "S")
         elif i == "ML Residual":
-            self.mmc.update_residual(self.indata["Seis"], "ML")
+            self.update_residual(self.indata["Seis"], "ML")
         elif i == "Time Residual":
-            self.mmc.update_residual(self.indata["Seis"], "Time")
+            self.update_residual(self.indata["Seis"], "Time")
         elif i == "Wadati":
-            self.mmc.update_wadati(self.indata["Seis"])
+            self.update_wadati(self.indata["Seis"])
 
     def run(self):
         """Entry point into the routine, used to run context menu item."""
@@ -944,7 +244,7 @@ class PlotQC(ContextModule):
             os.remove(tmp + ".prj")
             os.remove(tmp + ".dbf")
 
-        indata = self.mmc.ellipses
+        indata = self.ellipses
         geom = [Polygon(i) for i in indata]
 
         gdict = {"geometry": geom}
@@ -955,6 +255,527 @@ class PlotQC(ContextModule):
         gdf.to_file(filename)
 
         return True
+
+    def update_bvalue(
+        self,
+        data1a: NDArray,
+        bins: str | int = "doane",
+    ):
+        """
+        Update the b value plot.
+
+        Parameters
+        ----------
+        data1a
+            Data array.
+        bins
+            Number of bins or binning strategy. See matplotlib.pyplot.hist.
+            The default is 'doane'.
+
+        """
+        fig = self.mmc.figure
+        fig.clear()
+        axes = fig.add_subplot(111)
+        if len(data1a) == 0:
+            self.mmc.draw_idle()
+            return
+
+        out = bvalue(data1a)
+        data1 = np.ma.masked_invalid(data1a)
+        data1 = data1.compressed()
+
+        xtmp = out["binctr"][out["binctr"] >= out["cmax"]]
+
+        # Plotting
+        axes.hist(data1, bins, edgecolor="black", label="Actual distribution")
+        axes.set_yscale("log")
+
+        axes.plot(out["binctr"], out["cumnum"], ".", label="Cumulative distribution")
+
+        axes.plot(
+            [out["cmax"], out["cmax"]],
+            [0, out["cumnum"].max()],
+            "k--",
+            label=f"Magnitude of completeness: {out['cmax']}\n",
+        )
+
+        txt = (
+            f"a-value (Least Squares): {out['aval']}\n"
+            f"b-value (Least Squares): {out['bval']}\n"
+            f"b-value (Maximum Likelihood): {out['b_mle']}"
+        )
+        axes.plot(xtmp, 10 ** np.poly1d(out["abvals"])(xtmp), "k", label=txt)
+
+        axes.set_xlabel("ML", fontsize=8)
+        axes.set_ylabel("Number of observations", fontsize=8)
+
+        axes.legend()
+
+        self.mmc.draw_idle()
+
+    def update_ellipse(
+        self,
+        datd: dict,
+        dats: list,
+        nodepth: bool = False,
+    ):
+        """
+        Update error ellipse plot.
+
+        Parameters
+        ----------
+        datd
+            Dictionary containing latitudes and longitudes
+        dats
+            Data list.
+        nodepth
+            Flag to determine if there are depths. The default is False.
+
+        """
+        fig = self.mmc.figure
+        fig.clear()
+        axes = fig.add_subplot(111)
+
+        if len(datd) == 0:
+            self.mmc.draw_idle()
+            return
+
+        x = np.ma.masked_invalid(datd["1_longitude"])
+        y = np.ma.masked_invalid(datd["1_latitude"])
+
+        xmin = x.min() - 0.5
+        xmax = x.max() + 0.5
+        ymin = y.min() - 0.5
+        ymax = y.max() + 0.5
+
+        axes.set_xlim(xmin, xmax)
+        axes.set_ylim(ymin, ymax)
+
+        for dat in dats:
+            if "E" not in dat:
+                continue
+
+            lon = dat["1"].longitude
+            lat = dat["1"].latitude
+
+            erx = dat["E"].longitude_error
+            ery = dat["E"].latitude_error
+            erz = dat["E"].depth_error
+            cvxy = dat["E"].cov_xy
+            cvxz = dat["E"].cov_xz
+            cvyz = dat["E"].cov_yz
+
+            if nodepth is True:
+                cvxz = 0
+                cvyz = 0
+                erz = 0
+
+            cov = np.array(
+                [
+                    [erx * erx, cvxy, cvxz],
+                    [cvxy, ery * ery, cvyz],
+                    [cvxz, cvyz, erz * erz],
+                ]
+            )
+
+            if True in np.isnan(cov):
+                continue
+
+            vals, vecs = eigsorted(cov)
+            abc = (
+                2
+                * np.sqrt(abs(vals))
+                * np.cos(
+                    np.arctan2(vecs[2, :], np.sqrt(vecs[0, :] ** 2 + vecs[1, :] ** 2))
+                )
+            )
+
+            idx = np.argmax(abc)
+            ang = np.rad2deg(np.arctan2(vecs[1, idx], vecs[0, idx]))
+
+            abc[::-1].sort()  # sort in reverse order
+            emaj = abc[0]
+            emin = abc[1]
+
+            # approx conversion to degrees
+            demin = emin / 110.93  # lat
+            # long from lat
+            demaj = emaj / (111.3 * np.cos(np.deg2rad(lat + demin)))
+
+            ell = Ellipse(
+                xy=(lon, lat), width=demaj, height=demin, angle=ang, color="black"
+            )
+            ell.set_facecolor("none")
+
+            self.ellipses.append(ell.get_verts())
+            axes.add_artist(ell)
+
+        self.mmc.set_map_axes(axes, CRS.from_epsg(4326))
+        self.mmc.draw_idle()
+
+    def update_hexbin(
+        self,
+        data1: NDArray,
+        data2: NDArray,
+        *,
+        xlbl: str = "Time",
+        ylbl: str = "ML",
+        xbin: int | None = None,
+        xrng: tuple[float, float] | None = None,
+    ):
+        """
+        Update the hexbin plot.
+
+        Parameters
+        ----------
+        data1
+            Raster dataset to be used
+        data2
+            Raster dataset to be used
+        xlbl
+            X-axis label. The default is 'Time'.
+        ylbl
+            Y-axis label. The default is 'ML'.
+        xbin
+            Number of bins in the x direction. The default is None.
+        xrng
+            X-range. The default is None.
+
+        """
+        fig = self.mmc.figure
+        fig.clear()
+        axes = fig.add_subplot(111)
+
+        if len(data1) == 0 or len(data2) == 0:
+            self.mmc.draw_idle()
+            return
+
+        x = np.ma.masked_invalid(data1)
+        y = np.ma.masked_invalid(data2)
+
+        if np.all(y.mask) or np.all(x.mask):
+            self.mmc.draw_idle()
+            return
+
+        xmin = x.min()
+        xmax = x.max()
+        ymin = y.min()
+        ymax = y.max()
+        if xmin == xmax:
+            xmin = xmin - 1
+            xmax = xmax + 1
+        if ymin == ymax:
+            ymin = ymin - 1
+            ymax = ymax + 1
+
+        bins = int(np.sqrt(x.size))
+        bins = (bins, bins)
+        rng = [[x.min() - 0.5, x.max() + 0.5], [y.min(), y.max()]]
+
+        if xbin is not None:
+            bins = (xbin, bins[1])
+            rng[0] = xrng
+        elif np.unique(x).size < bins[0]:
+            bins = (np.unique(x).size, bins[1])
+        if np.unique(y).size < bins[1]:
+            bins = (bins[0], np.unique(y).size)
+
+        hbin = axes.hist2d(x, y, bins=bins, cmin=1, range=rng)
+        axes.set_xlabel(xlbl, fontsize=8)
+        axes.set_ylabel(ylbl, fontsize=8)
+        axes.set_xticks(np.arange(x.min(), x.max() + 1))
+
+        for tick in axes.get_xticklabels():
+            tick.set_rotation(90)
+
+        cbar = fig.colorbar(hbin[3])
+        cbar.set_label("Number of Events")
+
+        self.mmc.draw_idle()
+
+    def update_hist(
+        self,
+        data1: NDArray,
+        *,
+        xlbl: str = "Data Value",
+        ylbl: str = "Number of Observations",
+        bins: str | int = "doane",
+        rng: tuple[float, float] | None = None,
+    ):
+        """
+        Update the histogram plot.
+
+        Parameters
+        ----------
+        data1
+            Raster dataset to be used
+        xlbl
+            X-axis label. The default is 'Data Value'.
+        ylbl
+            Y-axis label. The default is 'Number of Observations'.
+        bins
+            Number of bins or binning strategy. See matplotlib.pyplot.hist.
+            The default is 'doane'.
+        rng
+            Bin range. The default is None.
+
+        """
+        fig = self.mmc.figure
+        fig.clear()
+        axes = fig.add_subplot(111)
+        if len(data1) == 0:
+            self.mmc.draw_idle()
+            return
+
+        dattmp = np.array(data1)
+        dattmp = dattmp[~np.isnan(dattmp)]
+
+        if dattmp.size == 0:
+            self.mmc.draw_idle()
+            return
+
+        if np.unique(dattmp).size == 1:
+            bins = 5
+            rng = (np.unique(dattmp)[0] - 2.5, np.unique(dattmp)[0] + 2.5)
+
+        axes.hist(dattmp, bins, edgecolor="black", range=rng)
+        axes.set_xlabel(xlbl, fontsize=8)
+        axes.set_ylabel(ylbl, fontsize=8)
+
+        if rng is not None:
+            axes.set_xlim(rng[0], rng[1])
+            axes.set_xticks(np.arange(int(rng[0] + 1), int(rng[1]) + 1))
+
+        for tick in axes.get_xticklabels():
+            tick.set_rotation(90)
+
+        self.mmc.draw_idle()
+
+    def update_pres(
+        self,
+        data1: NDArray,
+        phase: str = "P",
+    ):
+        """
+        Update the plot.
+
+        Parameters
+        ----------
+        data1
+            Data array.
+        phase
+            Phase. The default is 'P'.
+
+        """
+        fig = self.mmc.figure
+        fig.clear()
+        axes = fig.add_subplot(111)
+        if len(data1) == 0:
+            self.mmc.draw_idle()
+            return
+
+        pid = np.array(data1["4_phase_id"])
+        tres = np.array(data1["4_travel_time_residual"])
+        weight = np.array(data1["4_weighting_indicator"])
+        pid = pid[weight != 9]
+        tres = tres[weight != 9]
+
+        pid = pid[~np.isnan(tres)]
+        tres = tres[~np.isnan(tres)].astype(float)
+
+        pid = np.strings.strip(pid)
+
+        if phase == "P":
+            ptres = tres[pid == "P"]
+        else:
+            ptres = tres[pid == "S"]
+
+        txt = "mean: " + str(np.around(ptres.mean(), 3))
+        txt += "\nstd: " + str(np.around(ptres.std(), 3))
+
+        weights = 100 * np.ones_like(ptres) / ptres.size
+        axes.text(0.75, 0.9, txt, transform=axes.transAxes)
+        axes.hist(ptres, 40, weights=weights, edgecolor="black")
+        axes.set_xlabel("Time Residual (seconds)")
+        axes.set_ylabel("Frequency (%)")
+
+        self.mmc.draw_idle()
+
+    def update_residual(
+        self,
+        dat: NDArray,
+        res: str = "ML",
+    ):
+        """
+        Update the residual plot.
+
+        Parameters
+        ----------
+        data1
+            Data array.
+        res
+            Response type. The default is 'ML'.
+
+        """
+        fig = self.mmc.figure
+        fig.clear()
+        axes = fig.add_subplot(111)
+        if len(dat) == 0:
+            self.mmc.draw_idle()
+            return
+
+        A = {}
+        T = {}
+        A1mean = 0
+
+        for event in dat:
+            A1 = {}
+            T1 = {}
+            for rec in event["4"]:
+                i = rec.station_name
+                if rec.magnitude is not None:
+                    if i not in A:
+                        A[i] = []
+                    A[i].append(rec.magnitude_residual)
+                elif (rec.quality + rec.phase_id).strip() in ["IAML", "AML", "ES", "E"]:
+                    if rec.amplitude is None or rec.epicentral_distance is None:
+                        continue
+                    ML = (
+                        np.log10(rec.amplitude)
+                        + 1.149 * np.log10(rec.epicentral_distance)
+                        + 0.00063 * rec.epicentral_distance
+                        - 2.04
+                    )
+                    A1[i] = ML
+                if rec.travel_time_residual is not None:
+                    T1[i] = rec.travel_time_residual
+            if A1:
+                if np.nonzero(~np.isnan(list(A1.values())))[0].size == 0:
+                    A1mean = 0
+                else:
+                    A1mean = np.nanmean(list(A1.values()))
+            for i, A1i in A1.items():
+                if i not in A:
+                    A[i] = []
+                A[i].append(A1i - A1mean)
+
+            for i, T1i in T1.items():
+                if i not in T:
+                    T[i] = []
+                T[i].append(T1i)
+
+        dmean = {}
+        dstd = {}
+
+        if res != "ML":
+            A = T
+
+        sname_list = list(A.keys())
+        sname_list.sort()
+
+        for j, i in enumerate(sname_list):
+            if np.nonzero(~np.isnan(A[i]))[0].size == 0:
+                continue
+            dmean[i] = np.nanmean(A[i])
+            dstd[i] = np.nanstd(A[i])
+
+            axes.errorbar(j, dmean[i], yerr=dstd[i], fmt="k+", capsize=5)
+
+        axes.set_xticks(range(len(sname_list)))
+        axes.set_xticklabels(sname_list, rotation=90)
+        axes.set_xlabel("Station Name")
+        if res != "ML":
+            axes.set_ylabel("Travel Time Residual (Seconds)")
+        else:
+            axes.set_ylabel("ML-mean(ML)")
+
+        self.mmc.draw_idle()
+
+    def update_wadati(
+        self,
+        dat: list,
+        min_wad: int = 5,
+        min_vps: float = 1.53,
+        max_vps: float = 1.93,
+    ):
+        """
+        Update the wadati plot.
+
+        Parameters
+        ----------
+        dat
+            List of events.
+        min_wad
+            Minimum data length for plot. The default is 5.
+        min_vps
+            Minimum VPS. The default is 1.53.
+        max_vps
+            Maximum VPS. The default is 1.93.
+
+        """
+        fig = self.mmc.figure
+        fig.clear()
+        axes = fig.add_subplot(111)
+        if len(dat) == 0:
+            self.mmc.draw_idle()
+            return
+
+        VPS = []
+        for event in dat:
+            P = {}
+            S = {}
+            for rec in event["4"]:
+                if rec.weighting_indicator == 9:
+                    continue
+                time = rec.hour * 3600 + rec.minutes * 60 + rec.seconds
+                if rec.phase_id.strip() == "P":
+                    P[rec.station_name] = time
+                if rec.phase_id.strip() == "S":
+                    S[rec.station_name] = time
+
+            # Make sure P and S times are from same stations
+            P2 = []
+            S2 = []
+            for i, Pi in P.items():
+                if i not in S:
+                    continue
+                P2.append(Pi)
+                S2.append(S[i])
+
+            if len(P2) <= min_wad:
+                continue
+
+            P2 = np.transpose([P2])
+            S2 = np.transpose([S2])
+
+            Pdist = cdist(P2, P2)
+            Sdist = cdist(S2, S2)
+
+            filt = np.triu(np.ones_like(Pdist, dtype=bool), 1)
+
+            Pdist = Pdist[filt]
+            Sdist = Sdist[filt]
+
+            PSfit = linregress(Pdist, Sdist)
+
+            if PSfit.slope < min_vps or PSfit.slope > max_vps:
+                continue
+
+            VPS.append(PSfit)
+            axes.plot(Pdist, Sdist, ".")
+
+        slope = np.mean([i.slope for i in VPS])
+        intercept = np.mean([i.intercept for i in VPS])
+
+        x = axes.get_xlim()
+        axes.plot(x, np.poly1d([slope, intercept])(x), "k")
+
+        txt = "Vp/Vs (Ave)=" + str(np.around(np.mean(slope), 4))
+        axes.text(0.1, 0.9, txt, transform=axes.transAxes)
+        axes.set_xlabel("P Time (seconds)")
+        axes.set_ylabel("S-P Time (seconds)")
+
+        self.mmc.draw_idle()
 
 
 class PlotIso(ContextModule):
@@ -975,13 +796,14 @@ class PlotIso(ContextModule):
         super().__init__(parent)
 
         self.datd = None
+        self.isolines = None
 
         self.setAttribute(QtCore.Qt.WidgetAttribute.WA_DeleteOnClose)
         self.setWindowTitle("Isoseismic Plots")
 
         vbl = QtWidgets.QVBoxLayout(self)  # self is where layout is assigned
         hbl = QtWidgets.QHBoxLayout()
-        self.mmc = MyMplCanvas()
+        self.mmc = CanvasModule(self)
         mpl_toolbar = NavigationToolbar2QT(self.mmc, self.parent)
 
         self.btn_saveshp = QtWidgets.QPushButton("Save Shapefile")
@@ -1008,9 +830,9 @@ class PlotIso(ContextModule):
         """Combo box to choose band."""
         i = self.cmb_1.currentText()
         if i == "Convex Hull Method":
-            self.mmc.update_isohull(self.datd)
+            self.update_isohull(self.datd)
         elif i == "Standard Contours":
-            self.mmc.update_isocontour(self.datd)
+            self.update_isocontour(self.datd)
 
     def run(self):
         """Entry point into the routine, used to run context menu item."""
@@ -1057,12 +879,129 @@ class PlotIso(ContextModule):
             os.remove(tmp + ".prj")
             os.remove(tmp + ".dbf")
 
-        gdf = self.mmc.isolines
+        gdf = self.isolines
         gdf = gdf.set_crs(4326)
 
         gdf.to_file(filename)
 
         return True
+
+    def update_isohull(
+        self,
+        datd: gpd.GeoDataFrame,
+    ):
+        """
+        Update isoseismic plot using convex hull method.
+
+        Parameters
+        ----------
+        datd
+            Macroseismic data.
+
+        """
+        df1 = datd
+
+        x = df1.lon.to_numpy()
+        y = df1.lat.to_numpy()
+
+        plist = []
+        uvals = np.sort(df1.intensity.unique())
+
+        for i in uvals:
+            df2 = df1[df1.intensity >= i]
+            hull = df2.union_all(method="unary").convex_hull
+            hull = catmull_rom_smooth(hull)
+
+            plist.append(hull)
+            if len(plist) > 1:
+                plist[-2] = plist[-2].difference(hull)
+
+        gdf = gpd.GeoDataFrame({"Intensity": uvals}, geometry=plist)
+
+        fig = self.mmc.figure
+        fig.clear()
+        axes = fig.add_subplot(111)
+
+        axes.plot(x, y, "k.")
+
+        gdf.plot(
+            ax=axes,
+            column="Intensity",
+            legend=True,
+            edgecolor="k",
+            legend_kwds={"label": "Intensity"},
+        )
+
+        self.mmc.set_map_axes(axes, CRS.from_epsg(4326))
+        self.mmc.draw_idle()
+
+        self.isolines = gdf
+
+    def update_isocontour(
+        self,
+        datd: gpd.GeoDataFrame,
+    ):
+        """
+        Update isoseismic plot using contours.
+
+        Parameters
+        ----------
+        datd
+            Macroseismic data.
+
+        """
+        df1 = datd
+
+        x = df1.lon.to_numpy()
+        y = df1.lat.to_numpy()
+        z = df1.intensity.to_numpy()
+        uvals = np.sort(df1.intensity.unique())
+
+        if uvals.size < 2:
+            return
+
+        X = np.transpose([x, y])
+        X = np.unique(X, axis=0)
+        r = pdist(X)
+        dxy = np.percentile(r, 10) / 10
+
+        dat = gridxyz(x, y, z, dxy, method="Linear", bdist=None)
+
+        xmin, xmax, ymin, ymax = dat.extent
+        rows, cols = dat.data.shape
+
+        xi = np.linspace(xmin, xmax, cols, endpoint=False) + dxy / 2
+        yi = np.linspace(ymin, ymax, rows, endpoint=False) + dxy / 2
+
+        xi, yi = np.meshgrid(xi, yi)
+        zi = dat.data
+
+        fig = self.mmc.figure
+        fig.clear()
+        axes = fig.add_subplot(111)
+
+        axes.plot(x, y, "k.")
+
+        zi = zi[::-1] + 0.0001
+        cntr1 = axes.contour(xi, yi, zi, levels=uvals, colors="k")
+        cntr = axes.contourf(xi, yi, zi, levels=uvals, extend="max")
+
+        fig.colorbar(cntr)
+        self.mmc.set_map_axes(axes, CRS.from_epsg(4326))
+        self.mmc.draw_idle()
+
+        pnts = np.transpose([x, y])
+        hull0 = ConvexHull(pnts)
+        gdict = {"Intensity": [0], "geometry": [Polygon(pnts[hull0.vertices])]}
+
+        plist, pvals = contourtopoly(cntr1)
+
+        gdict["Intensity"] += pvals
+        gdict["geometry"] += plist
+
+        gdf = gpd.GeoDataFrame(gdict)
+
+        self.isolines = gdf
 
 
 class PlotTempB(ContextModule):
@@ -1090,7 +1029,7 @@ class PlotTempB(ContextModule):
 
         vbl = QtWidgets.QVBoxLayout(self)  # self is where layout is assigned
         hbl = QtWidgets.QHBoxLayout()
-        self.mmc = MyMplCanvas()
+        self.mmc = CanvasModule(self)
         mpl_toolbar = NavigationToolbar2QT(self.mmc, self.parent)
 
         self.le_1 = QtWidgets.QLineEdit("300")
@@ -1160,7 +1099,7 @@ class PlotTempB(ContextModule):
             datetot.append(meandate)
 
         b2tot = np.array(b2tot)
-        self.mmc.update_tempb(b2tot, datetot)
+        self.update_tempb(b2tot, datetot)
 
     def run(self):
         """Entry point into the routine, used to run context menu item."""
@@ -1169,6 +1108,34 @@ class PlotTempB(ContextModule):
 
         self.show()
         self.change_window()
+
+    def update_tempb(
+        self,
+        btot: NDArray,
+        datetot: list,
+    ):
+        """
+        Update temporal b value plot.
+
+        Parameters
+        ----------
+        btot
+            Array of b values.
+        datetot
+            List of dates.
+
+        """
+        fig = self.mmc.figure
+        fig.clear()
+        axes = fig.add_subplot(111)
+
+        axes.plot(datetot, btot, "g", label="b-value (maximum likelihood)")
+        axes.legend()
+        axes.set_xlabel("Date", fontsize=8)
+        axes.set_ylabel("b-value", fontsize=8)
+        axes.tick_params(axis="x", rotation=90)
+
+        self.mmc.draw_idle()
 
 
 class PlotSpatialB(ContextModule):
@@ -1196,7 +1163,7 @@ class PlotSpatialB(ContextModule):
 
         vbl = QtWidgets.QVBoxLayout(self)
         hbl3 = QtWidgets.QHBoxLayout()
-        self.mmc = MyMplCanvas()
+        self.mmc = CanvasModule(self)
         mpl_toolbar = NavigationToolbar2QT(self.mmc, self.parent)
 
         self.le_1 = QtWidgets.QLineEdit("0.2")
@@ -1284,7 +1251,7 @@ class PlotSpatialB(ContextModule):
         xxx = xxx[filt]
         yyy = yyy[filt]
 
-        self.mmc.update_spatialb(xxx, yyy, bval)
+        self.update_spatialb(xxx, yyy, bval)
 
     def run(self):
         """Entry point into the routine, used to run context menu item."""
@@ -1293,6 +1260,36 @@ class PlotSpatialB(ContextModule):
 
         self.show()
         self.calculate()
+
+    def update_spatialb(
+        self,
+        x: NDArray,
+        y: NDArray,
+        bval: NDArray,
+    ):
+        """
+        Update spatial b value plot.
+
+        Parameters
+        ----------
+        x
+            Array of x values.
+        y
+            Array of y values.
+        bval
+            Array of b values.
+
+        """
+        fig = self.mmc.figure
+        fig.clear()
+        axes = fig.add_subplot(111)
+
+        scatter = axes.scatter(x, y, c=bval)
+        axes.legend(*scatter.legend_elements(), title="b-value")
+
+        self.mmc.set_map_axes(axes, CRS.from_epsg(4326))
+
+        self.mmc.draw_idle()
 
 
 def contourtopoly(cntr) -> tuple[list[Polygon], list[float]]:
@@ -1738,9 +1735,6 @@ def _testfn1():
 
     data = tmp.outdata
 
-    # dat = import_for_plots(data)
-
-    # tmp = PlotIso()
     tmp = PlotQC()
     tmp.indata = data
     tmp.run()
@@ -1764,7 +1758,8 @@ def _testfn():
 
     tmp.settings(True)
 
-    tmp1 = PlotTempB()
+    # tmp1 = PlotTempB()
+    tmp1 = PlotSpatialB()
     tmp1.indata = tmp.outdata
     tmp1.run()
 
@@ -1772,5 +1767,6 @@ def _testfn():
 
 
 if __name__ == "__main__":
-    _testfn1()
-    # _testiso()
+    # _testfn1()
+    # _testfn()
+    _testiso()

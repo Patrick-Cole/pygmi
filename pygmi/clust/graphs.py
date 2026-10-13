@@ -31,22 +31,70 @@ from matplotlib.ticker import MaxNLocator
 from numpy.typing import NDArray
 from PySide6 import QtCore, QtWidgets
 
-from pygmi.maps import CanvasModule, set_axes, set_northscale
+from pygmi.maps import CanvasModule
 from pygmi.misc import ContextModule
 from pygmi.raster.datatypes import Data
 from pygmi.raster.modest_image import imshow
 
 
-class MyMplCanvas(CanvasModule):
-    """Matplotlib canvas widget for the actual plot."""
+class PlotRaster(ContextModule):
+    """
+    Plot Raster Class GUI.
+
+    Parameters
+    ----------
+    parent
+        Reference to the parent routine. The default is None.
+
+    """
 
     def __init__(
         self,
         parent=None,
     ):
         super().__init__(parent)
-        self.line = None
-        self.ind = None
+
+        self.setAttribute(QtCore.Qt.WidgetAttribute.WA_DeleteOnClose)
+        self.setWindowTitle("Class Data")
+
+        vbl = QtWidgets.QVBoxLayout(self)
+        hbl = QtWidgets.QHBoxLayout()
+        self.mmc = CanvasModule(self)
+        mpl_toolbar = NavigationToolbar2QT(self.mmc, self.parent)
+
+        self.cmb_1 = QtWidgets.QComboBox()
+        lbl_1 = QtWidgets.QLabel("Bands:")
+
+        self.buttonbox.htmlfile = "cluster.cm.showclass"
+        self.buttonbox.buttonbox.hide()
+        hbl.addWidget(self.buttonbox)
+
+        hbl.addWidget(lbl_1, 0, QtCore.Qt.AlignmentFlag.AlignRight)
+        hbl.addWidget(self.cmb_1)
+
+        vbl.addWidget(self.mmc)
+        vbl.addWidget(mpl_toolbar)
+        vbl.addLayout(hbl)
+
+        self.setFocus()
+
+        self.cmb_1.currentIndexChanged.connect(self.change_band)
+
+    def change_band(self):
+        """Combo to change band."""
+        i = self.cmb_1.currentIndex()
+        data = self.indata["Cluster"]
+        self.update_classes(data[i])
+
+    def run(self):
+        """Entry point into the routine, used to run context menu item."""
+        data = self.indata["Cluster"]
+
+        cols = [i.dataid for i in data]
+        self.cmb_update(self.cmb_1, cols)
+
+        self.change_band()
+        self.show()
 
     def update_classes(
         self,
@@ -61,14 +109,17 @@ class MyMplCanvas(CanvasModule):
             Input raster dataset.
 
         """
-        self.custom_resize = True
-        self.figure.clear()
-        self.axes = self.figure.add_subplot(111, label="map")
+        self.mmc.custom_resize = True
+        fig = self.mmc.figure
+        fig.clear()
+        axes = fig.add_subplot(111, label="map")
 
         cdat = data1.data
 
         # cannot use modestimage when changing colorbar labels
-        csp = self.axes.imshow(cdat, cmap=colormaps["jet"], extent=data1.extent)
+        csp = axes.imshow(
+            cdat, cmap=colormaps["jet"], extent=data1.extent, interpolation="nearest"
+        )
 
         vals = np.unique(cdat)
         vals = vals.compressed()
@@ -83,13 +134,74 @@ class MyMplCanvas(CanvasModule):
             lbls = None
 
         if len(vals) > 1:
-            cbar = self.axes.figure.colorbar(csp, boundaries=bnds)
+            cbar = axes.figure.colorbar(csp, boundaries=bnds)
             cbar.set_ticks(vals, labels=lbls)
 
-        set_axes(self.axes, data1.crs)
-        set_northscale(self.axes, data1.crs, self.showlog)
+        self.mmc.set_map_axes(axes, data1.crs)
+        self.mmc.draw_idle()
 
-        self.draw()
+
+class PlotBars(ContextModule):
+    """
+    Plot Bar Class GUI.
+
+    Parameters
+    ----------
+    parent
+        Reference to the parent routine. The default is None.
+
+    """
+
+    def __init__(
+        self,
+        parent=None,
+    ):
+        super().__init__(parent)
+
+        self.setAttribute(QtCore.Qt.WidgetAttribute.WA_DeleteOnClose)
+        self.setWindowTitle("Class Dataset Ranges")
+
+        vbl = QtWidgets.QVBoxLayout(self)
+        hbl = QtWidgets.QHBoxLayout()
+        self.mmc = CanvasModule(self)
+        mpl_toolbar = NavigationToolbar2QT(self.mmc, self.parent)
+
+        self.cmb_1 = QtWidgets.QComboBox()
+        lbl_1 = QtWidgets.QLabel("Bands:")
+
+        self.buttonbox.htmlfile = "cluster.cm.showbars"
+        self.buttonbox.buttonbox.hide()
+        hbl.addWidget(self.buttonbox)
+
+        hbl.addWidget(lbl_1, 0, QtCore.Qt.AlignmentFlag.AlignRight)
+        hbl.addWidget(self.cmb_1)
+
+        vbl.addWidget(self.mmc)
+        vbl.addWidget(mpl_toolbar)
+        vbl.addLayout(hbl)
+
+        self.setFocus()
+
+        self.cmb_1.currentIndexChanged.connect(self.change_band)
+
+    def change_band(self):
+        """Combo to change band."""
+        i = self.cmb_1.currentIndex()
+        data = self.indata["Cluster"]
+        self.update_bars(data[i], self.indata["Raster"])
+
+    def run(self):
+        """Entry point into the routine, used to run context menu item."""
+        data = self.indata["Cluster"]
+
+        self.cmb_1.currentIndexChanged.disconnect()
+        for i in data:
+            self.cmb_1.addItem(i.dataid)
+
+        self.cmb_1.currentIndexChanged.connect(self.change_band)
+
+        self.show()
+        self.change_band()
 
     def update_bars(
         self,
@@ -115,8 +227,9 @@ class MyMplCanvas(CanvasModule):
         else:
             lbls = [f"{i + 1}" for i in x]
 
-        self.figure.clear()
-        self.axes = self.figure.add_subplot(111, label="map")
+        fig = self.mmc.figure
+        fig.clear()
+        axes = fig.add_subplot(111, label="map")
 
         cdata = {}
         cdatab = {}
@@ -139,234 +252,15 @@ class MyMplCanvas(CanvasModule):
         for multiplier, (attribute, measurement) in enumerate(cdata.items()):
             bottom = cdatab[attribute]
             offset = width * multiplier
-            self.axes.bar(x + offset, measurement, width, bottom, label=attribute)
+            axes.bar(x + offset, measurement, width, bottom, label=attribute)
 
         # Add some text for labels, title and custom x-axis tick labels, etc.
-        self.axes.set_ylabel("Value")
-        self.axes.set_title(f"Dataset ranges for {cnr} classes")
-        self.axes.set_xticks(x + 0.4, dataids)
-        self.axes.legend(loc="upper left")
+        axes.set_ylabel("Value")
+        axes.set_title(f"Dataset ranges for {cnr} classes")
+        axes.set_xticks(x + 0.4, dataids)
+        axes.legend(loc="upper left")
 
-        self.figure.canvas.draw()
-
-    def update_scatter(
-        self,
-        x: NDArray,
-        y: NDArray,
-    ):
-        """
-        Update the scatter plot.
-
-        Parameters
-        ----------
-        x
-            X coordinates (Number of classes).
-        y
-            Y Coordinates.
-
-        """
-        self.figure.clear()
-        self.axes = self.figure.add_subplot(111)
-
-        xmin = min(x) - 0.1 * np.ptp(x)
-        xmax = max(x) + 0.1 * np.ptp(x)
-        ymin = min(y) - 0.1 * np.ptp(y)
-        ymax = max(y) + 0.1 * np.ptp(y)
-
-        self.axes.scatter(x, y)
-        self.axes.axis([xmin, xmax, ymin, ymax])
-        self.axes.set_xlabel("Number of Classes")
-        self.axes.xaxis.set_ticks(x)
-        self.figure.canvas.draw()
-
-    def update_wireframe(
-        self,
-        x: NDArray,
-        y: NDArray,
-        z: NDArray,
-    ):
-        """
-        Update the wireframe plot.
-
-        Parameters
-        ----------
-        x
-            Iteration number.
-        y
-            Number of classes.
-        z
-            z coordinate.
-
-        """
-        self.figure.clear()
-        self.axes = self.figure.add_subplot(111, projection="3d")
-        self.axes.plot_wireframe(y, x, z)
-        self.axes.set_title("log(Objective Function)")
-        self.axes.set_ylabel("Number of Classes")
-        self.axes.set_xlabel("Iteration")
-        self.axes.yaxis.set_major_locator(MaxNLocator(integer=True))
-        self.axes.xaxis.set_major_locator(MaxNLocator(integer=True))
-
-        self.figure.canvas.draw()
-
-    def update_membership(
-        self,
-        data1: Data,
-        mem: int,
-    ):
-        """
-        Update membership plot.
-
-        Parameters
-        ----------
-        data1
-            Raster dataset.
-        mem
-            Membership.
-
-        """
-        self.custom_resize = True
-        self.figure.clear()
-        self.axes = self.figure.add_subplot(111)
-
-        rdata = imshow(
-            self.axes,
-            data1.metadata["Cluster"]["memdat"][mem],
-            extent=data1.extent,
-            cmap=colormaps["jet"],
-            vmin=0.0,
-            vmax=1.0,
-        )
-
-        self.figure.colorbar(rdata)
-
-        set_axes(self.axes, data1.crs)
-        set_northscale(self.axes, data1.crs, self.showlog)
-
-        self.draw()
-
-
-class PlotRaster(ContextModule):
-    """
-    Plot Raster Class GUI.
-
-    Parameters
-    ----------
-    parent
-        Reference to the parent routine. The default is None.
-
-    """
-
-    def __init__(
-        self,
-        parent=None,
-    ):
-        super().__init__(parent)
-
-        self.setAttribute(QtCore.Qt.WidgetAttribute.WA_DeleteOnClose)
-        self.setWindowTitle("Class Data")
-
-        vbl = QtWidgets.QVBoxLayout(self)
-        hbl = QtWidgets.QHBoxLayout()
-        self.mmc = MyMplCanvas()
-        mpl_toolbar = NavigationToolbar2QT(self.mmc, self.parent)
-
-        self.cmb_1 = QtWidgets.QComboBox()
-        lbl_1 = QtWidgets.QLabel("Bands:")
-
-        self.buttonbox.htmlfile = "cluster.cm.showclass"
-        self.buttonbox.buttonbox.hide()
-        hbl.addWidget(self.buttonbox)
-
-        hbl.addWidget(lbl_1, 0, QtCore.Qt.AlignmentFlag.AlignRight)
-        hbl.addWidget(self.cmb_1)
-
-        vbl.addWidget(self.mmc)
-        vbl.addWidget(mpl_toolbar)
-        vbl.addLayout(hbl)
-
-        self.setFocus()
-
-        self.cmb_1.currentIndexChanged.connect(self.change_band)
-
-    def change_band(self):
-        """Combo to change band."""
-        i = self.cmb_1.currentIndex()
-        data = self.indata["Cluster"]
-        self.mmc.update_classes(data[i])
-
-    def run(self):
-        """Entry point into the routine, used to run context menu item."""
-        data = self.indata["Cluster"]
-
-        cols = [i.dataid for i in data]
-        self.cmb_update(self.cmb_1, cols)
-
-        self.change_band()
-        self.show()
-
-
-class PlotBars(ContextModule):
-    """
-    Plot Bar Class GUI.
-
-    Parameters
-    ----------
-    parent
-        Reference to the parent routine. The default is None.
-
-    """
-
-    def __init__(
-        self,
-        parent=None,
-    ):
-        super().__init__(parent)
-
-        self.setAttribute(QtCore.Qt.WidgetAttribute.WA_DeleteOnClose)
-        self.setWindowTitle("Class Dataset Ranges")
-
-        vbl = QtWidgets.QVBoxLayout(self)
-        hbl = QtWidgets.QHBoxLayout()
-        self.mmc = MyMplCanvas()
-        mpl_toolbar = NavigationToolbar2QT(self.mmc, self.parent)
-
-        self.cmb_1 = QtWidgets.QComboBox()
-        lbl_1 = QtWidgets.QLabel("Bands:")
-
-        self.buttonbox.htmlfile = "cluster.cm.showbars"
-        self.buttonbox.buttonbox.hide()
-        hbl.addWidget(self.buttonbox)
-
-        hbl.addWidget(lbl_1, 0, QtCore.Qt.AlignmentFlag.AlignRight)
-        hbl.addWidget(self.cmb_1)
-
-        vbl.addWidget(self.mmc)
-        vbl.addWidget(mpl_toolbar)
-        vbl.addLayout(hbl)
-
-        self.setFocus()
-
-        self.cmb_1.currentIndexChanged.connect(self.change_band)
-
-    def change_band(self):
-        """Combo to change band."""
-        i = self.cmb_1.currentIndex()
-        data = self.indata["Cluster"]
-        self.mmc.update_bars(data[i], self.indata["Raster"])
-
-    def run(self):
-        """Entry point into the routine, used to run context menu item."""
-        data = self.indata["Cluster"]
-
-        self.cmb_1.currentIndexChanged.disconnect()
-        for i in data:
-            self.cmb_1.addItem(i.dataid)
-
-        self.cmb_1.currentIndexChanged.connect(self.change_band)
-
-        self.show()
-        self.change_band()
+        self.mmc.draw_idle()
 
 
 class PlotMembership(ContextModule):
@@ -391,7 +285,7 @@ class PlotMembership(ContextModule):
 
         vbl = QtWidgets.QVBoxLayout(self)
         hbl = QtWidgets.QHBoxLayout()
-        self.mmc = MyMplCanvas()
+        self.mmc = CanvasModule(self)
         mpl_toolbar = NavigationToolbar2QT(self.mmc, self.parent)
 
         self.cmb_1 = QtWidgets.QComboBox()
@@ -453,7 +347,43 @@ class PlotMembership(ContextModule):
         i = self.cmb_1.currentIndex()
         j = self.cmb_2.currentIndex()
 
-        self.mmc.update_membership(data[i], j)
+        self.update_membership(data[i], j)
+
+    def update_membership(
+        self,
+        data1: Data,
+        mem: int,
+    ):
+        """
+        Update membership plot.
+
+        Parameters
+        ----------
+        data1
+            Raster dataset.
+        mem
+            Membership.
+
+        """
+        self.mmc.custom_resize = True
+        fig = self.mmc.figure
+        fig.clear()
+        axes = fig.add_subplot(111)
+
+        rdata = imshow(
+            axes,
+            data1.metadata["Cluster"]["memdat"][mem],
+            extent=data1.extent,
+            cmap=colormaps["jet"],
+            vmin=0.0,
+            vmax=1.0,
+            interpolation="nearest",
+        )
+
+        fig.colorbar(rdata)
+
+        self.mmc.set_map_axes(axes, data1.crs)
+        self.mmc.draw_idle()
 
 
 class PlotVRCetc(ContextModule):
@@ -478,7 +408,7 @@ class PlotVRCetc(ContextModule):
 
         vbl = QtWidgets.QVBoxLayout(self)
         hbl = QtWidgets.QHBoxLayout()
-        self.mmc = MyMplCanvas()
+        self.mmc = CanvasModule(self)
         mpl_toolbar = NavigationToolbar2QT(self.mmc, self.parent)
 
         self.cmb_1 = QtWidgets.QComboBox()
@@ -527,7 +457,7 @@ class PlotVRCetc(ContextModule):
 
             x, y = np.meshgrid(x, y)
             x += data[0].metadata["Cluster"]["no_clusters"]
-            self.mmc.update_wireframe(x.T, y.T, np.log(z))
+            self.update_wireframe(x.T, y.T, np.log(z))
 
         if (
             j == "Variance Ratio Criterion"
@@ -535,7 +465,7 @@ class PlotVRCetc(ContextModule):
         ):
             x = [k.metadata["Cluster"]["no_clusters"] for k in data]
             y = [k.metadata["Cluster"]["vrc"] for k in data]
-            self.mmc.update_scatter(x, y)
+            self.update_scatter(x, y)
 
         if (
             j == "Davies-Bouldin Score"
@@ -543,12 +473,12 @@ class PlotVRCetc(ContextModule):
         ):
             x = [k.metadata["Cluster"]["no_clusters"] for k in data]
             y = [k.metadata["Cluster"]["dbs"] for k in data]
-            self.mmc.update_scatter(x, y)
+            self.update_scatter(x, y)
 
         if j == "Silhouette Score" and data[0].metadata["Cluster"]["sil"] is not None:
             x = [k.metadata["Cluster"]["no_clusters"] for k in data]
             y = [k.metadata["Cluster"]["sil"] for k in data]
-            self.mmc.update_scatter(x, y)
+            self.update_scatter(x, y)
 
         # nce and xbi are fuzzy clustering only.
         if (
@@ -557,11 +487,11 @@ class PlotVRCetc(ContextModule):
         ):
             x = [k.metadata["Cluster"]["no_clusters"] for k in data]
             y = [k.metadata["Cluster"]["nce"] for k in data]
-            self.mmc.update_scatter(x, y)
+            self.update_scatter(x, y)
         if j == "Xie-Beni Index" and data[0].metadata["Cluster"]["xbi"] is not None:
             x = [k.metadata["Cluster"]["no_clusters"] for k in data]
             y = [k.metadata["Cluster"]["xbi"] for k in data]
-            self.mmc.update_scatter(x, y)
+            self.update_scatter(x, y)
 
     def run(self):
         """Entry point into the routine, used to run context menu item."""
@@ -596,6 +526,69 @@ class PlotVRCetc(ContextModule):
 
         self.cmb_1.setCurrentIndex(0)
         self.show()
+
+    def update_scatter(
+        self,
+        x: NDArray,
+        y: NDArray,
+    ):
+        """
+        Update the scatter plot.
+
+        Parameters
+        ----------
+        x
+            X coordinates (Number of classes).
+        y
+            Y Coordinates.
+
+        """
+        fig = self.mmc.figure
+        fig.clear()
+        axes = fig.add_subplot(111)
+
+        xmin = min(x) - 0.1 * np.ptp(x)
+        xmax = max(x) + 0.1 * np.ptp(x)
+        ymin = min(y) - 0.1 * np.ptp(y)
+        ymax = max(y) + 0.1 * np.ptp(y)
+
+        axes.plot(x, y, "o-")
+        axes.axis([xmin, xmax, ymin, ymax])
+        axes.set_xlabel("Number of Classes")
+        axes.xaxis.set_ticks(x)
+
+        self.mmc.draw_idle()
+
+    def update_wireframe(
+        self,
+        x: NDArray,
+        y: NDArray,
+        z: NDArray,
+    ):
+        """
+        Update the wireframe plot.
+
+        Parameters
+        ----------
+        x
+            Iteration number.
+        y
+            Number of classes.
+        z
+            z coordinate.
+
+        """
+        fig = self.mmc.figure
+        fig.clear()
+        axes = fig.add_subplot(111, projection="3d")
+        axes.plot_wireframe(y, x, z)
+        axes.set_title("log(Objective Function)")
+        axes.set_ylabel("Number of Classes")
+        axes.set_xlabel("Iteration")
+        axes.yaxis.set_major_locator(MaxNLocator(integer=True))
+        axes.xaxis.set_major_locator(MaxNLocator(integer=True))
+
+        self.mmc.draw_idle()
 
 
 def _testfn_bars():
@@ -660,77 +653,12 @@ def _testfn_bars():
     plt.show()
 
 
-def _testfn_viol():
-    """Test."""
-    import sys
-
-    import matplotlib.pyplot as plt
-
-    from pygmi.clust.cluster import Cluster
-    from pygmi.raster.iodefs import get_raster
-
-    ifile = r"D:\workdata\PyGMI Test Data\Classification\Cut_K_Th_U.ers"
-
-    data = get_raster(ifile)
-
-    app = QtWidgets.QApplication(sys.argv)
-    app.setStyle(QtWidgets.QStyleFactory.create("Fusion"))
-
-    DM = Cluster()
-    DM.indata["Raster"] = data
-    DM.settings()
-
-    dat = DM.outdata
-    dat["Cluster"][0].metadata["Cluster"]["labels"] = ["a", "b", "c", "d", "e"]
-
-    width = 0.25
-    multiplier = 0
-
-    cdat = dat["Cluster"][0]
-
-    cnr = cdat.metadata["Cluster"]["no_clusters"]
-
-    cdata = {}
-    cdatab = {}
-    for i in range(cnr):
-        cdata[f"{i + 1}"] = []
-        cdatab[f"{i + 1}"] = []
-
-    dataids = [i.dataid for i in dat["Raster"]]
-
-    x = np.arange(len(dataids))
-    width = 0.8 / cnr
-
-    _, ax = plt.subplots(layout="constrained")
-
-    for multiplier, rdat in enumerate(dat["Raster"]):
-        offset = 1 * multiplier
-        for i in range(cnr):
-            data = rdat.data[cdat.data == (i + 1)].compressed()
-            ax.violinplot(
-                data,
-                [i * width + offset],
-                widths=width,
-                showmeans=False,
-                showmedians=False,
-                showextrema=False,
-            )
-
-    # Add some text for labels, title and custom x-axis tick labels, etc.
-    ax.set_ylabel("Value")
-    ax.set_title(f"Dataset ranges for {cnr} classes")
-    ax.set_xticks(x + 0.4, dataids)
-    ax.legend(loc="upper left", ncols=3)
-    # ax.set_ylim(0, 250)
-
-    plt.show()
-
-
 def _testfn():
     """Test."""
     import sys
 
-    from pygmi.clust.cluster import Cluster
+    # from pygmi.clust.cluster import Cluster
+    from pygmi.clust.fuzzy_clust import FuzzyClust
     from pygmi.raster.iodefs import get_raster
 
     ifile = r"D:\workdata\PyGMI Test Data\Classification\Cut_K_Th_U.ers"
@@ -741,13 +669,13 @@ def _testfn():
     app = QtWidgets.QApplication(sys.argv)
     app.setStyle(QtWidgets.QStyleFactory.create("Fusion"))
 
-    DM = Cluster()
+    DM = FuzzyClust()
     DM.indata["Raster"] = data
     DM.settings()
 
     dat = DM.outdata
 
-    tmp2 = PlotRaster()
+    tmp2 = PlotVRCetc()
     tmp2.indata = dat
     tmp2.run()
 

@@ -38,100 +38,13 @@ import numpy as np
 import scipy.spatial.distance as sdist
 from matplotlib import colormaps, patches
 from matplotlib.backends.backend_qt import NavigationToolbar2QT
-from matplotlib.backends.backend_qtagg import FigureCanvasQTAgg
-from matplotlib.figure import Figure
 from numpy.typing import NDArray
+from pyproj.crs import CRS
 from PySide6 import QtWidgets
 from shapely import Polygon, make_valid
 
+from pygmi.maps import CanvasModule
 from pygmi.misc import BasicModule
-
-
-class MyMplCanvas(FigureCanvasQTAgg):
-    """
-    Matplotlib canvas widget for the actual plot.
-
-    Parameters
-    ----------
-    parent
-        Reference to the parent routine. The default is None.
-    """
-
-    def __init__(
-        self,
-        parent=None,
-    ):
-        fig = Figure()
-        super().__init__(fig)
-        if parent is None:
-            self.showlog = print
-        else:
-            self.showlog = parent.showlog
-
-        # figure stuff
-        self.htype = "Linear"
-        self.cbar = colormaps["jet"]
-        self.data = []
-        self.gmode = None
-        self.argb = [None, None, None]
-        self.hhist = [None, None, None]
-        self.hband = [None, None, None]
-        self.htxt = [None, None, None]
-        self.patches = []
-        self.lines = []
-        self.image = None
-        self.cnt = None
-        self.cntf = None
-        self.background = None
-        self.pwidth = 0.001
-        self.isgeog = True
-
-        self.axes = fig.add_subplot(111)
-
-        FigureCanvasQTAgg.setSizePolicy(
-            self,
-            QtWidgets.QSizePolicy.Policy.Expanding,
-            QtWidgets.QSizePolicy.Policy.Expanding,
-        )
-        FigureCanvasQTAgg.updateGeometry(self)
-
-    def init_graph(self):
-        """Initialize the graph."""
-        self.axes.clear()
-        self.axes.set_aspect("equal")
-
-        maxdiam = self.pwidth * self.data[:, -1].max()
-        xmin = self.data[:, 0].min() - maxdiam
-        xmax = self.data[:, 0].max() + maxdiam
-        ymin = self.data[:, 1].min() - maxdiam
-        ymax = self.data[:, 1].max() + maxdiam
-
-        self.axes.set_xlim((xmin, xmax))
-        self.axes.set_ylim((ymin, ymax))
-
-        self.figure.canvas.draw()
-        QtWidgets.QApplication.processEvents()
-
-        for idat in self.data:
-            pxy = idat[:2]
-            np1 = idat[3:-1]
-            pwidth = self.pwidth * idat[-1]
-
-            # patch = beach(np1, xy=pxy)
-
-            # self.axes.add_collection(patch)
-
-            xxx, yyy, xxx2, yyy2 = beachball(np1, pxy[0], pxy[1], pwidth, self.isgeog)
-
-            pvert1 = np.transpose([yyy, xxx])
-            pvert0 = np.transpose([xxx2, yyy2])
-
-            self.axes.add_patch(patches.Polygon(pvert1, edgecolor=(0.0, 0.0, 0.0)))
-            self.axes.add_patch(
-                patches.Polygon(pvert0, facecolor="none", edgecolor=(0.0, 0.0, 0.0))
-            )
-
-        self.figure.canvas.draw()
 
 
 class BeachBall(BasicModule):
@@ -155,12 +68,29 @@ class BeachBall(BasicModule):
         self.nofps = False
         self.stype = "Seis"
 
-        self.mmc = MyMplCanvas(self)
+        self.mmc = CanvasModule(self)
         self.btn_saveshp = QtWidgets.QPushButton("Save Shapefile")
         self.cmb_alg = QtWidgets.QComboBox()
         self.dsb_dist = QtWidgets.QDoubleSpinBox()
         self.rb_geog = QtWidgets.QRadioButton("Geographic Units")
         self.rb_proj = QtWidgets.QRadioButton("Projected Units")
+
+        self.htype = "Linear"
+        self.cbar = colormaps["jet"]
+        self.data = []
+        self.gmode = None
+        self.argb = [None, None, None]
+        self.hhist = [None, None, None]
+        self.hband = [None, None, None]
+        self.htxt = [None, None, None]
+        self.patches = []
+        self.lines = []
+        self.image = None
+        self.cnt = None
+        self.cntf = None
+        self.background = None
+        self.pwidth = 0.001
+        self.isgeog = True
 
         self.setupui()
 
@@ -290,7 +220,7 @@ class BeachBall(BasicModule):
 
         self.ifile = str(filename)
 
-        indata = self.mmc.data
+        indata = self.data
 
         if os.path.isfile(self.ifile):
             tmp = self.ifile[:-4]
@@ -316,7 +246,7 @@ class BeachBall(BasicModule):
             depth = idat[2]
             pwidth = self.mmc.pwidth * idat[-1]
             xxx, yyy, xxx2, yyy2 = beachball(
-                np1, pxy[0], pxy[1], pwidth, self.mmc.isgeog, showlog=self.showlog
+                np1, pxy[0], pxy[1], pwidth, self.isgeog, showlog=self.showlog
             )
 
             pvert1 = np.transpose([yyy, xxx])
@@ -370,10 +300,10 @@ class BeachBall(BasicModule):
                 ]
                 indata.append(tmp)
 
-        self.mmc.isgeog = self.rb_geog.isChecked()
-        self.mmc.data = np.array(indata)
-        self.mmc.pwidth = self.dsb_dist.value()
-        self.mmc.init_graph()
+        self.isgeog = self.rb_geog.isChecked()
+        self.data = np.array(indata)
+        self.pwidth = self.dsb_dist.value()
+        self.update_graph()
 
     def settings(
         self,
@@ -398,7 +328,7 @@ class BeachBall(BasicModule):
             return False
 
         QtWidgets.QApplication.processEvents()
-        self.mmc.init_graph()
+        self.update_graph()
 
         if not nodialog:
             temp = self.exec()
@@ -417,6 +347,41 @@ class BeachBall(BasicModule):
         self.saveobj(self.dsb_dist)
         self.saveobj(self.rb_geog)
         self.saveobj(self.rb_proj)
+
+    def update_graph(self):
+        """Initialize the graph."""
+        fig = self.mmc.figure
+        fig.clear()
+        axes = fig.add_subplot(111)
+
+        axes.set_aspect("equal")
+
+        maxdiam = self.pwidth * self.data[:, -1].max()
+        xmin = self.data[:, 0].min() - maxdiam
+        xmax = self.data[:, 0].max() + maxdiam
+        ymin = self.data[:, 1].min() - maxdiam
+        ymax = self.data[:, 1].max() + maxdiam
+
+        axes.set_xlim((xmin, xmax))
+        axes.set_ylim((ymin, ymax))
+
+        for idat in self.data:
+            pxy = idat[:2]
+            np1 = idat[3:-1]
+            pwidth = self.pwidth * idat[-1]
+
+            xxx, yyy, xxx2, yyy2 = beachball(np1, pxy[0], pxy[1], pwidth, self.isgeog)
+
+            pvert1 = np.transpose([yyy, xxx])
+            pvert0 = np.transpose([xxx2, yyy2])
+
+            axes.add_patch(patches.Polygon(pvert1, edgecolor=(0.0, 0.0, 0.0)))
+            axes.add_patch(
+                patches.Polygon(pvert0, facecolor="none", edgecolor=(0.0, 0.0, 0.0))
+            )
+
+        self.mmc.set_map_axes(axes, CRS.from_epsg(4326))
+        self.mmc.draw_idle()
 
 
 def beachball(
@@ -908,7 +873,7 @@ def _testfn():
     app.setStyle(QtWidgets.QStyleFactory.create("Fusion"))
 
     tmp = ImportSeisan()
-    tmp.ifile = r"C:\Work\PyGMI Test Data\Seismology\collect2.out"
+    tmp.ifile = r"D:\Workdata\PyGMI Test Data\Seismology\collect2.out"
     tmp.settings(True)
 
     outdata = tmp.outdata

@@ -43,26 +43,39 @@ import numpy as np
 from matplotlib import colormaps
 from matplotlib.axes import Axes
 from matplotlib.backends.backend_qt import NavigationToolbar2QT
-from matplotlib.backends.backend_qtagg import FigureCanvasQTAgg
-from matplotlib.figure import Figure
 from numba import jit, prange
 from numpy.typing import NDArray
 from PySide6 import QtCore, QtGui, QtWidgets
 
-from pygmi.maps import frm
+from pygmi.maps import CanvasModule, frm
 from pygmi.misc import ContextModule, PTime
 from pygmi.pfmod.datatypes import LithModel
 from pygmi.raster.datatypes import Data
 from pygmi.raster.reproj import data_reproject
 
 
-class MyMplCanvas(FigureCanvasQTAgg):
-    """Matplotlib canvas widget for the actual plot."""
+class PlotTest(ContextModule):
+    """Plot Raster Class."""
 
-    def __init__(self):
-        fig = Figure(layout="tight")
-        self.axes = fig.add_subplot(111)
-        super().__init__(fig)
+    def __init__(self, data=None):
+        super().__init__()
+
+        self.setAttribute(QtCore.Qt.WidgetAttribute.WA_DeleteOnClose)
+        self.setWindowTitle("Test Plot")
+
+        vbl = QtWidgets.QVBoxLayout(self)
+        self.mmc = CanvasModule(self)
+        mpl_toolbar = NavigationToolbar2QT(self.mmc)
+
+        self.buttonbox.hide()
+        vbl.addWidget(self.mmc)
+        vbl.addWidget(mpl_toolbar)
+
+        self.setFocus()
+
+        self.show()
+        if data is not None:
+            self.update_raster(data)
 
     def update_raster(
         self,
@@ -77,13 +90,15 @@ class MyMplCanvas(FigureCanvasQTAgg):
             Lithology dataset to be used.
 
         """
-        self.figure.clear()
+        self.mmc.figure.clear()
 
         magtmp = lmod2.griddata["Calculated Magnetics"].data
         grvtmp = lmod2.griddata["Calculated Gravity"].data
+        etmp = lmod2.griddata["Calculated Gravity"].extent
+        crs = lmod2.griddata["Calculated Gravity"].crs
 
-        axes = self.figure.add_subplot(121)
-        etmp = dat_extent(lmod2.griddata["Calculated Magnetics"], axes)
+        axes = self.mmc.figure.add_subplot(121)
+        # etmp = dat_extent(lmod2.griddata["Calculated Magnetics"], axes)
         axes.set_title("Magnetic Data")
         ims = axes.imshow(magtmp, extent=etmp)
         mmin = magtmp.mean() - 2 * magtmp.std()
@@ -94,11 +109,12 @@ class MyMplCanvas(FigureCanvasQTAgg):
             axes.contour(
                 magtmp, levels=csrange, colors="b", extent=etmp, linewidths=0.5
             )
-        cbar = self.figure.colorbar(ims, orientation="horizontal", format=frm)
+        cbar = self.mmc.figure.colorbar(ims, orientation="horizontal", format=frm)
         cbar.set_label("nT")
+        self.mmc.set_map_axes(axes, crs)
 
-        axes = self.figure.add_subplot(122)
-        etmp = dat_extent(lmod2.griddata["Calculated Gravity"], axes)
+        axes = self.mmc.figure.add_subplot(122)
+        # etmp = dat_extent(lmod2.griddata["Calculated Gravity"], axes)
         axes.set_title("Gravity Data")
         ims = axes.imshow(grvtmp, extent=etmp)
         mmin = grvtmp.mean() - 2 * grvtmp.std()
@@ -110,34 +126,10 @@ class MyMplCanvas(FigureCanvasQTAgg):
             axes.contour(
                 grvtmp, levels=csrange, colors="y", extent=etmp, linewidths=0.5
             )
-        cbar = self.figure.colorbar(ims, orientation="horizontal", format=frm)
+        cbar = self.mmc.figure.colorbar(ims, orientation="horizontal", format=frm)
         cbar.set_label("mGal")
-
-        self.figure.canvas.draw()
-
-
-class PlotTest(ContextModule):
-    """Plot Raster Class."""
-
-    def __init__(self, data=None):
-        super().__init__()
-
-        self.setAttribute(QtCore.Qt.WidgetAttribute.WA_DeleteOnClose)
-        self.setWindowTitle("Test Plot")
-
-        vbl = QtWidgets.QVBoxLayout(self)
-        self.mmc = MyMplCanvas()
-        mpl_toolbar = NavigationToolbar2QT(self.mmc)
-
-        self.buttonbox.hide()
-        vbl.addWidget(self.mmc)
-        vbl.addWidget(mpl_toolbar)
-
-        self.setFocus()
-
-        self.show()
-        if data is not None:
-            self.mmc.update_raster(data)
+        self.mmc.set_map_axes(axes, crs)
+        self.mmc.draw_idle()
 
 
 class GravMag:
