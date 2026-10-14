@@ -24,6 +24,7 @@
 # -----------------------------------------------------------------------------
 """A collection of functions for maps."""
 
+import os
 from collections.abc import Callable
 from itertools import pairwise
 from typing import ClassVar
@@ -42,7 +43,9 @@ from matplotlib_map_utils.core.scale_bar import scale_bar
 from matplotlib_map_utils.validation.scale_bar import units_standard
 from numpy.typing import NDArray
 from pyproj.crs import CRS
-from PySide6 import QtCore, QtWidgets
+from PySide6 import QtCore, QtGui, QtWidgets
+
+from pygmi.misc import BasicModule
 
 rcParams["savefig.dpi"] = 300
 
@@ -68,40 +71,56 @@ class CustomToolbar(NavigationToolbar2QT):
         if item[0] == name
     ]
 
-    def __init__(self, canvas, parent=None):
+    def __init__(self, canvas, parent):
         super().__init__(canvas, parent)
+        self.showlog = parent.showlog
+        self.pbar = parent.pbar
 
         # Icons only, without text labels.
         self.setToolButtonStyle(QtCore.Qt.ToolButtonStyle.ToolButtonIconOnly)
+        self.dlg = MapSettings(self)
 
-        # Rename a standard button (its tooltip is also updated).
-        # for action in self.actions():
-        #     if action.text() == "Home":
-        #         action.setText("Reset view")
-        #         action.setToolTip("Reset plot view")
-        #         action.setStatusTip("Reset plot view")
-
-        # Add a custom action with a Qt standard icon.
-
-    def add_map_btn(self, update):
+    def add_map_btn(self, update, crs):
         """Add map button."""
-        self.addSeparator()
+        ipth = os.path.dirname(__file__) + r"/images/"
 
-        self.refresh_action = self.addAction(
-            self.style().standardIcon(QtWidgets.QStyle.StandardPixmap.SP_BrowserReload),
-            "Refresh plot",
+        self.custom_action = QtGui.QAction(
+            QtGui.QIcon(ipth + "map.png"),
+            "Change map parameters",
+            self,
         )
-        self.refresh_action.setToolTip("Refresh plot")
-        self.refresh_action.setStatusTip("Refresh plot")
-        self.refresh_action.triggered.connect(self.refresh_plot)
-        self.cupdate = update
+        self.custom_action.setStatusTip("Change map parameters")
+        self.custom_action.triggered.connect(self.change_map)
 
-    def refresh_plot(self):
+        existing_actions = self.actions()
+
+        if existing_actions:
+            # Matplotlib adds a stretching spacer widget or a separator near the end.
+            # Inserting immediately after the last standard action element:
+            last_standard_action = existing_actions[-1]
+            self.insertAction(last_standard_action, self.custom_action)
+        else:
+            # Fallback if the actions list hasn't populated yet
+            self.addAction(self.custom_action)
+
+        self.cupdate = update
+        self.crs = crs
+
+    def change_map(self):
         """Refresh plot."""
-        self.canvas.show_north_arrow = not self.canvas.show_north_arrow
+        self.dlg.crs = self.crs
+        success = self.dlg.settings()
+
+        if not success:
+            return
+
+        self.canvas.show_north_arrow = self.dlg.cb_northarrow.isChecked()
+        self.canvas.show_scalebar = self.dlg.cb_scalebar.isChecked()
+        self.canvas.show_degrees = self.dlg.cb_degrees.isChecked()
+        self.canvas.show_metres = self.dlg.cb_metres.isChecked()
 
         self.cupdate()
-        self.canvas.axes.autoscale()
+        self.canvas.figure.gca().autoscale()
 
 
 class CanvasModule(FigureCanvasQTAgg):
@@ -118,7 +137,6 @@ class CanvasModule(FigureCanvasQTAgg):
             self.showlog = parent.showlog
 
         fig = Figure(layout="compressed")
-        # self.axes = fig.add_subplot(111)
         super().__init__(fig)
 
         self.resize_timer = QtCore.QTimer(self)
@@ -128,6 +146,9 @@ class CanvasModule(FigureCanvasQTAgg):
 
         self._pending_size = None
         self.show_north_arrow = False
+        self.show_scalebar = False
+        self.show_degrees = True
+        self.show_metres = True
 
     def resizeEvent(
         self,
@@ -166,7 +187,95 @@ class CanvasModule(FigureCanvasQTAgg):
         set_axes(axes, crs)
 
         if self.show_north_arrow is True:
-            set_northscale(axes, crs, self.showlog)
+            set_north(axes, crs, self.showlog)
+        if self.show_scalebar is True:
+            set_scale(axes, crs, self.showlog)
+
+
+class MapSettings(BasicModule):
+    """
+    Data Layer Stack GUI.
+
+    This class merges datasets which have different rows and columns. It
+    resamples them so that they have the same rows and columns.
+
+    Parameters
+    ----------
+    parent
+        Reference to the parent routine. The default is None.
+
+    """
+
+    def __init__(
+        self,
+        parent=None,
+    ):
+        super().__init__(parent)
+        self.crs = CRS.from_string(
+            'LOCAL_CS["Arbitrary",UNIT["metre",1,'
+            'AUTHORITY["EPSG","9001"]],'
+            'AXIS["Easting",EAST],'
+            'AXIS["Northing",NORTH]]'
+        )
+
+        self.cb_northarrow = QtWidgets.QCheckBox("Display north arrow")
+        self.cb_scalebar = QtWidgets.QCheckBox("Display scale bar")
+        self.cb_degrees = QtWidgets.QCheckBox("Use degrees on axis")
+        self.cb_metres = QtWidgets.QCheckBox("Use metres on axis")
+
+        self.setupui()
+
+    def setupui(self):
+        """Set up UI."""
+        gl_main = QtWidgets.QGridLayout(self)
+
+        self.buttonbox.htmlfile = "raster.dm.layerstack"
+
+        self.cb_northarrow.setChecked(False)
+        self.cb_scalebar.setChecked(False)
+        self.cb_degrees.setChecked(True)
+        self.cb_metres.setChecked(True)
+
+        self.setWindowTitle("Map Properties")
+
+        gl_main.addWidget(self.cb_northarrow, 1, 0, 1, 2)
+        gl_main.addWidget(self.cb_scalebar, 2, 0, 1, 2)
+        gl_main.addWidget(self.cb_degrees, 3, 0, 1, 2)
+        gl_main.addWidget(self.cb_metres, 4, 0, 1, 2)
+        gl_main.addWidget(self.buttonbox, 5, 0, 1, 2)
+
+    def settings(
+        self,
+        nodialog: bool = False,
+    ) -> bool:
+        """
+        Entry point into item.
+
+        Parameters
+        ----------
+        nodialog
+            Run settings without a dialog. The default is False.
+
+        Returns
+        -------
+        bool
+            True if successful, False otherwise.
+
+        """
+        if self.crs.is_geographic:
+            self.cb_degrees.setChecked(True)
+            self.cb_degrees.setDisabled(True)
+            self.cb_metres.setChecked(False)
+            self.cb_metres.setDisabled(True)
+        if self.crs.is_engineering:
+            self.cb_degrees.setChecked(False)
+            self.cb_degrees.setDisabled(True)
+            self.cb_metres.setChecked(True)
+            self.cb_metres.setDisabled(True)
+
+        tmp = self.exec()
+
+        return tmp == 1
 
 
 def dd2txt(
@@ -563,6 +672,109 @@ def set_northscale(
             text={"fontsize": 7},
             aob={"bbox_to_anchor": (0.05, -0.05), "bbox_transform": ax.transAxes},
         )
+
+
+def set_north(
+    ax: Axes,
+    crs: CRS | None,
+    showlog: Callable[..., None] = print,
+):
+    """
+    Set the north arrow and the scale bar.
+
+    Parameters
+    ----------
+    ax
+        Primary Matplotlib axes.
+    crs
+        PyProj crs of data
+    showlog
+        Show information using a function, by default print
+    """
+    if crs is None:
+        crs = CRS.from_string(
+            'LOCAL_CS["Arbitrary",UNIT["metre",1,'
+            'AUTHORITY["EPSG","9001"]],'
+            'AXIS["Easting",EAST],'
+            'AXIS["Northing",NORTH]]'
+        )
+    else:
+        crs = CRS.from_wkt(crs.to_wkt())
+    north_arrow(
+        ax,
+        scale=0.2,
+        location="upper right",
+        label={"fontsize": 10},
+        aob={
+            "bbox_to_anchor": (0.05, -0.05),
+            "bbox_transform": ax.transAxes,
+            "pad": 0.0,
+        },
+        shadow=False,
+    )
+    tmp = patches.Rectangle(
+        (0, -0.25),
+        0.1,
+        0.1,
+        transform=ax.transAxes,
+        color="white",
+        zorder=0,
+        clip_on=False,
+    )
+    ax.add_patch(tmp)
+
+
+def set_scale(
+    ax: Axes,
+    crs: CRS | None,
+    showlog: Callable[..., None] = print,
+):
+    """
+    Set the north arrow and the scale bar.
+
+    Parameters
+    ----------
+    ax
+        Primary Matplotlib axes.
+    crs
+        PyProj crs of data
+    showlog
+        Show information using a function, by default print
+    """
+    if crs is None:
+        crs = CRS.from_string(
+            'LOCAL_CS["Arbitrary",UNIT["metre",1,'
+            'AUTHORITY["EPSG","9001"]],'
+            'AXIS["Easting",EAST],'
+            'AXIS["Northing",NORTH]]'
+        )
+    else:
+        crs = CRS.from_wkt(crs.to_wkt())
+
+    if crs.axis_info[0].unit_name not in units_standard and not crs.is_geographic:
+        showlog("Problem with projection unit. Try redefining the projection.")
+        return
+
+    if not crs.is_geographic:
+        scale_bar(
+            ax,
+            location="upper left",
+            style="ticks",
+            bar={"projection": crs},
+            text={"fontsize": 7},
+            aob={"bbox_to_anchor": (0.05, -0.05), "bbox_transform": ax.transAxes},
+        )
+
+    tmp = patches.Rectangle(
+        (0, -0.25),
+        0.1,
+        0.1,
+        transform=ax.transAxes,
+        color="white",
+        zorder=0,
+        clip_on=False,
+    )
+    ax.add_patch(tmp)
 
 
 def tick_formatter(

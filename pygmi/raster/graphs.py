@@ -305,7 +305,7 @@ class PlotRaster(ContextModule):
         self.cmb_update(self.cmb_1, cols)
 
         if data[0].metadata["Raster"]["Section"] is False:
-            self.mpl_toolbar.add_map_btn(self.change_band)
+            self.mpl_toolbar.add_map_btn(self.change_band, data[0].crs)
 
         self.change_band()
         self.show()

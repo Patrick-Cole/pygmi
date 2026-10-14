@@ -30,6 +30,7 @@ import sys
 from collections.abc import Callable, Iterable
 
 import matplotlib.patches as mpatches
+import matplotlib.pyplot as plt
 import numexpr as ne
 import numpy as np
 import pandas as pd
@@ -151,7 +152,7 @@ class Graph(FigureCanvasQTAgg):
             rect.set_facecolor([0, 1, 0])
             rect.set_alpha(0.5)
             self.ax.add_patch(rect)
-        self.figure.canvas.draw()
+        self.draw_idle()
 
 
 class Map(FigureCanvasQTAgg):
@@ -190,6 +191,9 @@ class Map(FigureCanvasQTAgg):
 
     def compute_initial_figure(self):
         """Compute initial figure."""
+        current_xlim = self.ax.get_xlim()
+        current_ylim = self.ax.get_ylim()
+
         self.ax.cla()
 
         # clippercu = 0
@@ -260,7 +264,11 @@ class Map(FigureCanvasQTAgg):
         self.ax.set_xticks([])
         self.ax.set_yticks([])
 
-        self.figure.canvas.draw()
+        if current_ylim != (0, 1) and current_xlim != (0, 1):
+            self.ax.set_xlim(current_xlim)
+            self.ax.set_ylim(current_ylim)
+
+        self.draw_idle()
 
 
 class AnalSpec(BasicModule):
@@ -366,9 +374,14 @@ class AnalSpec(BasicModule):
             return
         if event.button != 1:
             return
-
         if event.inaxes != self.map.ax:
             return
+
+        # Check if a navigation mode (Zoom or Pan) is active
+        # In older versions, tb.mode was a string like 'ZOOM' or 'PAN'.
+        # Checking if it's not empty ('') covers all navigation states.
+        if self.mpl_toolbar.mode != "":
+            return  # Ignore the click while zooming or panning
 
         dat = self.map.datarr[self.map.mindx]
 
