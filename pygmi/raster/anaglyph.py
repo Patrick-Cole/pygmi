@@ -32,12 +32,11 @@ feature detection and interpretation.
 import numpy as np
 from matplotlib import collections as mc
 from matplotlib import colormaps
-from matplotlib.backends.backend_qt import NavigationToolbar2QT
 from matplotlib.colors import LinearSegmentedColormap
 from numpy.typing import NDArray
 from PySide6 import QtCore, QtWidgets
 
-from pygmi.maps import CanvasModule
+from pygmi.maps import CanvasModule, CustomToolbar
 from pygmi.misc import ContextModule
 from pygmi.raster.datatypes import Data
 from pygmi.raster.misc import currentshader, histcomp, norm2
@@ -74,7 +73,7 @@ class PlotAnaglyph(ContextModule):
 
         # Define Widgets
         self.mmc = CanvasModule(self)
-        mpl_toolbar = NavigationToolbar2QT(self.mmc, self.parent)
+        self.mpl_toolbar = CustomToolbar(self.mmc, self)
         self.cmb_1 = QtWidgets.QComboBox()
         self.cmb_2 = QtWidgets.QComboBox()
         self.cmb_cbar = QtWidgets.QComboBox()
@@ -148,7 +147,7 @@ class PlotAnaglyph(ContextModule):
         self.buttonbox.buttonbox.hide()
         vbl_left.addWidget(self.buttonbox)
         vbl_right.addWidget(self.mmc)
-        vbl_right.addWidget(mpl_toolbar)
+        vbl_right.addWidget(self.mpl_toolbar)
         hbl.addLayout(vbl_left)
         hbl.addLayout(vbl_right)
 
@@ -253,6 +252,7 @@ class PlotAnaglyph(ContextModule):
             self.cmb_1.addItem(i.dataid)
         self.change_all()
 
+        self.mpl_toolbar.add_map_btn(self.change_all, data[0].crs)
         self.exec()
 
     def update_contours(

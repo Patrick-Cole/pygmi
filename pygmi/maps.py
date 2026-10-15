@@ -184,7 +184,7 @@ class CanvasModule(FigureCanvasQTAgg):
 
     def set_map_axes(self, axes, crs):
         """Set the map axes and north arrow."""
-        set_axes(axes, crs)
+        set_axes(axes, crs, self.show_degrees, self.show_metres)
 
         if self.show_north_arrow is True:
             set_north(axes, crs, self.showlog)
@@ -267,12 +267,14 @@ class MapSettings(BasicModule):
             self.cb_degrees.setDisabled(True)
             self.cb_metres.setChecked(False)
             self.cb_metres.setDisabled(True)
+            self.cb_scalebar.setChecked(False)
+            self.cb_scalebar.setDisabled(True)
         if self.crs.is_engineering:
             self.cb_degrees.setChecked(False)
             self.cb_degrees.setDisabled(True)
             self.cb_metres.setChecked(True)
             self.cb_metres.setDisabled(True)
-
+            self.cb_scalebar.setDisabled(False)
         tmp = self.exec()
 
         return tmp == 1
@@ -451,6 +453,8 @@ def get_neat_intervals(
 def set_axes(
     ax: Axes,
     crs: CRS | None,
+    showdegrees=True,
+    showmetres=True,
 ):
     """
     Set the axes.
@@ -472,28 +476,60 @@ def set_axes(
     else:
         crs = CRS.from_wkt(crs.to_wkt())
 
+    if crs.is_engineering:
+        showmetres = True
+        showdegrees = False
+    if crs.is_geographic:
+        showmetres = False
+        showdegrees = True
+
+    if showmetres is False and showdegrees is False:
+        showmetres = True
+
     ax.set_aspect("equal")
     ax.yaxis.tick_right()
     ax.tick_params(axis="y", labelrotation=90)
     ax.ticklabel_format(style="plain", axis="both", useOffset=False)
+    ax.set_xlabel("")
+    ax.set_ylabel("")
+    ax.xaxis.set_major_formatter(frm)
+    ax.yaxis.set_major_formatter(frm)
 
     xmin, xmax = ax.get_xlim()
     ymin, ymax = ax.get_ylim()
 
-    if not crs.is_geographic:
+    if showmetres is True:
         ax.tick_params(axis="both", labelsize=8, labelcolor="#0070ff")
         xlabels_m(ax)
         ylabels_m(ax)
-    else:
+
+    if showmetres is True and showdegrees is False:
+        ax.tick_params(
+            top=True,
+            labeltop=True,  # Enable top ticks and labels
+            right=True,
+            labelright=True,  # Enable right ticks and labels
+            bottom=True,
+            labelbottom=True,  # Ensure bottom ticks and labels stay on
+            left=True,
+            labelleft=True,  # Ensure left ticks and labels stay on
+        )
+
+    if showdegrees is True and showmetres is False:
         ax.tick_params(axis="both", labelsize=9, labelcolor="k")
         xlabels_dd(ax, crs, ymin)
         ylabels_dd(ax, crs, xmax)
 
     for label in ax.yaxis.get_majorticklabels():
-        label.set_horizontalalignment("left")
+        if showdegrees:
+            label.set_horizontalalignment("left")
         label.set_verticalalignment("center")
 
-    if crs.is_engineering:
+    for label in ax.xaxis.get_majorticklabels():
+        if showdegrees:
+            label.set_verticalalignment("top")
+
+    if showdegrees is False:
         return
 
     # Axes for degrees below.
@@ -510,8 +546,6 @@ def set_axes(
     secax1.tick_params(axis="y", labelrotation=90, labelsize=9)
 
     ylabels_dd(secax1, crs, xmin)
-    ax.set_xlabel("")
-    ax.set_ylabel("")
 
 
 def xlabels_dd(ax, crs, y, pad=15):
@@ -531,7 +565,7 @@ def xlabels_dd(ax, crs, y, pad=15):
         num = len(deg_ticks) - 1
         ticks = [transformeri.transform(x, ymaxd)[0] for x in deg_ticks]
 
-        ax.set_xticks(ticks, labels=labels, ha="center", va="center")
+        ax.set_xticks(ticks, labels=labels)
         fig.draw_without_rendering()
 
         text_boxes = [label.get_window_extent() for label in ax.get_xticklabels()]
@@ -578,7 +612,7 @@ def ylabels_dd(ax, crs, x, pad=20):
         num = len(deg_ticks) - 1
         ticks = [transformeri.transform(xd, y)[1] for y in deg_ticks]
 
-        ax.set_yticks(ticks, labels=labels, ha="center", va="center")
+        ax.set_yticks(ticks, labels=labels, va="center")
         fig.draw_without_rendering()
 
         text_boxes = [label.get_window_extent() for label in ax.get_yticklabels()]

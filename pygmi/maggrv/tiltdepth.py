@@ -41,15 +41,12 @@ import matplotlib.pyplot as plt
 import numpy as np
 from matplotlib import colormaps
 from matplotlib.axes import Axes
-from matplotlib.backends.backend_qt import NavigationToolbar2QT
-from matplotlib.backends.backend_qtagg import FigureCanvasQTAgg
-from matplotlib.figure import Figure
 from numba import jit
 from numpy.typing import NDArray
 from PySide6 import QtWidgets
 
 from pygmi.maggrv.dataprep import rtp
-from pygmi.maps import frm, set_axes, set_northscale
+from pygmi.maps import CanvasModule, CustomToolbar, frm
 from pygmi.misc import BasicModule, ProgressBar, ProgressBarText
 from pygmi.raster.dataprep import verticalp
 from pygmi.raster.datatypes import Data
@@ -86,9 +83,9 @@ class TiltDepth(BasicModule):
         self.y1 = None
         self.y2 = None
 
-        self.figure = Figure(layout="compressed")
-        self.mmc = FigureCanvasQTAgg(self.figure)
-        self.axes = self.figure.add_subplot(111)
+        # self.figure = Figure(layout="compressed")
+        self.mmc = CanvasModule(self)
+        self.mpl_toolbar = CustomToolbar(self.mmc, self)
 
         self.cmb_band1 = QtWidgets.QComboBox()
         self.cmb_cbar = QtWidgets.QComboBox(self)
@@ -122,7 +119,6 @@ class TiltDepth(BasicModule):
         hbl_all = QtWidgets.QHBoxLayout(self)
         vbl_right = QtWidgets.QVBoxLayout()
 
-        mpl_toolbar = NavigationToolbar2QT(self.mmc, self)
         spacer = QtWidgets.QSpacerItem(
             20,
             40,
@@ -151,7 +147,7 @@ class TiltDepth(BasicModule):
         vbl_raster.addWidget(self.btn_save)
         vbl_raster.addWidget(self.buttonbox)
         vbl_right.addWidget(self.mmc)
-        vbl_right.addWidget(mpl_toolbar)
+        vbl_right.addWidget(self.mpl_toolbar)
 
         hbl_all.addLayout(vbl_raster)
         hbl_all.addLayout(vbl_right)
@@ -211,15 +207,15 @@ class TiltDepth(BasicModule):
 
         txt = str(self.cmb_cbar.currentText())
 
-        self.figure.clear()
-        self.axes = self.figure.add_subplot(111)
+        self.mmc.figure.clear()
+        axes = self.mmc.figure.add_subplot(111)
 
         cmap = colormaps[txt]
 
         vmin = zout.data.mean() - 2.5 * zout.data.std()
         vmax = zout.data.mean() + 2.5 * zout.data.std()
 
-        self.axes.imshow(
+        axes.imshow(
             zout.data,
             extent=zout.extent,
             cmap="gray",
@@ -236,13 +232,12 @@ class TiltDepth(BasicModule):
 
         if "Vector" in self.outdata:
             gdf = self.outdata["Vector"][0]
-            ims = self.axes.scatter(gdf["x"], gdf["y"], c=gdf["depth"], cmap=cmap)
-            self.figure.colorbar(ims, format=frm, label="Depth (m)")
+            ims = axes.scatter(gdf["x"], gdf["y"], c=gdf["depth"], cmap=cmap)
+            self.mmc.figure.colorbar(ims, format=frm, label="Depth (m)")
 
-        set_axes(self.axes, zout.crs)
-        set_northscale(self.axes, zout.crs, self.showlog)
+        self.mmc.set_map_axes(axes, zout.crs)
 
-        self.figure.canvas.draw()
+        self.mmc.draw_idle()
 
     def calculate(self):
         """Routine which occurs when apply button is pressed."""
@@ -301,6 +296,7 @@ class TiltDepth(BasicModule):
             blist.append(i.dataid)
 
         self.cmb_update(self.cmb_band1, blist)
+        self.mpl_toolbar.add_map_btn(self.change_cbar, data[0].crs)
 
         self.change_cbar()
 

@@ -278,7 +278,6 @@ class SceneViewer(BasicModule):
         self.im1.rgbclip = None
         self.cbar = None
 
-        # self.mmc.set_map_axes(self.ax1, data[0].crs)
         self.ax1.set_axis_off()
 
         self.fig.suptitle(dates)
@@ -375,7 +374,6 @@ class SceneViewer(BasicModule):
         self.im1.rgbclip = None
         self.fig.suptitle(dates)
 
-        # self.mmc.set_map_axes(self.ax1, data[0].crs)
         self.ax1.set_axis_off()
         self.mmc.draw_idle()
 

@@ -42,7 +42,7 @@ from PySide6 import QtCore, QtWidgets
 from scipy.stats import median_abs_deviation
 from sklearn.cluster import KMeans
 
-from pygmi.maps import CanvasModule, discrete_colorbar, frm
+from pygmi.maps import CanvasModule, CustomToolbar, discrete_colorbar, frm
 from pygmi.misc import ContextModule
 from pygmi.raster.colormaps import colormaps
 
@@ -525,7 +525,7 @@ class PlotLineMap(ContextModule):
         hbl = QtWidgets.QHBoxLayout()
         self.mmc = CanvasModule(self)
 
-        mpl_toolbar = NavigationToolbar2QT(self.mmc, self.parent)
+        self.mpl_toolbar = CustomToolbar(self.mmc, self)
 
         self.cmb_1 = QtWidgets.QComboBox()
         self.spinbox = QtWidgets.QSpinBox()
@@ -543,7 +543,7 @@ class PlotLineMap(ContextModule):
         hbl.addWidget(self.spinbox)
 
         vbl.addWidget(self.mmc)
-        vbl.addWidget(mpl_toolbar)
+        vbl.addWidget(self.mpl_toolbar)
         vbl.addWidget(self.cb_1)
         vbl.addLayout(hbl)
 
@@ -580,6 +580,7 @@ class PlotLineMap(ContextModule):
         self.spinbox.valueChanged.disconnect()
         self.cb_1.stateChanged.disconnect()
 
+        self.mpl_toolbar.add_map_btn(self.change_band, self.data.crs)
         self.show()
 
         filt = (self.data.columns != "geometry") & (self.data.columns != "line")
@@ -711,7 +712,7 @@ class PlotRose(ContextModule):
         hbl = QtWidgets.QHBoxLayout()
         self.mmc = CanvasModule(self)
 
-        mpl_toolbar = NavigationToolbar2QT(self.mmc, self.parent)
+        self.mpl_toolbar = CustomToolbar(self.mmc, self)
 
         self.cmb_1 = QtWidgets.QComboBox()
         self.spinbox = QtWidgets.QSpinBox()
@@ -719,6 +720,9 @@ class PlotRose(ContextModule):
         self.lbl_3 = QtWidgets.QLabel("Value:")
         self.cb_1 = QtWidgets.QCheckBox("Equal Area Rose Diagram")
         self.cb_2 = QtWidgets.QCheckBox("Use one colour only")
+        self.cb_3 = QtWidgets.QCheckBox("Show map")
+
+        self.cb_3.setChecked(True)
 
         self.buttonbox.htmlfile = "vector.cm.showrose"
         self.buttonbox.buttonbox.hide()
@@ -730,9 +734,10 @@ class PlotRose(ContextModule):
         hbl.addWidget(self.spinbox)
 
         vbl.addWidget(self.mmc)
-        vbl.addWidget(mpl_toolbar)
+        vbl.addWidget(self.mpl_toolbar)
         vbl.addWidget(self.cb_1)
         vbl.addWidget(self.cb_2)
+        vbl.addWidget(self.cb_3)
         vbl.addLayout(hbl)
 
         self.setFocus()
@@ -741,6 +746,7 @@ class PlotRose(ContextModule):
         self.spinbox.valueChanged.connect(self.change_band)
         self.cb_1.stateChanged.connect(self.change_band)
         self.cb_2.stateChanged.connect(self.change_band)
+        self.cb_3.stateChanged.connect(self.change_band)
 
         self.spinbox.setValue(8)
         self.spinbox.setMinimum(2)
@@ -756,8 +762,9 @@ class PlotRose(ContextModule):
         i = self.cmb_1.currentIndex()
         equal = self.cb_1.isChecked()
         mono = self.cb_2.isChecked()
+        showmap = self.cb_3.isChecked()
 
-        self.update_rose(self.data, i, self.spinbox.value(), equal, mono)
+        self.update_rose(self.data, i, self.spinbox.value(), equal, mono, showmap)
 
     def run(self):
         """Entry point into the routine, used to run context menu item."""
@@ -775,7 +782,7 @@ class PlotRose(ContextModule):
         self.cmb_update(self.cmb_1, cols)
 
         self.change_band()
-
+        self.mpl_toolbar.add_map_btn(self.change_band, self.data.crs)
         self.show()
 
     def update_rose(
@@ -785,6 +792,7 @@ class PlotRose(ContextModule):
         nbins: int = 8,
         equal: bool = False,
         mono: bool = False,
+        showmap: bool = True,
     ):
         """
         Update the rose diagram plot using vector data.
@@ -801,19 +809,22 @@ class PlotRose(ContextModule):
             Option for an equal area rose diagram. The default is False.
         mono
             Option for a monochrome rose diagram. The default is False.
-
+        showmap
+            Option to show a map. The default is True.
         """
-        self.mmc.show_north_arrow = False
         self.mmc.custom_resize = True
         fig = self.mmc.figure
         fig.clear()
 
-        ax1 = fig.add_subplot(121, polar=True, label="Rose")
+        if showmap is True:
+            ax1 = fig.add_subplot(121, polar=True, label="Rose")
+            ax2 = fig.add_subplot(122, label="Map")
+        else:
+            ax1 = fig.add_subplot(111, polar=True, label="Rose")
+            ax2 = None
         ax1.set_theta_direction(-1)
         ax1.set_theta_zero_location("N")
         ax1.yaxis.set_ticklabels([])
-
-        ax2 = fig.add_subplot(122, label="Map")
 
         fangle = []
         fcnt = []
@@ -876,10 +887,11 @@ class PlotRose(ContextModule):
             ax1.bar(xtheta + np.pi, radii, width=bwidth, color=bcols2)
             lcol = mc.LineCollection(allcrds, color=bcols2b)
 
-        ax2.add_collection(lcol)
-        ax2.autoscale(enable=True)
+        if showmap is True:
+            ax2.add_collection(lcol)
+            ax2.autoscale(enable=True)
+            self.mmc.set_map_axes(ax2, data.crs)
 
-        self.mmc.set_map_axes(ax2, data.crs)
         self.mmc.draw_idle()
 
 
@@ -908,7 +920,7 @@ class PlotVector(ContextModule):
         hbl = QtWidgets.QHBoxLayout()
         self.mmc = CanvasModule(self)
 
-        mpl_toolbar = NavigationToolbar2QT(self.mmc, self.parent)
+        self.mpl_toolbar = CustomToolbar(self.mmc, self)
 
         self.cmb_1 = QtWidgets.QComboBox()
         self.cmb_2 = QtWidgets.QComboBox()
@@ -950,7 +962,7 @@ class PlotVector(ContextModule):
         hbl.addWidget(self.cmb_c)
 
         vbl.addWidget(self.mmc)
-        vbl.addWidget(mpl_toolbar)
+        vbl.addWidget(self.mpl_toolbar)
         vbl.addLayout(hbl)
 
         self.setFocus()
@@ -999,6 +1011,7 @@ class PlotVector(ContextModule):
             self.lbl_c.hide()
 
         self.change_band()
+        self.mpl_toolbar.add_map_btn(self.change_band, self.data.crs)
 
         self.show()
 
@@ -1378,7 +1391,7 @@ def _testfn():
     IO.ifile = sfile
     IO.settings(True)
 
-    SC = PlotCCoef()
+    SC = PlotVector()
     SC.indata = IO.outdata
     SC.run()
 

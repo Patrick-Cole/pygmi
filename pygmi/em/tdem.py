@@ -52,7 +52,7 @@ from simpeg.utils import get_default_solver
 from pygmi.misc import BasicModule, QVStack2Layout
 
 
-class MyMplCanvas2(FigureCanvasQTAgg):
+class MyMplCanvas(FigureCanvasQTAgg):
     """Matplotlib canvas widget for the actual plot."""
 
     def __init__(self):
@@ -184,8 +184,8 @@ class TDEM1D(BasicModule):
         hbl = QtWidgets.QHBoxLayout(self)
         vsl = QVStack2Layout()
 
-        self.mmc1 = MyMplCanvas2()
-        self.mmc = MyMplCanvas2()
+        self.mmc1 = MyMplCanvas()
+        self.mmc = MyMplCanvas()
         mpl_toolbar = NavigationToolbar2QT(self.mmc, self.parent)
 
         self.cmb_stype = QtWidgets.QComboBox()

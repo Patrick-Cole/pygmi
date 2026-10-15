@@ -29,55 +29,14 @@ from collections.abc import Callable
 
 import numpy as np
 import pandas as pd
+from matplotlib import style
 from matplotlib.backends.backend_qt import NavigationToolbar2QT
 from matplotlib.backends.backend_qtagg import FigureCanvasQTAgg
-from matplotlib.figure import Figure
 from numpy.typing import NDArray
 from PySide6 import QtCore, QtGui, QtWidgets
 
 from pygmi.maggrv import iodefs
 from pygmi.misc import BasicModule, ContextModule
-
-
-class MyMplCanvas(FigureCanvasQTAgg):
-    """Matplotlib canvas widget for the actual plot."""
-
-    def __init__(self):
-        fig = Figure(layout="tight")
-        self.axes = fig.add_subplot(111)
-        super().__init__(fig)
-
-    def update_raster(
-        self,
-        drift: dict,
-    ):
-        """
-        Update the raster plot.
-
-        Parameters
-        ----------
-        drift
-            Dictionary containing information for drift plots.
-
-        """
-        self.figure.clear()
-        self.figure.suptitle("QC: Gravimeter Drift")
-
-        axes = self.figure.add_subplot(211)
-        axes.set_xlabel("Decimal Days")
-        axes.set_ylabel("mGal")
-        axes.grid(True)
-        axes.plot(drift["xp2"], drift["fp"], ".-")
-        axes.set_xticks(range(1, drift["ix"][-1] + 2, 1))
-        ax = axes
-
-        axes = self.figure.add_subplot(212, sharex=ax)
-        axes.set_xlabel("Decimal Days")
-        axes.set_ylabel("mGal/min")
-        axes.grid(True)
-        axes.plot(drift["dday"], drift["drate"], ".-")
-
-        self.figure.canvas.draw()
 
 
 class PlotDrift(ContextModule):
@@ -104,8 +63,9 @@ class PlotDrift(ContextModule):
         self.setWindowTitle("Drift Plot")
 
         vbl = QtWidgets.QVBoxLayout(self)
-        self.mmc = MyMplCanvas()
+        self.mmc = FigureCanvasQTAgg()
         mpl_toolbar = NavigationToolbar2QT(self.mmc)
+        self.mmc.figure.set_layout_engine("compressed")
 
         self.buttonbox.hide()
         vbl.addWidget(self.mmc)
@@ -115,7 +75,40 @@ class PlotDrift(ContextModule):
 
         self.show()
         if data is not None:
-            self.mmc.update_raster(data)
+            self.update_raster(data)
+
+    def update_raster(
+        self,
+        drift: dict,
+    ):
+        """
+        Update the raster plot.
+
+        Parameters
+        ----------
+        drift
+            Dictionary containing information for drift plots.
+
+        """
+        style.use("bmh")
+        self.mmc.figure.clear()
+        self.mmc.figure.suptitle("QC: Gravimeter Drift")
+
+        axes = self.mmc.figure.add_subplot(211)
+        axes.set_xlabel("Decimal Days")
+        axes.set_ylabel("mGal")
+        axes.grid(True)
+        axes.plot(drift["xp2"], drift["fp"], ".-")
+        axes.set_xticks(range(1, drift["ix"][-1] + 2, 1))
+        axes.ticklabel_format(style="plain", axis="both", useOffset=False)
+
+        axes = self.mmc.figure.add_subplot(212, sharex=axes)
+        axes.set_xlabel("Decimal Days")
+        axes.set_ylabel("mGal/min")
+        axes.grid(True)
+        axes.plot(drift["dday"], drift["drate"], ".-")
+
+        self.mmc.draw_idle()
 
 
 class ProcessData(BasicModule):

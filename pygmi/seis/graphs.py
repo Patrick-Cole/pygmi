@@ -32,7 +32,7 @@ import os
 
 import geopandas as gpd
 import numpy as np
-from matplotlib.backends.backend_qt import NavigationToolbar2QT
+from matplotlib.collections import PatchCollection
 from matplotlib.patches import Ellipse
 from numpy.typing import NDArray
 from pyproj.crs import CRS
@@ -43,7 +43,7 @@ from scipy.stats import kstest, linregress, zscore
 from shapely.geometry import Polygon
 from shapelysmooth import catmull_rom_smooth
 
-from pygmi.maps import CanvasModule
+from pygmi.maps import CanvasModule, CustomToolbar
 from pygmi.misc import ContextModule
 from pygmi.vector.dataprep import gridxyz
 
@@ -73,8 +73,8 @@ class PlotQC(ContextModule):
 
         vbl = QtWidgets.QVBoxLayout(self)  # self is where layout is assigned
         self.hbl = QtWidgets.QHBoxLayout()
-        self.mmc = CanvasModule()
-        mpl_toolbar = NavigationToolbar2QT(self.mmc, self.parent)
+        self.mmc = CanvasModule(self)
+        self.mpl_toolbar = CustomToolbar(self.mmc, self)
 
         self.btn_saveshp = QtWidgets.QPushButton("Save Shapefile")
         self.buttonbox.buttonbox.hide()
@@ -87,7 +87,7 @@ class PlotQC(ContextModule):
         self.hbl.addWidget(self.cmb_1)
 
         vbl.addWidget(self.mmc)
-        vbl.addWidget(mpl_toolbar)
+        vbl.addWidget(self.mpl_toolbar)
         vbl.addLayout(self.hbl)
         vbl.addWidget(self.btn_saveshp)
 
@@ -182,6 +182,8 @@ class PlotQC(ContextModule):
         if not self.datd:
             self.showlog("There is no compatible data in the file")
             return
+
+        self.mpl_toolbar.add_map_btn(self.change_band, CRS.from_epsg(4326))
 
         products = [
             "Hour Histogram",
@@ -340,17 +342,7 @@ class PlotQC(ContextModule):
             self.mmc.draw_idle()
             return
 
-        x = np.ma.masked_invalid(datd["1_longitude"])
-        y = np.ma.masked_invalid(datd["1_latitude"])
-
-        xmin = x.min() - 0.5
-        xmax = x.max() + 0.5
-        ymin = y.min() - 0.5
-        ymax = y.max() + 0.5
-
-        axes.set_xlim(xmin, xmax)
-        axes.set_ylim(ymin, ymax)
-
+        ellcol = []
         for dat in dats:
             if "E" not in dat:
                 continue
@@ -405,11 +397,13 @@ class PlotQC(ContextModule):
             ell = Ellipse(
                 xy=(lon, lat), width=demaj, height=demin, angle=ang, color="black"
             )
-            ell.set_facecolor("none")
 
             self.ellipses.append(ell.get_verts())
-            axes.add_artist(ell)
+            ellcol.append(ell)
 
+        ellcol = PatchCollection(ellcol, facecolor="none")
+        axes.add_collection(ellcol)
+        axes.autoscale()
         self.mmc.set_map_axes(axes, CRS.from_epsg(4326))
         self.mmc.draw_idle()
 
@@ -804,7 +798,7 @@ class PlotIso(ContextModule):
         vbl = QtWidgets.QVBoxLayout(self)  # self is where layout is assigned
         hbl = QtWidgets.QHBoxLayout()
         self.mmc = CanvasModule(self)
-        mpl_toolbar = NavigationToolbar2QT(self.mmc, self.parent)
+        self.mpl_toolbar = CustomToolbar(self.mmc, self)
 
         self.btn_saveshp = QtWidgets.QPushButton("Save Shapefile")
         self.buttonbox.buttonbox.hide()
@@ -818,7 +812,7 @@ class PlotIso(ContextModule):
         hbl.addWidget(self.cmb_1)
 
         vbl.addWidget(self.mmc)
-        vbl.addWidget(mpl_toolbar)
+        vbl.addWidget(self.mpl_toolbar)
         vbl.addLayout(hbl)
 
         self.setFocus()
@@ -849,6 +843,8 @@ class PlotIso(ContextModule):
 
         self.cmb_1.setCurrentIndex(0)
         self.change_band()
+        self.mpl_toolbar.add_map_btn(self.change_band, CRS.from_epsg(4326))
+
         self.show()
 
     def save_shp(self) -> bool:
@@ -1030,7 +1026,7 @@ class PlotTempB(ContextModule):
         vbl = QtWidgets.QVBoxLayout(self)  # self is where layout is assigned
         hbl = QtWidgets.QHBoxLayout()
         self.mmc = CanvasModule(self)
-        mpl_toolbar = NavigationToolbar2QT(self.mmc, self.parent)
+        self.mpl_toolbar = CustomToolbar(self.mmc, self)
 
         self.le_1 = QtWidgets.QLineEdit("300")
         self.le_1.setValidator(QtGui.QIntValidator(1, 2147483647))
@@ -1043,7 +1039,7 @@ class PlotTempB(ContextModule):
         hbl.addWidget(btn_apply)
 
         vbl.addWidget(self.mmc)
-        vbl.addWidget(mpl_toolbar)
+        vbl.addWidget(self.mpl_toolbar)
         vbl.addLayout(hbl)
 
         self.setFocus()
@@ -1164,7 +1160,7 @@ class PlotSpatialB(ContextModule):
         vbl = QtWidgets.QVBoxLayout(self)
         hbl3 = QtWidgets.QHBoxLayout()
         self.mmc = CanvasModule(self)
-        mpl_toolbar = NavigationToolbar2QT(self.mmc, self.parent)
+        self.mpl_toolbar = CustomToolbar(self.mmc, self)
 
         self.le_1 = QtWidgets.QLineEdit("0.2")
         self.le_1.setValidator(QtGui.QDoubleValidator(1e-300, np.inf, -1))
@@ -1187,7 +1183,7 @@ class PlotSpatialB(ContextModule):
         hbl3.addWidget(btn_apply)
 
         vbl.addWidget(self.mmc)
-        vbl.addWidget(mpl_toolbar)
+        vbl.addWidget(self.mpl_toolbar)
         vbl.addLayout(hbl3)
 
         self.setFocus()
@@ -1257,6 +1253,8 @@ class PlotSpatialB(ContextModule):
         """Entry point into the routine, used to run context menu item."""
         dat1 = self.indata["Seis"]
         self.data = import_for_plots(dat1)
+
+        self.mpl_toolbar.add_map_btn(self.calculate, CRS.from_epsg(4326))
 
         self.show()
         self.calculate()
@@ -1768,5 +1766,5 @@ def _testfn():
 
 if __name__ == "__main__":
     # _testfn1()
-    # _testfn()
-    _testiso()
+    _testfn()
+    # _testiso()

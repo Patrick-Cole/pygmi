@@ -30,11 +30,10 @@ This module allows a raster dataset to be clipped to the current zoomed extents.
 
 import geopandas as gpd
 from matplotlib import colormaps
-from matplotlib.backends.backend_qt import NavigationToolbar2QT
 from PySide6 import QtCore, QtWidgets
 from shapely import Polygon
 
-from pygmi.maps import CanvasModule
+from pygmi.maps import CanvasModule, CustomToolbar
 from pygmi.misc import BasicModule
 from pygmi.raster.datatypes import Data
 from pygmi.raster.misc import cut_raster
@@ -62,7 +61,7 @@ class ClipToZoom(BasicModule):
         vbl = QtWidgets.QVBoxLayout(self)  # self is where layout is assigned
         hbl = QtWidgets.QHBoxLayout()
         self.mmc = CanvasModule(self)
-        mpl_toolbar = NavigationToolbar2QT(self.mmc, self.parent)
+        self.mpl_toolbar = CustomToolbar(self.mmc, self)
         self.axes = self.mmc.figure.add_subplot(111)
 
         self.buttonbox.htmlfile = "raster.dm.cliptozoom"
@@ -84,7 +83,7 @@ class ClipToZoom(BasicModule):
         hbl.addWidget(self.btn_clip)
 
         vbl.addWidget(self.mmc)
-        vbl.addWidget(mpl_toolbar)
+        vbl.addWidget(self.mpl_toolbar)
         vbl.addLayout(hbl)
 
         self.setFocus()
@@ -128,6 +127,7 @@ class ClipToZoom(BasicModule):
         self.cmb_update(self.cmb_1, items)
 
         self.change_band()
+        self.mpl_toolbar.add_map_btn(self.change_band, data[0].crs)
 
         tmp = self.exec()
 
@@ -200,8 +200,6 @@ def _testfn():
     """Test."""
     import sys
 
-    import matplotlib.pyplot as plt
-
     from pygmi.raster.iodefs import get_raster
 
     app = QtWidgets.QApplication(sys.argv)
@@ -215,10 +213,6 @@ def _testfn():
     tmp.indata["Raster"] = data
 
     tmp.settings()
-
-    dat = tmp.outdata["Raster"]
-    plt.imshow(dat[0].data)
-    plt.show()
 
 
 if __name__ == "__main__":

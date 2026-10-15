@@ -31,7 +31,7 @@ from matplotlib.ticker import MaxNLocator
 from numpy.typing import NDArray
 from PySide6 import QtCore, QtWidgets
 
-from pygmi.maps import CanvasModule
+from pygmi.maps import CanvasModule, CustomToolbar
 from pygmi.misc import ContextModule
 from pygmi.raster.datatypes import Data
 from pygmi.raster.modest_image import imshow
@@ -60,7 +60,7 @@ class PlotRaster(ContextModule):
         vbl = QtWidgets.QVBoxLayout(self)
         hbl = QtWidgets.QHBoxLayout()
         self.mmc = CanvasModule(self)
-        mpl_toolbar = NavigationToolbar2QT(self.mmc, self.parent)
+        self.mpl_toolbar = CustomToolbar(self.mmc, self)
 
         self.cmb_1 = QtWidgets.QComboBox()
         lbl_1 = QtWidgets.QLabel("Bands:")
@@ -73,7 +73,7 @@ class PlotRaster(ContextModule):
         hbl.addWidget(self.cmb_1)
 
         vbl.addWidget(self.mmc)
-        vbl.addWidget(mpl_toolbar)
+        vbl.addWidget(self.mpl_toolbar)
         vbl.addLayout(hbl)
 
         self.setFocus()
@@ -92,6 +92,7 @@ class PlotRaster(ContextModule):
 
         cols = [i.dataid for i in data]
         self.cmb_update(self.cmb_1, cols)
+        self.mpl_toolbar.add_map_btn(self.change_band, data[0].crs)
 
         self.change_band()
         self.show()
@@ -286,7 +287,7 @@ class PlotMembership(ContextModule):
         vbl = QtWidgets.QVBoxLayout(self)
         hbl = QtWidgets.QHBoxLayout()
         self.mmc = CanvasModule(self)
-        mpl_toolbar = NavigationToolbar2QT(self.mmc, self.parent)
+        self.mpl_toolbar = CustomToolbar(self.mmc, self)
 
         self.cmb_1 = QtWidgets.QComboBox()
         self.cmb_2 = QtWidgets.QComboBox()
@@ -303,7 +304,7 @@ class PlotMembership(ContextModule):
         hbl.addWidget(self.cmb_2)
 
         vbl.addWidget(self.mmc)
-        vbl.addWidget(mpl_toolbar)
+        vbl.addWidget(self.mpl_toolbar)
         vbl.addLayout(hbl)
 
         self.setFocus()
@@ -336,6 +337,7 @@ class PlotMembership(ContextModule):
 
         cols = [i.dataid for i in data]
         self.cmb_update(self.cmb_1, cols)
+        self.mpl_toolbar.add_map_btn(self.change_band, data[0].crs)
 
         self.change_band()
         self.show()
@@ -675,7 +677,7 @@ def _testfn():
 
     dat = DM.outdata
 
-    tmp2 = PlotVRCetc()
+    tmp2 = PlotMembership()
     tmp2.indata = dat
     tmp2.run()
 

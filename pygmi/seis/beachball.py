@@ -37,13 +37,12 @@ import numexpr as ne
 import numpy as np
 import scipy.spatial.distance as sdist
 from matplotlib import colormaps, patches
-from matplotlib.backends.backend_qt import NavigationToolbar2QT
 from numpy.typing import NDArray
 from pyproj.crs import CRS
 from PySide6 import QtWidgets
 from shapely import Polygon, make_valid
 
-from pygmi.maps import CanvasModule
+from pygmi.maps import CanvasModule, CustomToolbar
 from pygmi.misc import BasicModule
 
 
@@ -69,6 +68,7 @@ class BeachBall(BasicModule):
         self.stype = "Seis"
 
         self.mmc = CanvasModule(self)
+        self.mpl_toolbar = CustomToolbar(self.mmc, self)
         self.btn_saveshp = QtWidgets.QPushButton("Save Shapefile")
         self.cmb_alg = QtWidgets.QComboBox()
         self.dsb_dist = QtWidgets.QDoubleSpinBox()
@@ -158,7 +158,7 @@ class BeachBall(BasicModule):
         self.buttonbox.htmlfile = "seis.dm.fps"
 
         hbl_all = QtWidgets.QHBoxLayout(self)
-        mpl_toolbar = NavigationToolbar2QT(self.mmc, self)
+
         vbl_raster = QtWidgets.QVBoxLayout()
         lbl_2 = QtWidgets.QLabel("FPS Algorithm:")
         lbl_3 = QtWidgets.QLabel("Width Scale Factor:")
@@ -190,7 +190,7 @@ class BeachBall(BasicModule):
         vbl_raster.addWidget(self.buttonbox)
         vbl_right = QtWidgets.QVBoxLayout()
         vbl_right.addWidget(self.mmc)
-        vbl_right.addWidget(mpl_toolbar)
+        vbl_right.addWidget(self.mpl_toolbar)
         hbl_all.addLayout(vbl_raster)
         hbl_all.addLayout(vbl_right)
 
@@ -329,6 +329,7 @@ class BeachBall(BasicModule):
 
         QtWidgets.QApplication.processEvents()
         self.update_graph()
+        self.mpl_toolbar.add_map_btn(self.update_graph, CRS.from_epsg(4326))
 
         if not nodialog:
             temp = self.exec()

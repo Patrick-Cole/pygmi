@@ -48,7 +48,7 @@ from sklearn.neighbors import KNeighborsClassifier
 from sklearn.svm import SVC
 from sklearn.tree import DecisionTreeClassifier
 
-from pygmi.maps import frm
+from pygmi.maps import frm, set_axes
 from pygmi.misc import BasicModule
 from pygmi.raster.datatypes import Data
 from pygmi.raster.modest_image import imshow
@@ -163,17 +163,19 @@ class GraphMap(FigureCanvasQTAgg):
         else:
             self.im1.set_clim(lclip, uclip)
 
-        if dat[self.bands[0]].crs.is_geographic:
-            self.ax1.set_xlabel("Longitude")
-            self.ax1.set_ylabel("Latitude")
-        else:
-            self.ax1.set_xlabel("Eastings")
-            self.ax1.set_ylabel("Northings")
+        set_axes(self.ax1, dat[self.bands[0]].crs)
 
-        self.ax1.xaxis.set_major_formatter(frm)
-        self.ax1.yaxis.set_major_formatter(frm)
-        self.ax1.tick_params(axis="x", rotation=90)
-        self.ax1.tick_params(axis="y", rotation=0)
+        # if dat[self.bands[0]].crs.is_geographic:
+        #     self.ax1.set_xlabel("Longitude")
+        #     self.ax1.set_ylabel("Latitude")
+        # else:
+        #     self.ax1.set_xlabel("Eastings")
+        #     self.ax1.set_ylabel("Northings")
+
+        # self.ax1.xaxis.set_major_formatter(frm)
+        # self.ax1.yaxis.set_major_formatter(frm)
+        # self.ax1.tick_params(axis="x", rotation=90)
+        # self.ax1.tick_params(axis="y", rotation=0)
 
     def update_plot(
         self,
@@ -231,11 +233,13 @@ class GraphMap(FigureCanvasQTAgg):
         self.im1.set_data(data)
         self.im1.set_extent(extent)
 
-        self.ax1.xaxis.set_major_formatter(frm)
-        self.ax1.yaxis.set_major_formatter(frm)
-        self.ax1.tick_params(axis="x", rotation=90)
-        self.ax1.tick_params(axis="y", rotation=0)
-        self.figure.canvas.draw()
+        # set_axes(self.ax1, dat[self.bands[0]].crs)
+
+        # self.ax1.xaxis.set_major_formatter(frm)
+        # self.ax1.yaxis.set_major_formatter(frm)
+        # self.ax1.tick_params(axis="x", rotation=90)
+        # self.ax1.tick_params(axis="y", rotation=0)
+        self.draw_idle()
 
     def update_class(
         self,
@@ -263,12 +267,13 @@ class GraphMap(FigureCanvasQTAgg):
         self.im1.rgbmode = "Single Colour Map"
         self.im1.set_data(data)
         # self.im1.set_extent(extent)
+        # set_axes(self.ax1, dat[0].crs)
 
-        self.ax1.xaxis.set_major_formatter(frm)
-        self.ax1.yaxis.set_major_formatter(frm)
-        self.ax1.tick_params(axis="x", rotation=90)
-        self.ax1.tick_params(axis="y", rotation=0)
-        self.figure.canvas.draw()
+        # self.ax1.xaxis.set_major_formatter(frm)
+        # self.ax1.yaxis.set_major_formatter(frm)
+        # self.ax1.tick_params(axis="x", rotation=90)
+        # self.ax1.tick_params(axis="y", rotation=0)
+        self.draw_idle()
 
 
 class PolygonInteractor(QtCore.QObject):
@@ -691,6 +696,10 @@ class SuperClass(BasicModule):
         QtWidgets.QApplication.processEvents()
 
         classifier, _, datall, _, _, _ = self.init_classifier()
+        if classifier is None:
+            self.map.figure.set_facecolor("w")
+            self.on_radio()
+            return
 
         dat = self.map.im1.scale_external_to_res(datall)
         dat, x0, x1, sx, y0, y1, sy = dat
@@ -745,6 +754,8 @@ class SuperClass(BasicModule):
             return
 
         classifier, _, _, X_test, y_test, tlbls = self.init_classifier()
+        if classifier is None:
+            return
 
         # Predicting the Test set results
         y_pred = classifier.predict(X_test)
@@ -1050,6 +1061,8 @@ class SuperClass(BasicModule):
             return False
 
         classifier, lbls, datall, _, _, tlbls = self.init_classifier()
+        if classifier is None:
+            return False
 
         mask = self.map.data[0].data.mask
         yout = np.zeros_like(datall[:, :, 0], dtype=int)
@@ -1157,6 +1170,8 @@ class SuperClass(BasicModule):
         masks = {}
         for _, row in self.df.iterrows():
             pixels = np.array(row["geometry"].exterior.coords)
+            if pixels.size == 0:
+                continue
             pixels[:, 0] = pixels[:, 0] - self.map.data[0].extent[0]
             pixels[:, 0] /= self.map.data[0].xdim
             pixels[:, 1] = self.map.data[0].extent[3] - pixels[:, 1]
@@ -1189,12 +1204,16 @@ class SuperClass(BasicModule):
             x.append(datall[masks[lbl]])
             tlbls.append(lbl)
 
+        if not x:
+            self.showlog("Error: You need at least two classes")
+            return None, None, None, None, None, None
         y = np.array(y)
         x = np.vstack(x)
         lbls = np.unique(y)
 
         if len(lbls) < 2:
             self.showlog("Error: You need at least two classes")
+            return None, None, None, None, None, None
 
         X_train, X_test, y_train, y_test = train_test_split(x, y, stratify=y)
 
