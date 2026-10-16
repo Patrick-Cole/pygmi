@@ -438,8 +438,8 @@ class ImportMod3D(BasicModule):
                 )
             if not hasattr(lmod.griddata[i], "units"):
                 lmod.griddata[i].units = ""
-            if not hasattr(lmod.griddata[i], "meta"):
-                lmod.griddata[i].meta = {}
+            # if not hasattr(lmod.griddata[i], "meta"):
+            #     lmod.griddata[i].meta = {}
             if not hasattr(lmod.griddata[i], "geometry"):
                 lmod.griddata[i].geometry = None
             if not hasattr(lmod.griddata[i], "isrgb"):
@@ -478,11 +478,12 @@ class ImportMod3D(BasicModule):
                 lmod.griddata[i].set_transform(xdim, xmin, ydim, ymax)
                 del lmod.griddata[i].tlx
                 del lmod.griddata[i].tly
-            elif not hasattr(lmod.griddata[i], "transform"):
-                ydim = lmod.griddata[i].ydim
-                xdim = lmod.griddata[i].xdim
-                xmin, _, _, ymax = lmod.griddata[i].extent
-                lmod.griddata[i].set_transform(xdim, xmin, ydim, ymax)
+
+            ydim = lmod.griddata[i].ydim
+            xdim = lmod.griddata[i].xdim
+            xmin, _, _, ymax = lmod.griddata[i].extent
+            lmod.griddata[i].set_transform(xdim, xmin, ydim, ymax)
+            lmod.griddata[i].meta = {}
 
         crsfin = CRS.from_string(
             'LOCAL_CS["Arbitrary",UNIT["metre",1,'
@@ -1344,10 +1345,7 @@ class MessageCombo(QtWidgets.QDialog):
 
 def _testfn():
     """Test."""
-    # ifile = r"d:\Workdata\modelling\small_upper.npz"
-    ifile = r"D:\Workdata\PyGMI Test Data\Potential Field Modelling\hope.npz"
-    # ofile = r"d:\Workdata\modelling\hope2.shp"
-    ifile = r"C:\temp\250826Modcreate mg only _INV.npz"
+    ifile = r"D:\Workdata\PyGMI Test Data\Potential Field Modelling\20230208_Model_OnlyWits.npz"
 
     app = QtWidgets.QApplication(sys.argv)
     app.setStyle(QtWidgets.QStyleFactory.create("Fusion"))
@@ -1356,6 +1354,9 @@ def _testfn():
     DM.ifile = ifile
     DM.settings(nodialog=True)
 
+    data = DM.outdata["Raster"]
+
+    _data1 = data[4].copy()
     # EM = ExportMod3D()
     # EM.indata = DM.outdata
     # EM.ofile = ofile

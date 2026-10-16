@@ -221,10 +221,7 @@ class Data:
 
         """
         data = Data()
-        data.__dict__ = {
-            key: (deepcopy(value) if key != "transform" else value)
-            for key, value in self.__dict__.items()
-        }
+        data.__dict__ = deepcopy(self.__dict__)
 
         if resetmeta is True:
             data.metadata = {
@@ -593,6 +590,20 @@ class RasterMeta:
 
         if "ASTER" in self.sensor:
             self.sensor = "ASTER"
+
+
+def deepcopy_nested_dict(data):
+    """Recursively deep copies a dictionary, safely handling affine.Affine objects."""
+    if isinstance(data, dict):
+        return {key: deepcopy_nested_dict(value) for key, value in data.items()}
+    elif isinstance(data, list):
+        return [deepcopy_nested_dict(item) for item in data]
+    elif isinstance(data, Affine):
+        # Reconstruct the Affine object from its 6 primary coefficients
+        return Affine(*data[:6])
+    else:
+        # Fall back to standard deepcopy for everything else (strings, arrays, ints, etc.)
+        return deepcopy(data)
 
 
 def numpy_to_pygmi(

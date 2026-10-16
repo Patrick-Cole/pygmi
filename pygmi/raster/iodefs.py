@@ -2117,8 +2117,8 @@ def _filespeedtest():
     # ifile = r"D:\SANRAL\Remote sensing data\Buffer_250m\CarletonvilleRD2_Products\Carletonville_VD_stack.hdr"
     # ifile = r"D:\workdata\PyGMI Test Data\Raster\ER Mapper\magmicrolevel.PD.ers"
 
-    _dataset = get_raster(ifile)
-    # _dataset = get_geopak(ifile)
+    dataset = get_raster(ifile)
+    # dataset = get_geopak(ifile)
 
     # getinfo('Start')
 
@@ -2135,6 +2135,8 @@ def _filespeedtest():
     # tmp = ExportData()
     # tmp.indata['Raster'] = dataset
     # tmp.run()
+
+    data = dataset[0].copy()
 
     getinfo("End")
 

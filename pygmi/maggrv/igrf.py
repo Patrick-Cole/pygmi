@@ -92,7 +92,7 @@ class IGRF(BasicModule):
         self.wkt = None
 
         self.dsb_alt = QtWidgets.QDoubleSpinBox()
-        self.dateedit = QtWidgets.QDateEdit()
+        self.de_date = QtWidgets.QDateEdit()
         self.cmb_dtm = QtWidgets.QComboBox()
         self.cmb_mag = QtWidgets.QComboBox()
         self.proj = dp.GroupProj("Input Projection")
@@ -112,12 +112,14 @@ class IGRF(BasicModule):
         self.dsb_alt.setMaximum(99999.9)
 
         self.setWindowTitle("IGRF")
+        self.de_date.setCalendarPopup(True)
+        self.de_date.setDisplayFormat("dd MMMM yyyy")
 
         gl_1.addWidget(self.proj, 0, 0, 1, 2)
         gl_1.addWidget(lbl_0, 2, 0, 1, 1)
         gl_1.addWidget(self.dsb_alt, 2, 1, 1, 1)
         gl_1.addWidget(lbl_1, 1, 0, 1, 1)
-        gl_1.addWidget(self.dateedit, 1, 1, 1, 1)
+        gl_1.addWidget(self.de_date, 1, 1, 1, 1)
         gl_1.addWidget(lbl_2, 4, 0, 1, 1)
         gl_1.addWidget(self.cmb_dtm, 4, 1, 1, 1)
         gl_1.addWidget(lbl_3, 5, 0, 1, 1)
@@ -186,7 +188,7 @@ class IGRF(BasicModule):
                 data = i
                 wkt = i.crs.to_wkt()
 
-        sdate = self.dateedit.date()
+        sdate = self.de_date.date()
         sdate = sdate.year() + sdate.dayOfYear() / sdate.daysInYear()
         alt = self.dsb_alt.value()
 
@@ -216,7 +218,7 @@ class IGRF(BasicModule):
         """Save project data from class."""
         self.saveobj(self.wkt)
         self.saveobj(self.dsb_alt)
-        self.saveobj(self.dateedit)
+        self.saveobj(self.de_date)
         self.saveobj(self.cmb_dtm)
         self.saveobj(self.cmb_mag)
 

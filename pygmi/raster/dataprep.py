@@ -894,7 +894,7 @@ class Metadata(ContextModule):
         self.lbl_max = QtWidgets.QLabel()
         self.lbl_mean = QtWidgets.QLabel()
         self.lbl_dtype = QtWidgets.QLabel()
-        self.date = QtWidgets.QDateEdit()
+        self.de_date = QtWidgets.QDateEdit()
 
         self.le_txt_null.setValidator(self.qval)
         self.le_tlx.setValidator(QtGui.QDoubleValidator(self))
@@ -936,7 +936,8 @@ class Metadata(ContextModule):
         self.proj.setSizePolicy(sizepolicy)
 
         self.setWindowTitle("Dataset Metadata")
-        self.date.setCalendarPopup(True)
+        self.de_date.setCalendarPopup(True)
+        self.de_date.setDisplayFormat("dd MMMM yyyy")
 
         gl_main.addWidget(lbl_bandid, 0, 0, 1, 1)
         gl_main.addWidget(self.cmb_bandid, 0, 1, 1, 3)
@@ -970,7 +971,7 @@ class Metadata(ContextModule):
         gl_1.addWidget(lbl_dtype, 11, 0, 1, 1)
         gl_1.addWidget(self.lbl_dtype, 11, 1, 1, 1)
         gl_1.addWidget(lbl_date, 12, 0, 1, 1)
-        gl_1.addWidget(self.date, 12, 1, 1, 1)
+        gl_1.addWidget(self.de_date, 12, 1, 1, 1)
 
         self.buttonbox.buttonbox.accepted.connect(self.acceptall)
 
@@ -1046,7 +1047,7 @@ class Metadata(ContextModule):
         ydim = float(self.le_ydim.text())
 
         odata.set_transform(xdim, left, ydim, top)
-        odata.datetime = self.date.date().toPyDate()
+        odata.datetime = self.de_date.date().toPyDate()
 
         indx = self.cmb_bandid.currentIndex()
         txt = self.cmb_bandid.itemText(indx)
@@ -1072,7 +1073,7 @@ class Metadata(ContextModule):
         self.lbl_mean.setText(str(idata.data.mean()))
         self.le_led_units.setText(str(idata.units))
         self.lbl_dtype.setText(str(idata.data.dtype))
-        self.date.setDate(idata.datetime)
+        self.de_date.setDate(idata.datetime)
 
     def run(self):
         """Entry point into the routine, used to run context menu item."""
@@ -1122,7 +1123,7 @@ class Metadata(ContextModule):
         self.lbl_mean.setText(str(idata.data.mean()))
         self.le_led_units.setText(str(idata.units))
         self.lbl_dtype.setText(str(idata.data.dtype))
-        self.date.setDate(idata.datetime)
+        self.de_date.setDate(idata.datetime)
 
         self.update_vals()
 

@@ -30,7 +30,6 @@ from collections.abc import Callable, Generator, Iterable
 import matplotlib.pyplot as plt
 import numexpr as ne
 import numpy as np
-from matplotlib import style
 from numpy.typing import NDArray
 from PySide6 import QtWidgets
 from sklearn.decomposition import IncrementalPCA
@@ -142,7 +141,6 @@ class MNF(BasicModule):
         self.acceptall()
 
         if not nodialog and self.ev is not None:
-            style.use("bmh")
             ncmps = self.sb_comps.value()
             xvals = range(1, ncmps + 1)
 
@@ -339,7 +337,6 @@ class PCA(BasicModule):
         self.acceptall()
 
         if not nodialog and self.ev is not None:
-            style.use("bmh")
             ncmps = self.sb_comps.value()
             xvals = range(1, ncmps + 1)
 

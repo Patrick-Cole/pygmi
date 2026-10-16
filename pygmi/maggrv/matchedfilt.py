@@ -26,7 +26,7 @@
 
 import numpy as np
 import pwlf
-from matplotlib import gridspec, style
+from matplotlib import gridspec
 from matplotlib.backends.backend_qt import NavigationToolbar2QT
 from matplotlib.backends.backend_qtagg import FigureCanvasQTAgg
 from matplotlib.figure import Figure
@@ -228,7 +228,6 @@ class MatchedFilt(BasicModule):
         self.depth = d
 
         # Plotting
-        style.use("bmh")
         self.figure.clear()
         gs = gridspec.GridSpec(3, 1)
         axes = self.figure.add_subplot(gs[:2, 0])

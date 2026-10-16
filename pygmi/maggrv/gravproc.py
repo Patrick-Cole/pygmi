@@ -29,7 +29,6 @@ from collections.abc import Callable
 
 import numpy as np
 import pandas as pd
-from matplotlib import style
 from matplotlib.backends.backend_qt import NavigationToolbar2QT
 from matplotlib.backends.backend_qtagg import FigureCanvasQTAgg
 from numpy.typing import NDArray
@@ -90,7 +89,6 @@ class PlotDrift(ContextModule):
             Dictionary containing information for drift plots.
 
         """
-        style.use("bmh")
         self.mmc.figure.clear()
         self.mmc.figure.suptitle("QC: Gravimeter Drift")
 
