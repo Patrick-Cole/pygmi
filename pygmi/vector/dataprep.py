@@ -363,9 +363,12 @@ class DataGrid(BasicModule):
         self.cmb_update(self.cmb_dataid, cols)
         self.cmb_update(self.cmb_z, cols)
 
-        lines = data.line[data.line != "nan"].unique()
+        if "line" in cols:
+            lines = data.line[data.line != "nan"].unique()
 
-        self.cmb_update(self.cmb_line, lines)
+            self.cmb_update(self.cmb_line, lines)
+        else:
+            self.cmb_line.setDisabled(True)
 
         self.grid_method_change()
         if not nodialog:

@@ -612,7 +612,7 @@ def xlabels_dd(ax, crs, y, pad=15, num=10):
     xmind, _ = transformer.transform(xmin, y)
     xmaxd, ymaxd = transformer.transform(xmax, y)
 
-    while True:
+    while num > 1:
         deg_ticks, labels = get_neat_intervals(xmind, xmaxd, num)
         num = len(deg_ticks) - 1
         ticks = [transformeri.transform(x, ymaxd)[0] for x in deg_ticks]
@@ -634,13 +634,13 @@ def xlabels_m(ax, pad=15, num=10):
     """Generate labels for x axis in metres."""
     fig = ax.get_figure()
 
-    while True:
+    while num > 1:
         ax.xaxis.set_major_locator(MaxNLocator(nbins=num))
         fig.draw_without_rendering()
         text_boxes = [label.get_window_extent() for label in ax.get_xticklabels()]
         overlap = any(b1.x1 + pad > b2.x0 for b1, b2 in pairwise(text_boxes))
 
-        if not overlap:
+        if not overlap or num == 1:
             break
 
         num -= 1
@@ -657,7 +657,7 @@ def ylabels_dd(ax, crs, x, pad=20, num=10):
     xd, ymind = transformer.transform(x, ymin)
     _, ymaxd = transformer.transform(x, ymax)
 
-    while True:
+    while num > 1:
         deg_ticks, labels = get_neat_intervals(ymind, ymaxd, num, False)
         num = len(deg_ticks) - 1
         ticks = [transformeri.transform(xd, y)[1] for y in deg_ticks]
@@ -678,7 +678,7 @@ def ylabels_m(ax, pad=15, num=10):
     """Generate labels for y axis in metres."""
     fig = ax.get_figure()
 
-    while True:
+    while num > 1:
         ax.yaxis.set_major_locator(MaxNLocator(nbins=num))
         fig.draw_without_rendering()
         text_boxes = [label.get_window_extent() for label in ax.get_yticklabels()]
