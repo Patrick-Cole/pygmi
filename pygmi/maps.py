@@ -37,7 +37,7 @@ from matplotlib.axes import Axes
 from matplotlib.backends.backend_qt import NavigationToolbar2QT
 from matplotlib.backends.backend_qtagg import FigureCanvasQTAgg
 from matplotlib.figure import Figure
-from matplotlib.ticker import FuncFormatter, MaxNLocator
+from matplotlib.ticker import FuncFormatter, LinearLocator, MaxNLocator
 from matplotlib_map_utils.core.north_arrow import north_arrow
 from matplotlib_map_utils.core.scale_bar import scale_bar
 from matplotlib_map_utils.validation.scale_bar import units_standard
@@ -80,8 +80,17 @@ class CustomToolbar(NavigationToolbar2QT):
         self.setToolButtonStyle(QtCore.Qt.ToolButtonStyle.ToolButtonIconOnly)
         self.dlg = MapSettings(self)
 
-    def add_map_btn(self, update, crs):
-        """Add map button."""
+    def add_map_btn(self, update: Callable, crs: CRS):
+        """
+        Add map button.
+
+        Parameters
+        ----------
+        update
+            Function which will update the map.
+        crs
+            PyProj crs of data
+        """
         ipth = os.path.dirname(__file__) + r"/images/"
 
         self.custom_action = QtGui.QAction(
@@ -119,6 +128,13 @@ class CustomToolbar(NavigationToolbar2QT):
         self.canvas.show_degrees = self.dlg.cb_degrees.isChecked()
         self.canvas.show_metres = self.dlg.cb_metres.isChecked()
 
+        self.canvas.xticks = 10
+        self.canvas.yticks = 10
+        if self.dlg.cb_xticks.isChecked():
+            self.canvas.xticks = self.dlg.sb_xticks.value()
+        if self.dlg.cb_yticks.isChecked():
+            self.canvas.yticks = self.dlg.sb_yticks.value()
+
         self.cupdate()
         self.canvas.figure.gca().autoscale()
 
@@ -149,6 +165,8 @@ class CanvasModule(FigureCanvasQTAgg):
         self.show_scalebar = False
         self.show_degrees = True
         self.show_metres = True
+        self.xticks = 10
+        self.yticks = 10
 
     def resizeEvent(
         self,
@@ -182,9 +200,20 @@ class CanvasModule(FigureCanvasQTAgg):
             self.draw_idle()
             self._pending_size = None
 
-    def set_map_axes(self, axes, crs):
-        """Set the map axes and north arrow."""
-        set_axes(axes, crs, self.show_degrees, self.show_metres)
+    def set_map_axes(self, axes: Axes, crs: CRS):
+        """
+        Set the map axes and north arrow.
+
+        Parameters
+        ----------
+        axes
+            Primary Matplotlib axes.
+        crs
+            PyProj crs of data.
+        """
+        set_axes(
+            axes, crs, self.show_degrees, self.show_metres, self.xticks, self.yticks
+        )
 
         if self.show_north_arrow is True:
             set_north(axes, crs, self.showlog)
@@ -222,6 +251,10 @@ class MapSettings(BasicModule):
         self.cb_scalebar = QtWidgets.QCheckBox("Display scale bar")
         self.cb_degrees = QtWidgets.QCheckBox("Use degrees on axis")
         self.cb_metres = QtWidgets.QCheckBox("Use metres on axis")
+        self.cb_xticks = QtWidgets.QCheckBox("Maximum number of x-ticks:")
+        self.cb_yticks = QtWidgets.QCheckBox("Maximum number of y-ticks:")
+        self.sb_xticks = QtWidgets.QSpinBox()
+        self.sb_yticks = QtWidgets.QSpinBox()
 
         self.setupui()
 
@@ -229,7 +262,13 @@ class MapSettings(BasicModule):
         """Set up UI."""
         gl_main = QtWidgets.QGridLayout(self)
 
-        self.buttonbox.htmlfile = "raster.dm.layerstack"
+        self.sb_xticks.setMinimum(2)
+        self.sb_xticks.setValue(3)
+        self.sb_yticks.setMinimum(2)
+        self.sb_yticks.setValue(3)
+
+        # self.buttonbox.htmlfile = "raster.dm.layerstack"
+        self.buttonbox.helpdocs.hide()
 
         self.cb_northarrow.setChecked(False)
         self.cb_scalebar.setChecked(False)
@@ -242,7 +281,11 @@ class MapSettings(BasicModule):
         gl_main.addWidget(self.cb_scalebar, 2, 0, 1, 2)
         gl_main.addWidget(self.cb_degrees, 3, 0, 1, 2)
         gl_main.addWidget(self.cb_metres, 4, 0, 1, 2)
-        gl_main.addWidget(self.buttonbox, 5, 0, 1, 2)
+        gl_main.addWidget(self.cb_xticks, 5, 0, 1, 1)
+        gl_main.addWidget(self.sb_xticks, 5, 1, 1, 1)
+        gl_main.addWidget(self.cb_yticks, 6, 0, 1, 1)
+        gl_main.addWidget(self.sb_yticks, 6, 1, 1, 1)
+        gl_main.addWidget(self.buttonbox, 7, 0, 1, 2)
 
     def settings(
         self,
@@ -453,8 +496,10 @@ def get_neat_intervals(
 def set_axes(
     ax: Axes,
     crs: CRS | None,
-    showdegrees=True,
-    showmetres=True,
+    showdegrees: bool = True,
+    showmetres: bool = True,
+    xticks: int = 10,
+    yticks: int = 10,
 ):
     """
     Set the axes.
@@ -464,7 +509,15 @@ def set_axes(
     ax
         Primary Matplotlib axes.
     crs
-        PyProj crs of data
+        PyProj crs of data.
+    showdegrees
+        Show degrees on the map border.
+    showmetres
+        Show metres on the map border.
+    xticks
+        Maximum number of x-ticks, by default 10.
+    yticks
+        Maximum number of y-ticks, by default 10.
     """
     if crs is None:
         crs = CRS.from_string(
@@ -500,8 +553,8 @@ def set_axes(
 
     if showmetres is True:
         ax.tick_params(axis="both", labelsize=8, labelcolor="#0070ff")
-        xlabels_m(ax)
-        ylabels_m(ax)
+        xlabels_m(ax, num=xticks)
+        ylabels_m(ax, num=yticks)
 
     if showmetres is True and showdegrees is False:
         ax.tick_params(
@@ -517,8 +570,8 @@ def set_axes(
 
     if showdegrees is True and showmetres is False:
         ax.tick_params(axis="both", labelsize=9, labelcolor="k")
-        xlabels_dd(ax, crs, ymin)
-        ylabels_dd(ax, crs, xmax)
+        xlabels_dd(ax, crs, ymin, num=xticks)
+        ylabels_dd(ax, crs, xmax, num=yticks)
 
     for label in ax.yaxis.get_majorticklabels():
         if showdegrees:
@@ -538,20 +591,19 @@ def set_axes(
     secax.set_xlim(xmin, xmax)
     secax.tick_params(axis="x", labelsize=9)
 
-    xlabels_dd(secax, crs, ymax)
+    xlabels_dd(secax, crs, ymax, num=xticks)
 
     # y-axis
     secax1 = ax.secondary_yaxis("left")
     secax1.set_ylim(ymin, ymax)
     secax1.tick_params(axis="y", labelrotation=90, labelsize=9)
 
-    ylabels_dd(secax1, crs, xmin)
+    ylabels_dd(secax1, crs, xmin, num=yticks)
 
 
-def xlabels_dd(ax, crs, y, pad=15):
+def xlabels_dd(ax, crs, y, pad=15, num=10):
     """Generate labels for x axis in degrees."""
     fig = ax.get_figure()
-    num = 10
 
     transformer = pyproj.Transformer.from_crs(crs, "EPSG:4326", always_xy=True)
     transformeri = pyproj.Transformer.from_crs("EPSG:4326", crs, always_xy=True)
@@ -566,6 +618,7 @@ def xlabels_dd(ax, crs, y, pad=15):
         ticks = [transformeri.transform(x, ymaxd)[0] for x in deg_ticks]
 
         ax.set_xticks(ticks, labels=labels)
+
         fig.draw_without_rendering()
 
         text_boxes = [label.get_window_extent() for label in ax.get_xticklabels()]
@@ -577,14 +630,12 @@ def xlabels_dd(ax, crs, y, pad=15):
         num -= 1
 
 
-def xlabels_m(ax, pad=15):
+def xlabels_m(ax, pad=15, num=10):
     """Generate labels for x axis in metres."""
     fig = ax.get_figure()
-    num = 10
 
     while True:
         ax.xaxis.set_major_locator(MaxNLocator(nbins=num))
-
         fig.draw_without_rendering()
         text_boxes = [label.get_window_extent() for label in ax.get_xticklabels()]
         overlap = any(b1.x1 + pad > b2.x0 for b1, b2 in pairwise(text_boxes))
@@ -595,10 +646,9 @@ def xlabels_m(ax, pad=15):
         num -= 1
 
 
-def ylabels_dd(ax, crs, x, pad=20):
+def ylabels_dd(ax, crs, x, pad=20, num=10):
     """Generate labels for y axis in degrees."""
     fig = ax.get_figure()
-    num = 10
 
     transformer = pyproj.Transformer.from_crs(crs, "EPSG:4326", always_xy=True)
     transformeri = pyproj.Transformer.from_crs("EPSG:4326", crs, always_xy=True)
@@ -624,14 +674,12 @@ def ylabels_dd(ax, crs, x, pad=20):
         num -= 1
 
 
-def ylabels_m(ax, pad=15):
+def ylabels_m(ax, pad=15, num=10):
     """Generate labels for y axis in metres."""
     fig = ax.get_figure()
-    num = 10
 
     while True:
         ax.yaxis.set_major_locator(MaxNLocator(nbins=num))
-
         fig.draw_without_rendering()
         text_boxes = [label.get_window_extent() for label in ax.get_yticklabels()]
 
