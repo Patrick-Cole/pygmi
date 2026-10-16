@@ -349,13 +349,20 @@ class PlotRaster(ContextModule):
                 interpolation="none",
             )
         elif plotlog is True:
+            lthres = 0.01
+            lptp = float(data1.data.max()) - float(data1.data.min())
+            if lptp > 0:
+                lthres = min(lthres, lptp / 100)
+
             rdata = imshow(
                 axes,
                 data1.data,
                 extent=data1.extent,
                 cmap=colormaps[cmap],
                 interpolation="none",
-                norm=colors.LogNorm(vmin=data1.data.min(), vmax=data1.data.max()),
+                norm=colors.SymLogNorm(
+                    linthresh=lthres, vmin=data1.data.min(), vmax=data1.data.max()
+                ),
             )
         else:
             rdata = imshow(
@@ -879,6 +886,7 @@ def _testfn():
     """Test."""
     import sys
 
+    from pygmi.raster.cooper import agc
     from pygmi.raster.iodefs import get_raster
 
     ifile = r"D:\workdata\PyGMI Test Data\Raster\testdata.tif"
@@ -893,9 +901,14 @@ def _testfn():
     data = get_raster(ifile)
     data[0].units = "hope"
 
+    agcdata = agc(data[0].data, 11, "median")
+
+    data2 = [data[0].copy()]
+    data2[-1].data = agcdata
+    data2[-1].dataid += " AGC"
+
     tmp = PlotRaster()
-    # tmp = PlotSurface()
-    tmp.indata["Raster"] = data
+    tmp.indata["Raster"] = data2
     tmp.run()
     tmp.exec()
 
