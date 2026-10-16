@@ -353,7 +353,7 @@ class DataMerge(BasicModule):
         self.idir = None
         self.tmpdir = None
         self.is_import = True
-        self.method = "merge_median"
+        self.method = "merge_median_last"
         self.res = None
 
         self.rb_first = QtWidgets.QRadioButton(
@@ -2043,11 +2043,22 @@ def _testfn():
 
 def _testmosaic():
     """Test."""
-    idir = r"C:\Work\PyGMI Test Data\Raster\mosaic"
-    idir = r"D:\Workdata\Mosaic"
-    dat = {}
+    import sys
 
-    mosaic(dat, idir=idir, method="merge_median_last", resampling="cubic_spline")
+    idir = r"D:\WorkData\PyGMI Test Data\Raster\mosaic"
+    # idir = r"D:\Workdata\Mosaic"
+    # dat = {}
+
+    app = QtWidgets.QApplication(sys.argv)
+    app.setStyle(QtWidgets.QStyleFactory.create("Fusion"))
+
+    tmp = DataMerge()
+    tmp.le_idirlist.setText(idir)
+    tmp.idir = idir
+    # tmp.indata["Raster"] = dat
+    tmp.settings()
+
+    # mosaic(dat, idir=idir, method="merge_median_last", resampling="cubic_spline")
 
 
 if __name__ == "__main__":
