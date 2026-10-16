@@ -37,7 +37,7 @@ from matplotlib.axes import Axes
 from matplotlib.backends.backend_qt import NavigationToolbar2QT
 from matplotlib.backends.backend_qtagg import FigureCanvasQTAgg
 from matplotlib.figure import Figure
-from matplotlib.ticker import FuncFormatter, LinearLocator, MaxNLocator
+from matplotlib.ticker import FuncFormatter, MaxNLocator
 from matplotlib_map_utils.core.north_arrow import north_arrow
 from matplotlib_map_utils.core.scale_bar import scale_bar
 from matplotlib_map_utils.validation.scale_bar import units_standard

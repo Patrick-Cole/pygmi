@@ -41,6 +41,7 @@ import json
 import math
 import os
 import pkgutil
+import platform
 import sys
 import textwrap
 import webbrowser
@@ -1572,6 +1573,13 @@ def main():
         return
 
     app = QtWidgets.QApplication(sys.argv)
+
+    if platform.system() == "Windows":
+        import ctypes
+
+        # Use a unique reverse-domain string format
+        my_app_id = f"pygmi.{pygmi.__version__}"
+        ctypes.windll.shell32.SetCurrentProcessExplicitAppUserModelID(my_app_id)
 
     app.setStyle(QtWidgets.QStyleFactory.create("Fusion"))
 

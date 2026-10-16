@@ -981,12 +981,12 @@ def cut_point(
         showlog("No polygons in shapefile.")
         return None
 
-    if data.crs is None and gdf.crs is not None:
+    if (data.crs is None or data.crs.is_engineering) and gdf.crs is not None:
         showlog(
             "Your vectors need a projection assigned, assuming it is the "
             "same as the shapefile."
         )
-        data = data.set_crs(gdf.crs)
+        data = data.set_crs(gdf.crs, allow_override=True)
     elif data.crs is None:
         showlog("Your vectors need a projection assigned.")
         return None

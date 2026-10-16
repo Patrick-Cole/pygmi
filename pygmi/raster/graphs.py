@@ -235,6 +235,32 @@ class PlotRaster(ContextModule):
             ]
         )
 
+        self.cmb_3 = QtWidgets.QComboBox()
+        lbl_3 = QtWidgets.QLabel("Interpolation:")
+        hbl.addWidget(lbl_3, 0, QtCore.Qt.AlignmentFlag.AlignRight)
+        hbl.addWidget(self.cmb_3)
+        self.cmb_3.addItems(
+            [
+                "none",
+                "nearest",
+                "bilinear",
+                "bicubic",
+                "spline16",
+                "spline36",
+                "hanning",
+                "hamming",
+                "hermite",
+                "kaiser",
+                "quadric",
+                "catrom",
+                "gaussian",
+                "bessel",
+                "mitchell",
+                "sinc",
+                "lanczos",
+            ]
+        )
+
         vbl.addWidget(self.mmc)
         vbl.addWidget(self.mpl_toolbar)
         vbl.addLayout(hbl)
@@ -243,12 +269,14 @@ class PlotRaster(ContextModule):
         self.sb_aspect.valueChanged.connect(self.change_band)
         self.cmb_1.currentIndexChanged.connect(self.change_band)
         self.cmb_2.currentIndexChanged.connect(self.change_band)
+        self.cmb_3.currentIndexChanged.connect(self.change_band)
         self.cb_log.checkStateChanged.connect(self.change_band)
 
     def change_band(self):
         """Combo box to choose band."""
         i = self.cmb_1.currentIndex()
         cmap = self.cmb_2.currentText()
+        interp = self.cmb_3.currentText()
         plotlog = self.cb_log.isChecked()
         aspect = self.sb_aspect.value()
 
@@ -264,7 +292,7 @@ class PlotRaster(ContextModule):
             self.lbl_a.hide()
             self.sb_aspect.hide()
 
-        self.update_raster(data[i], cmap, plotlog, aspect)
+        self.update_raster(data[i], cmap, plotlog, aspect, interp)
 
     def format_coord(
         self,
@@ -316,6 +344,7 @@ class PlotRaster(ContextModule):
         cmap: str,
         plotlog: bool,
         aspect: int = 1,
+        interp: str = "none",
     ):
         """
         Update the raster plot.
@@ -346,7 +375,7 @@ class PlotRaster(ContextModule):
                 data1.data,
                 extent=data1.extent,
                 cmap=colormaps[cmap],
-                interpolation="none",
+                interpolation=interp,
             )
         elif plotlog is True:
             lthres = 0.01
@@ -359,7 +388,7 @@ class PlotRaster(ContextModule):
                 data1.data,
                 extent=data1.extent,
                 cmap=colormaps[cmap],
-                interpolation="none",
+                interpolation=interp,
                 norm=colors.SymLogNorm(
                     linthresh=lthres, vmin=data1.data.min(), vmax=data1.data.max()
                 ),
@@ -370,7 +399,7 @@ class PlotRaster(ContextModule):
                 data1.data,
                 extent=data1.extent,
                 cmap=colormaps[cmap],
-                interpolation="none",
+                interpolation=interp,
             )
             rdata.set_clim_std(2.5)
 
@@ -886,7 +915,6 @@ def _testfn():
     """Test."""
     import sys
 
-    from pygmi.raster.cooper import agc
     from pygmi.raster.iodefs import get_raster
 
     ifile = r"D:\workdata\PyGMI Test Data\Raster\testdata.tif"
@@ -899,16 +927,9 @@ def _testfn():
     app.setStyle(QtWidgets.QStyleFactory.create("Fusion"))
 
     data = get_raster(ifile)
-    data[0].units = "hope"
-
-    agcdata = agc(data[0].data, 11, "median")
-
-    data2 = [data[0].copy()]
-    data2[-1].data = agcdata
-    data2[-1].dataid += " AGC"
 
     tmp = PlotRaster()
-    tmp.indata["Raster"] = data2
+    tmp.indata["Raster"] = data
     tmp.run()
     tmp.exec()
 
