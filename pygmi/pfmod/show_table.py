@@ -50,9 +50,8 @@ class BasicStats3D(ContextModule):
     ):
         super().__init__(parent)
 
-        self.resize(640, 320)
+        self.resize(880, 320)
 
-        self.cmb_1 = QtWidgets.QComboBox()
         self.tablewidget = QtWidgets.QTableWidget()
         self.pushbutton_save = QtWidgets.QPushButton("Save")
 
@@ -69,7 +68,6 @@ class BasicStats3D(ContextModule):
         self.buttonbox.buttonbox.hide()
 
         vbl.addWidget(self.pushbutton_save)
-        vbl.addWidget(self.cmb_1)
         vbl.addWidget(self.buttonbox)
 
         hbl.addWidget(self.tablewidget)
@@ -77,37 +75,16 @@ class BasicStats3D(ContextModule):
 
         self.setWindowTitle("Basic Statistics")
 
-        self.cmb_1.currentIndexChanged.connect(self.combo)
         self.pushbutton_save.clicked.connect(self.save)
-
-    def combo(self):
-        """Combo."""
-        i = self.cmb_1.currentIndex()
-        data = self.data[i][:, 1:]
-
-        for row in range(data.shape[0]):
-            for col in range(data.shape[1]):
-                text = data[row, col]
-                if not isinstance(text, str):
-                    text = f"{text:,.1f}"
-                self.tablewidget.setCellWidget(row, col, QtWidgets.QLabel(text))
-
-        self.tablewidget.resizeColumnsToContents()
 
     def run(self):
         """Entry point into the routine, used to run context menu item."""
-        data = self.indata["Model3D"]
-        self.bands, self.cols, self.data = basicstats3d_calc(data)
+        self.bands, self.cols, self.data = basicstats3d_calc(self.indata["Model3D"])
 
         data = self.data[0][:, 1:]
         rows = self.data[0][:, 0]
         cols = self.cols[1:]
 
-        if len(self.data) == 1:
-            self.cmb_1.hide()
-
-        self.cmb_1.clear()
-        self.cmb_1.addItems(self.bands)
         self.tablewidget.setRowCount(data.shape[0])
         self.tablewidget.setColumnCount(data.shape[1])
         self.tablewidget.setHorizontalHeaderLabels(cols)
@@ -127,7 +104,7 @@ class BasicStats3D(ContextModule):
 
         for row in range(data.shape[0]):
             for col in range(data.shape[1]):
-                txt = f" {data[row, col]:,.5f}"
+                txt = f" {data[row, col]:,.1f}"
                 txt = QtWidgets.QLabel(txt)
                 txt.setAlignment(Qt.AlignmentFlag.AlignRight)
 
@@ -135,8 +112,6 @@ class BasicStats3D(ContextModule):
 
         self.tablewidget.resizeColumnsToContents()
         self.show()
-
-        self.combo()
 
     def save(self) -> bool:
         """
@@ -204,9 +179,14 @@ def basicstats3d_calc(lmod: LithModel) -> tuple[list[str], list[str], list[NDArr
             depthtotop = np.argmax(lidx, 1) - air
             depthtobot = depthtotop + thick
 
-            depthtotop = depthtotop[thick > 0].mean() * dz
-            depthtobot = depthtobot[thick > 0].mean() * dz
-            thick = thick[thick > 0].mean() * dz
+            if (thick > 0).any():
+                depthtotop = depthtotop[thick > 0].mean() * dz
+                depthtobot = depthtobot[thick > 0].mean() * dz
+                thick = thick[thick > 0].mean() * dz
+            else:
+                depthtotop = np.nan
+                depthtobot = np.nan
+                thick = np.nan
 
             srow = [j]
             srow.append(lvol)
@@ -276,7 +256,7 @@ def _testfn():
 
     from pygmi.pfmod.iodefs import ImportMod3D
 
-    ifile = r"D:\Workdata\PyGMI Test Data\Potential Field Modelling\small_upper.npz"
+    ifile = r"D:\Workdata\PyGMI Test Data\Potential Field Modelling\20230208_Model_OnlyWits.npz"
 
     app = QtWidgets.QApplication(sys.argv)
     app.setStyle(QtWidgets.QStyleFactory.create("Fusion"))
