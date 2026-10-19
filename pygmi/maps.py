@@ -113,7 +113,7 @@ class CustomToolbar(NavigationToolbar2QT):
             self.addAction(self.custom_action)
 
         self.cupdate = update
-        self.crs = crs
+        self.crs = CRS.from_wkt(crs.to_wkt())
 
     def change_map(self):
         """Refresh plot."""
