@@ -781,13 +781,13 @@ class MagInvert(BasicModule):
         reg.norms = [0, 0, 0, 0]
 
         opt = optimization.ProjectedGNCG(
-            maxIter=20, lower=0.0, upper=1.0, maxIterLS=20, maxIterCG=10, tolCG=1e-3
+            maxIter=20, lower=0.0, upper=1.0, maxIterLS=20, cg_maxiter=10, cg_atol=1e-3
         )
         inv_prob = inverse_problem.BaseInvProblem(dmis, reg, opt)
 
         # Define Inversion Directives
         starting_beta = directives.BetaEstimate_ByEig(beta0_ratio=5)
-        save_iteration = directives.SaveOutputEveryIteration(save_txt=False)
+        save_iteration = directives.SaveOutputEveryIteration(on_disk=False)
         update_IRLS = directives.UpdateIRLS(
             f_min_change=1e-4,
             max_irls_iterations=30,

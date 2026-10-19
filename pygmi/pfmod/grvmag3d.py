@@ -1451,7 +1451,7 @@ def quick_model(
     clrtmp = clrtmp.tolist()
 
     for j, i in enumerate(inputliths):
-        lmod.mlut[j] = clrtmp[j]
+        lmod.mlut[j + 1] = clrtmp[j]
         lmod.lith_list[i] = GeoData(None, numx, numy, numz, dxy, d_z, mht, ght)
 
         lmod.lith_list[i].susc = susc[j]
