@@ -175,7 +175,6 @@ class PlotQC(ContextModule):
 
     def run(self):
         """Entry point into the routine, used to run context menu item."""
-        self.show()
         data = self.indata["Seis"]
         self.datd = import_for_plots(data)
 
@@ -217,6 +216,8 @@ class PlotQC(ContextModule):
 
         self.cmb_1.setCurrentIndex(0)
         self.change_band()
+
+        self.show()
 
     def save_shp(self) -> bool:
         """
@@ -1394,6 +1395,13 @@ def import_for_plots(dat: list) -> dict:
                             datd[newkey] = []
                         datd[newkey].append(tmp[j])
 
+    if (
+        len(datd) == 3
+        and datd["1_ML"] == []
+        and datd["1_ML_year"] == []
+        and datd["1_ML_time"] == []
+    ):
+        datd = {}
     return datd
 
 
@@ -1765,6 +1773,6 @@ def _testfn():
 
 
 if __name__ == "__main__":
-    # _testfn1()
-    _testfn()
+    _testfn1()
+    # _testfn()
     # _testiso()

@@ -8,7 +8,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <title>Installation Instructions &#8212; PyGMI 3.3.0.16 documentation</title>
+    <title>Installation Instructions &#8212; PyGMI 3.3.1.0 documentation</title>
   
   
   
@@ -40,7 +40,7 @@
   <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=90905a2f556bf617f1a9" />
 <link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=90905a2f556bf617f1a9" />
 
-    <script src="_static/documentation_options.js?v=ceb6d61a"></script>
+    <script src="_static/documentation_options.js?v=0a4b1588"></script>
     <script src="_static/doctools.js?v=fd6eb6e6"></script>
     <script src="_static/sphinx_highlight.js?v=6ffebe34"></script>
     <script src="_static/scripts/sphinx-book-theme.js?v=fab101a9"></script>
@@ -53,7 +53,7 @@
     <link rel="prev" title="PyGMI Wiki" href="wiki.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
-  <meta name="docsearch:version" content="3.3.0.16" />
+  <meta name="docsearch:version" content="3.3.1.0" />
   
     
     <script src="_static/searchtools.js"></script>
@@ -214,7 +214,7 @@
   
   
   
-    <p class="title logo__title">PyGMI 3.3.0.16 documentation</p>
+    <p class="title logo__title">PyGMI 3.3.1.0 documentation</p>
   
 </a></div>
         <div class="sidebar-primary-item"><ul class="navbar-icon-links"
@@ -813,10 +813,10 @@
 </section>
 <section id="anaconda">
 <h3>Anaconda<a class="headerlink" href="#anaconda" title="Link to this heading">#</a></h3>
-<p>Anaconda users are advised not to use pip since it can break PyQt5. However, one package is installed only by pip, so a Conda environment should be created.</p>
+<p>Anaconda users are advised not to use pip since it can break PySide6. However, one package is installed only by pip, so a Conda environment should be created.</p>
 <p>The process to install is as follows:</p>
 <blockquote>
-<div><p>conda create -n pygmi python=3.13</p>
+<div><p>conda create -n pygmi python=3.14</p>
 <p>conda activate pygmi</p>
 <p>conda config –env –add channels conda-forge</p>
 <p>conda install pyside6</p>
@@ -841,6 +841,7 @@
 <p>conda install beautifulsoup4</p>
 <p>conda install pyyaml</p>
 <p>conda install pwlf</p>
+<p>pip install matplotlib-map-utils</p>
 <p>conda update –all</p>
 </div></blockquote>
 <p>Once this is done, download pygmi, extract (unzip) it to a directory, and run it from its root directory with the following command:</p>

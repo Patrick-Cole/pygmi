@@ -76,28 +76,30 @@ PyGMI should still work with Python 3.10.
 
 PyGMI is developed and has been tested with the following libraries in order to function:
 
-* fiona>=1.10.1
-* geopandas>=1.1.2
+* geopandas>=1.2.0
 * h5netcdf>=1.8.1
-* matplotlib>=3.10.8
+* matplotlib>=3.11.2
 * natsort>=8.4.0
-* numba>=0.63.1
-* numexpr>=2.14.1
+* numba>=0.68.0
+* numexpr>=2.14.2
 * openpyxl>=3.1.5
-* psutil>=7.2.1
-* pyside6>=6.10.1
-* pytest>=9.0.2
-* pyvista>=0.46.5
-* pyvistaqt>=0.11.3
-* rasterio>=1.5.0
-* rioxarray>=0.21.0
-* scikit-learn>=1.8.0
+* psutil>=7.2.2
+* pyside6>=6.12.0
+* pytest>=9.1.1
+* pyvista>=0.49.1
+* pyvistaqt>=0.13.1
+* rasterio>=1.5.2
+* rioxarray>=0.23.0
+* scikit-learn>=1.9.1
 * scikit-image>=0.26.0
 * shapelysmooth>=0.2.1
-* simpeg>=0.25.0
-* beautifulsoup4>=4.14.3
+* simpeg>=0.25.2
+* beautifulsoup4>=4.15.0
 * pyyaml>=6.0.3
-* pwlf>=2.5.2
+* pwlf>=2.7.0
+* contextily>=1.7.1
+* matplotlib-map-utils>=4.1.1
+* h5py>=3.16.0
 
 PyPi - Windows
 ^^^^^^^^^^^^^^
@@ -142,11 +144,11 @@ If you get the following error: *qt.qpa.plugin: Could not load the Qt platform p
 
 Anaconda
 ^^^^^^^^
-Anaconda users are advised not to use pip since it can break PyQt5. However, one package is installed only by pip, so a Conda environment should be created.
+Anaconda users are advised not to use pip since it can break PySide6. However, one package is installed only by pip, so a Conda environment should be created.
 
 The process to install is as follows:
 
-   conda create -n pygmi python=3.13
+   conda create -n pygmi python=3.14
 
    conda activate pygmi
 
@@ -195,6 +197,8 @@ The process to install is as follows:
    conda install pyyaml
 
    conda install pwlf
+   
+   pip install matplotlib-map-utils
 
    conda update --all
 

@@ -35,4 +35,3 @@ pygmi/test/2D_INV_Lines_1000m.csv
 .env
 .vscode/launch.json
 cgs*.html
-pygmi/mt/mtpyold.zip

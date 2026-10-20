@@ -2368,7 +2368,11 @@ def get_landsat(
             dat[-1].data = dataset.read(1)
             dat[-1].data = np.ma.masked_invalid(dat[-1].data)
 
-        nval = 0
+        if dataset.nodata is not None:
+            nval = dataset.nodata
+        else:
+            nval = 0
+
         if fext in ["QA_PIXEL", "SR_QA_AEROSOL"]:
             nval = 1
         if fext in ["ST_CDIST", "ST_QA"]:
@@ -2455,7 +2459,12 @@ def get_landsat(
     if ".tar" in ifilet:
         showlog("Cleaning Extracted tar files...")
         for tfile in piter(tarnames):
-            os.remove(os.path.join(os.path.dirname(ifile), tfile))
+            try:
+                os.remove(os.path.join(os.path.dirname(ifile), tfile))
+            except PermissionError:
+                showlog(
+                    f"Could not clean up {tfile}, it is being used by another process."
+                )
     showlog("Import complete")
     return dat
 
@@ -4862,17 +4871,10 @@ def _testfn3():
     """Test routine."""
     import matplotlib.pyplot as plt
 
-    idir = r"D:\Workdata\PyGMI Test Data\Remote Sensing\Import"
+    ifile = r"D:\Workdata\PyGMI Test Data\Remote Sensing\Import\Landsat\LC081740432017101901T1-SC20180409064853.tar.gz"
+    # ifile = r"D:\Workdata\PyGMI Test Data\Remote Sensing\Import\Landsat\LT04_L1TP_171078_19880718_20170208_01_T1.tar.gz"
 
-    app = QtWidgets.QApplication(sys.argv)
-    app.setStyle(QtWidgets.QStyleFactory.create("Fusion"))
-
-    os.chdir(idir)
-    tmp1 = ImportBatch()
-    # tmp1 = ImportData()
-    tmp1.settings()
-
-    dat = tmp1.outdata["Raster"]
+    dat = get_data(ifile)
 
     for i in dat:
         plt.figure(dpi=150)
@@ -4881,37 +4883,6 @@ def _testfn3():
         plt.colorbar()
         plt.show()
         break
-
-
-def _testfn4():
-    """Test routine."""
-    idir = r"D:/DRC"
-    odir = r"D:/DRC/stack"
-
-    ifiles = glob.glob(r"D:/DRC/*.zip")
-
-    for ifile in ifiles:
-        dat = get_data(ifile)
-
-        idir = os.path.dirname(ifile)
-        adate = os.path.basename(ifile).split("_")[2]
-        ifiles = glob.glob(os.path.join(idir, "*" + adate + "*.hdf"))
-
-        dat2 = get_data(ifiles[0])
-
-        crs = dat[0].crs
-        for i in dat2:
-            i.crs = crs
-            xdim = i.transform[0]
-            ydim = i.transform[4]
-            xmin = i.transform[2]
-            ymax = i.transform[5] + 10000000
-            i.set_transform(xdim, xmin, ydim, ymax)
-
-        dat = dat + dat2
-        ofile = set_export_filename(dat, odir)
-
-        export_raster(ofile + ".tif", dat)
 
 
 if __name__ == "__main__":

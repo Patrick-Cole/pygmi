@@ -2,6 +2,96 @@
 Changelog
 =========
 
+v3.3.1.0, 19 October 2026
+--------------------------
+* Fixed a bug where a missing colour caused a crash from potential field inversion.
+* Fixed a bug when loading Affine transformation in old model files.
+* Simple raster viewer now has interpolation option.
+* Fixed an error where gridding would crash if not line column was found.
+* Fixed a bug with mosaic tool crashing with defaults unchanged.
+* Fixed a bug where a log scale would break with 0 or negative number.
+* Symmetric log is now used.
+* Maximum number of ticks can now be specified for maps
+* Maps now have options on their toolbar to allow for more flexible coordinates etc.
+* Fixed an bug where zoom was reset in analyze spectra
+* Update to graph API
+* Improved labelling of maps for overlapping labels.
+* RAPS now converts nan to 0 before calculating.
+* Fixed a bug causing a crash with iall
+* Updated analyze spectra
+* Updated hyperspectral analyze spectra
+* Fixed a bug with Geosoft raster import.
+* Add hyperspectral analysis overlay option.
+* Started adding typehints.
+* Colorbars in advanced raster display have more consistent aspect
+* Advanced raster display now has an interpolation option.
+* Updated layer stacking and mosaicing to resample data using methods other than nearest.
+* Mosaicing now has a second median type mosaic.
+* Change viewer and error ellipse plots now use the new map border.
+* Added explicit filters for satellite imports.
+* Fixed a but with nodata masking in pfmod.
+* Added new map border to tilt depth interpretation.
+* Fixed bug a bug in hyperbolic tilt angle causing nulls
+* Cluster analysis now has new map borders.
+* Vector columns can also be selected by right-clicking.
+* New maps now use compressed layout, allowing for better aligned colourbars.
+* Feature intersection density now places projection information in the vector output.
+* Dataset information now adds projection information.
+* Vector equation editor will correctly exclude non-numerical columns.
+* Graphs will pass showlog correctly.
+* Map axis fixes.
+* Improved log display for smoothing, AGC and visibility.
+* Advanced raster display now hides sunshade option when contouring.
+* Fixed a bug reading in GeoPak files.
+* Fixed a bug where degrees were not displayed on maps for small distances.
+* Updated code to conform to Ruff standards
+* Fixed a bug with new map borders and simple raster display
+* Shorted section colourbar
+* Updated ticklabel format
+* Update clustering techniques to include Davis Bouldin score
+* Crisp and Fuzzy clustering now use the VRC calculation from scikit-learn.
+* Fixed a bug initializing graphs.
+* Fixed the dark border around some images when sunshaded.
+* Updated help files
+* Float32 nodata values are correctly defined for ers files
+* Imported gravity is assigned WGS84, Geographic projection by default.
+* New borders will only plot meters if projected.
+* Scalebars will only appear if projected.
+* Fixed a bug in phase tensor maps, regarding matplotlib colormap changes.
+* In the 3D modelling interface, buttons which disappeared have been fixed.
+* Update new plot layout to tight
+* New map borders now have equal aspect.
+* Added new borders etc to maps
+* Map border mods
+* Fixed a bug exporting contours
+* Fixed a bug mosaicing ASTER images.
+* Attempts to remove spaces in a coordinates column.
+* Holes caused by shadows will no longer be masked out in ASTER data.
+* Fix bug exporting mosaic bands  separately
+* Rose plots can now have a plot with only blue.
+* Hyperspectral feature detection will sort the bands
+* Fixed a bug where the MNF calculation was unstable.
+* Added import of EMIT MIN maps
+* Added EMIT ratios
+* Fixed batch import of EMIT data
+* Fixed a bug when layer stacking with a common mask
+* Fixed a bug where some ASTER processing crashed due to a . in the file path
+* Added raster to vector boundary
+* Bugfix - batch ASTER import double counted files.
+* Update - band range can now be manually specified.
+* Update -- three new colormaps added  from colorcet library.
+* Advanced raster display now has an option to save a map to PNG
+* Updated IGRF coefficients from IGRF13.COF to IGRF14.COF
+* Various housekeeping
+* Ternary colour bar now has bigger labels
+* Updated code to use numpy reshape
+* Borehole import updated and now allows selection of fields
+* Borehole graph is much faster than before.
+* Increase feature list on analyse spectra to match those in features.py
+* Analyse spectra will no longer reset the zoom on raster data after zooming.
+* Fixed a bug where the hull was not removed for certain USGS spectra
+* Fixed incompatibility between mtpy epsg.npy file and numpy 2.4
+
 v3.3.0.0, 19 February 2026
 --------------------------
 * Added rsense tests.
