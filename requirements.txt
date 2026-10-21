@@ -24,4 +24,5 @@ pwlf>=2.7.0
 contextily>=1.7.1
 matplotlib-map-utils>=4.1.1
 h5py>=3.16.0
+chardet>=7.7.0
 
