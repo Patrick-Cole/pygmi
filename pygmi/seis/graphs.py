@@ -924,11 +924,14 @@ class PlotIso(ContextModule):
         gdf.plot(
             ax=axes,
             column="Intensity",
-            legend=True,
+            # legend=True,
             edgecolor="k",
             legend_kwds={"label": "Intensity"},
         )
 
+        cntr = axes.collections[0]
+
+        self.mmc.set_colorbar(axes, cntr)
         self.mmc.set_map_axes(axes, CRS.from_epsg(4326))
         self.mmc.draw_idle()
 
@@ -983,7 +986,7 @@ class PlotIso(ContextModule):
         cntr1 = axes.contour(xi, yi, zi, levels=uvals, colors="k")
         cntr = axes.contourf(xi, yi, zi, levels=uvals, extend="max")
 
-        fig.colorbar(cntr)
+        self.mmc.set_colorbar(axes, cntr)
         self.mmc.set_map_axes(axes, CRS.from_epsg(4326))
         self.mmc.draw_idle()
 
@@ -1773,6 +1776,6 @@ def _testfn():
 
 
 if __name__ == "__main__":
-    _testfn1()
+    # _testfn1()
     # _testfn()
-    # _testiso()
+    _testiso()

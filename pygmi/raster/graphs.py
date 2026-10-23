@@ -38,7 +38,6 @@ menu. The following are supported:
 import numpy as np
 import pyvista as pv
 from matplotlib import colors
-from matplotlib.backends.backend_qt import NavigationToolbar2QT
 from numpy.typing import NDArray
 from PySide6 import QtCore, QtWidgets
 from pyvistaqt import QtInteractor
@@ -73,7 +72,7 @@ class PlotCCoef(ContextModule):
         hbl = QtWidgets.QHBoxLayout()
 
         self.mmc = CanvasModule(self)
-        mpl_toolbar = NavigationToolbar2QT(self.mmc, self.parent)
+        mpl_toolbar = CustomToolbar(self.mmc, self)
         self.buttonbox.buttonbox.hide()
         self.buttonbox.htmlfile = "raster.cm.showcorr"
 
@@ -138,6 +137,7 @@ class PlotCCoef(ContextModule):
         axes = fig.add_subplot(111)
 
         rdata = axes.pcolormesh(dmat, cmap=cmap)
+        rdata.set(label="Correlation Coefficient Display")
         axes.axis("scaled")
         axes.set_title("Correlation Coefficients")
         for i in range(len(data1)):
@@ -403,31 +403,15 @@ class PlotRaster(ContextModule):
             )
             rdata.set_clim_std(2.5)
 
+        rdata.set(label="Raster Display")
+
         location = "right"
         if not data1.isrgb:
-            pad = 0.1
-            caspect = 30
-
             location = "right"
-            shrink = 1.0
-            anchor = (0.0, 0.5)
-
             if is_section is True:
                 location = "bottom"
-                shrink = 0.8
-                pad = 0.15
-                anchor = (0.5, 1.0)
-                caspect = 40
 
-            cbar = fig.colorbar(
-                rdata,
-                format=frm,
-                location=location,
-                aspect=caspect,
-                shrink=shrink,
-                anchor=anchor,
-                pad=pad,
-            )
+            cbar = self.mmc.set_colorbar(axes, rdata, location)
             cbar.set_label(data1.units)
 
         if is_section is True:
@@ -613,7 +597,7 @@ class PlotScatter(ContextModule):
         vbl = QtWidgets.QVBoxLayout(self)  # self is where layout is assigned
         hbl = QtWidgets.QHBoxLayout()
         self.mmc = CanvasModule(self)
-        mpl_toolbar = NavigationToolbar2QT(self.mmc, self.parent)
+        mpl_toolbar = CustomToolbar(self.mmc, self)
 
         self.buttonbox.buttonbox.hide()
         self.buttonbox.htmlfile = "raster.cm.showhexbin"
@@ -717,6 +701,7 @@ class PlotScatter(ContextModule):
         ymax = y.max()
 
         hbin = axes.hexbin(x, y, bins="log", cmap="inferno")
+        hbin.set(label="Hexbin Display")
         axes.axis([xmin, xmax, ymin, ymax])
         axes.set_title("Hexbin Plot")
         cbar = fig.colorbar(hbin, format=frm)
@@ -754,7 +739,7 @@ class PlotHist(ContextModule):
         vbl = QtWidgets.QVBoxLayout(self)  # self is where layout is assigned
         hbl = QtWidgets.QHBoxLayout()
         self.mmc = CanvasModule(self)
-        mpl_toolbar = NavigationToolbar2QT(self.mmc, self.parent)
+        mpl_toolbar = CustomToolbar(self.mmc, self)
 
         self.buttonbox.buttonbox.hide()
         self.buttonbox.htmlfile = "raster.cm.showhist"
@@ -829,7 +814,12 @@ class PlotHist(ContextModule):
 
         dattmp = data1.data[data1.data.mask == 0].flatten()
         axes.hist(
-            dattmp, bins="sqrt", cumulative=iscum, histtype="stepfilled", edgecolor="k"
+            dattmp,
+            bins="sqrt",
+            cumulative=iscum,
+            histtype="stepfilled",
+            edgecolor="k",
+            label="Histogram Display",
         )
         axes.set_title(data1.dataid)
         axes.set_xlabel(data1.dataid)
@@ -919,9 +909,8 @@ def _testfn():
 
     ifile = r"D:\workdata\PyGMI Test Data\Raster\testdata.tif"
     # ifile = r"D:\workdata\PyGMI Test Data\Raster\landscape.tif"
-    # ifile = r"D:\workdata\PyGMI Test Data\Magnetics\Matched Filtering\mod400.tif"
     # ifile = r"D:\UBC_Files\section.tif"
-    # ifile = r"D:\Workdata\PyGMI Test Data\Raster\GeoTIFF\Geoscience_000001.tif"
+    # ifile = r"D:\workdata\PyGMI Test Data\Raster\small.tif"
 
     app = QtWidgets.QApplication(sys.argv)
     app.setStyle(QtWidgets.QStyleFactory.create("Fusion"))

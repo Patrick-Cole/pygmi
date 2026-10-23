@@ -61,6 +61,7 @@ class CustomToolbar(NavigationToolbar2QT):
         "Forward",
         "Pan",
         "Zoom",
+        "Customize",
         "Save",
     ]
 
@@ -80,7 +81,7 @@ class CustomToolbar(NavigationToolbar2QT):
         self.setToolButtonStyle(QtCore.Qt.ToolButtonStyle.ToolButtonIconOnly)
         self.dlg = MapSettings(self)
 
-    def add_map_btn(self, update: Callable, crs: CRS):
+    def add_map_btn(self, update: Callable, crs: CRS | None):
         """
         Add map button.
 
@@ -113,11 +114,30 @@ class CustomToolbar(NavigationToolbar2QT):
             self.addAction(self.custom_action)
 
         self.cupdate = update
-        self.crs = CRS.from_wkt(crs.to_wkt())
+
+        if crs is None:
+            crs = CRS.from_string(
+                'LOCAL_CS["Arbitrary",UNIT["metre",1,'
+                'AUTHORITY["EPSG","9001"]],'
+                'AXIS["Easting",EAST],'
+                'AXIS["Northing",NORTH]]'
+            )
+        else:
+            crs = CRS.from_wkt(crs.to_wkt())
+
+        self.crs = crs
 
     def change_map(self):
         """Refresh plot."""
         self.dlg.crs = self.crs
+
+        if self.canvas.has_colorbar:
+            self.dlg.dsb_cbar_pad.setEnabled(True)
+            self.dlg.sb_cbar_aspect.setEnabled(True)
+        else:
+            self.dlg.dsb_cbar_pad.setEnabled(False)
+            self.dlg.sb_cbar_aspect.setEnabled(False)
+
         success = self.dlg.settings()
 
         if not success:
@@ -127,6 +147,12 @@ class CustomToolbar(NavigationToolbar2QT):
         self.canvas.show_scalebar = self.dlg.cb_scalebar.isChecked()
         self.canvas.show_degrees = self.dlg.cb_degrees.isChecked()
         self.canvas.show_metres = self.dlg.cb_metres.isChecked()
+        self.canvas.xtop = self.dlg.cb_xtop.isChecked()
+        self.canvas.xbottom = self.dlg.cb_xbottom.isChecked()
+        self.canvas.yleft = self.dlg.cb_yleft.isChecked()
+        self.canvas.yright = self.dlg.cb_yright.isChecked()
+        self.canvas.cbar_pad = self.dlg.dsb_cbar_pad.value()
+        self.canvas.cbar_aspect = self.dlg.sb_cbar_aspect.value()
 
         self.canvas.xticks = 10
         self.canvas.yticks = 10
@@ -159,6 +185,7 @@ class CanvasModule(FigureCanvasQTAgg):
         self.resize_timer.setSingleShot(True)
         self.resize_timer.timeout.connect(self._delayed_resize)
         self.custom_resize = False
+        self.has_colorbar = False
 
         self._pending_size = None
         self.show_north_arrow = False
@@ -167,6 +194,12 @@ class CanvasModule(FigureCanvasQTAgg):
         self.show_metres = True
         self.xticks = 10
         self.yticks = 10
+        self.xtop = True
+        self.xbottom = True
+        self.yleft = True
+        self.yright = True
+        self.cbar_pad = 0.1
+        self.cbar_aspect = 20
 
     def resizeEvent(
         self,
@@ -211,14 +244,61 @@ class CanvasModule(FigureCanvasQTAgg):
         crs
             PyProj crs of data.
         """
-        set_axes(
-            axes, crs, self.show_degrees, self.show_metres, self.xticks, self.yticks
-        )
-
         if self.show_north_arrow is True:
             set_north(axes, crs, self.showlog)
         if self.show_scalebar is True:
             set_scale(axes, crs, self.showlog)
+
+        set_axes(
+            axes,
+            crs,
+            self.show_degrees,
+            self.show_metres,
+            self.xticks,
+            self.yticks,
+            self.xtop,
+            self.xbottom,
+            self.yleft,
+            self.yright,
+        )
+
+    def set_colorbar(
+        self, axes: Axes, mappable, location="right", boundaries=None, label=None
+    ):
+        """
+        Set the color bar.
+
+        Parameters
+        ----------
+        axes
+            Primary Matplotlib axes.
+        """
+        self.has_colorbar = True
+        fig = axes.get_figure()
+        cbar = fig.colorbar(
+            mappable,
+            format=frm,
+            location=location,
+            aspect=self.cbar_aspect,
+            pad=self.cbar_pad,
+            boundaries=boundaries,
+            label=label,
+        )
+
+        return cbar
+
+    def set_discrete_colorbar(
+        self,
+        axes: Axes,
+        mappable,
+        cdat: np.ma.MaskedArray | NDArray,
+        lbls: list[str] | None = None,
+    ):
+        """Set discrete colour bar."""
+        self.has_colorbar = True
+        cbar = discrete_colorbar(axes, mappable, cdat, lbls)
+
+        return cbar
 
 
 class MapSettings(BasicModule):
@@ -255,6 +335,12 @@ class MapSettings(BasicModule):
         self.cb_yticks = QtWidgets.QCheckBox("Maximum number of y-ticks:")
         self.sb_xticks = QtWidgets.QSpinBox()
         self.sb_yticks = QtWidgets.QSpinBox()
+        self.cb_xtop = QtWidgets.QCheckBox("Display top x-axis")
+        self.cb_xbottom = QtWidgets.QCheckBox("Display bottom x-axis")
+        self.cb_yleft = QtWidgets.QCheckBox("Display left y-axis")
+        self.cb_yright = QtWidgets.QCheckBox("Display right y-axis")
+        self.dsb_cbar_pad = QtWidgets.QDoubleSpinBox()
+        self.sb_cbar_aspect = QtWidgets.QSpinBox()
 
         self.setupui()
 
@@ -262,10 +348,34 @@ class MapSettings(BasicModule):
         """Set up UI."""
         gl_main = QtWidgets.QGridLayout(self)
 
+        gbox_cbar = QtWidgets.QGroupBox("Colour Bar Properties")
+        gl_cbar = QtWidgets.QGridLayout(gbox_cbar)
+
+        gbox_axes = QtWidgets.QGroupBox("Axes Properties")
+        gl_axes = QtWidgets.QGridLayout(gbox_axes)
+
+        gbox_other = QtWidgets.QGroupBox("Other Properties")
+        gl_other = QtWidgets.QGridLayout(gbox_other)
+
+        line = QtWidgets.QFrame()
+        line.setFrameShape(QtWidgets.QFrame.Shape.HLine)
+        line.setFrameShadow(QtWidgets.QFrame.Shadow.Sunken)
+
+        lbl_cbar_pad = QtWidgets.QLabel("Padding:")
+        lbl_cbar_aspect = QtWidgets.QLabel("Aspect:")
+
         self.sb_xticks.setMinimum(2)
         self.sb_xticks.setValue(3)
         self.sb_yticks.setMinimum(2)
         self.sb_yticks.setValue(3)
+
+        self.dsb_cbar_pad.setValue(0.1)
+        self.dsb_cbar_pad.setSingleStep(0.1)
+        self.dsb_cbar_pad.setMaximum(1.0)
+        self.sb_cbar_aspect.setValue(20)
+        self.sb_cbar_aspect.setMinimum(1)
+        self.dsb_cbar_pad.setEnabled(False)
+        self.sb_cbar_aspect.setEnabled(False)
 
         # self.buttonbox.htmlfile = "raster.dm.layerstack"
         self.buttonbox.helpdocs.hide()
@@ -274,18 +384,36 @@ class MapSettings(BasicModule):
         self.cb_scalebar.setChecked(False)
         self.cb_degrees.setChecked(True)
         self.cb_metres.setChecked(True)
+        self.cb_xbottom.setChecked(True)
+        self.cb_xtop.setChecked(True)
+        self.cb_yleft.setChecked(True)
+        self.cb_yright.setChecked(True)
 
         self.setWindowTitle("Map Properties")
 
-        gl_main.addWidget(self.cb_northarrow, 1, 0, 1, 2)
-        gl_main.addWidget(self.cb_scalebar, 2, 0, 1, 2)
-        gl_main.addWidget(self.cb_degrees, 3, 0, 1, 2)
-        gl_main.addWidget(self.cb_metres, 4, 0, 1, 2)
-        gl_main.addWidget(self.cb_xticks, 5, 0, 1, 1)
-        gl_main.addWidget(self.sb_xticks, 5, 1, 1, 1)
-        gl_main.addWidget(self.cb_yticks, 6, 0, 1, 1)
-        gl_main.addWidget(self.sb_yticks, 6, 1, 1, 1)
-        gl_main.addWidget(self.buttonbox, 7, 0, 1, 2)
+        gl_cbar.addWidget(lbl_cbar_pad, 1, 0, 1, 1)
+        gl_cbar.addWidget(self.dsb_cbar_pad, 1, 1, 1, 1)
+        gl_cbar.addWidget(lbl_cbar_aspect, 2, 0, 1, 1)
+        gl_cbar.addWidget(self.sb_cbar_aspect, 2, 1, 1, 1)
+
+        gl_axes.addWidget(self.cb_degrees, 1, 0, 1, 2)
+        gl_axes.addWidget(self.cb_metres, 2, 0, 1, 2)
+        gl_axes.addWidget(self.cb_xtop, 3, 0, 1, 2)
+        gl_axes.addWidget(self.cb_xbottom, 4, 0, 1, 2)
+        gl_axes.addWidget(self.cb_yleft, 5, 0, 1, 2)
+        gl_axes.addWidget(self.cb_yright, 6, 0, 1, 2)
+        gl_axes.addWidget(self.cb_xticks, 7, 0, 1, 1)
+        gl_axes.addWidget(self.sb_xticks, 7, 1, 1, 1)
+        gl_axes.addWidget(self.cb_yticks, 8, 0, 1, 1)
+        gl_axes.addWidget(self.sb_yticks, 8, 1, 1, 1)
+
+        gl_other.addWidget(self.cb_northarrow, 1, 0, 1, 2)
+        gl_other.addWidget(self.cb_scalebar, 2, 0, 1, 2)
+
+        gl_main.addWidget(gbox_axes, 13, 0, 2, 1)
+        gl_main.addWidget(gbox_cbar, 13, 1, 1, 1)
+        gl_main.addWidget(gbox_other, 14, 1, 1, 1)
+        gl_main.addWidget(self.buttonbox, 15, 0, 1, 2)
 
     def settings(
         self,
@@ -318,6 +446,7 @@ class MapSettings(BasicModule):
             self.cb_metres.setChecked(True)
             self.cb_metres.setDisabled(True)
             self.cb_scalebar.setDisabled(False)
+
         tmp = self.exec()
 
         return tmp == 1
@@ -396,7 +525,6 @@ def discrete_colorbar(
     if len(vals) < 2:
         print("Too few discrete values")
         return
-    # bnds = (vals - 0.5).tolist() + [vals.max() + .5]
 
     if hasattr(csp.norm, "boundaries"):
         bnds = csp.norm.boundaries
@@ -411,6 +539,8 @@ def discrete_colorbar(
         cbar.ax.set_yticklabels(lbls)
     else:
         cbar.ax.set_yticklabels(vals)
+
+    return cbar
 
 
 def get_neat_intervals(
@@ -500,6 +630,10 @@ def set_axes(
     showmetres: bool = True,
     xticks: int = 10,
     yticks: int = 10,
+    xtop: bool = True,
+    xbottom: bool = True,
+    yleft: bool = True,
+    yright: bool = True,
 ):
     """
     Set the axes.
@@ -536,9 +670,6 @@ def set_axes(
         showmetres = False
         showdegrees = True
 
-    if showmetres is False and showdegrees is False:
-        showmetres = True
-
     ax.set_aspect("equal")
     ax.yaxis.tick_right()
     ax.tick_params(axis="y", labelrotation=90)
@@ -547,9 +678,24 @@ def set_axes(
     ax.set_ylabel("")
     ax.xaxis.set_major_formatter(frm)
     ax.yaxis.set_major_formatter(frm)
+    ax.set_label("Map")
 
     xmin, xmax = ax.get_xlim()
     ymin, ymax = ax.get_ylim()
+
+    ax.tick_params(
+        right=yright,
+        labelright=yright,  # Enable right ticks and labels
+        bottom=xbottom,
+        labelbottom=xbottom,  # Ensure bottom ticks and labels stay on
+    )
+    if showmetres is False and showdegrees is False:
+        ax.tick_params(
+            right=False,
+            labelright=False,  # Enable right ticks and labels
+            bottom=False,
+            labelbottom=False,  # Ensure bottom ticks and labels stay on
+        )
 
     if showmetres is True:
         ax.tick_params(axis="both", labelsize=8, labelcolor="#0070ff")
@@ -558,14 +704,10 @@ def set_axes(
 
     if showmetres is True and showdegrees is False:
         ax.tick_params(
-            top=True,
-            labeltop=True,  # Enable top ticks and labels
-            right=True,
-            labelright=True,  # Enable right ticks and labels
-            bottom=True,
-            labelbottom=True,  # Ensure bottom ticks and labels stay on
-            left=True,
-            labelleft=True,  # Ensure left ticks and labels stay on
+            top=xtop,
+            labeltop=xtop,  # Enable top ticks and labels
+            left=yleft,
+            labelleft=yleft,  # Ensure left ticks and labels stay on
         )
 
     if showdegrees is True and showmetres is False:
@@ -589,14 +731,16 @@ def set_axes(
     # x-axis
     secax = ax.secondary_xaxis("top")
     secax.set_xlim(xmin, xmax)
-    secax.tick_params(axis="x", labelsize=9)
+    secax.tick_params(axis="x", labelsize=9, top=xtop, labeltop=xtop)
 
     xlabels_dd(secax, crs, ymax, num=xticks)
 
     # y-axis
     secax1 = ax.secondary_yaxis("left")
     secax1.set_ylim(ymin, ymax)
-    secax1.tick_params(axis="y", labelrotation=90, labelsize=9)
+    secax1.tick_params(
+        axis="y", labelrotation=90, labelsize=9, left=yleft, labelleft=yleft
+    )
 
     ylabels_dd(secax1, crs, xmin, num=yticks)
 

@@ -233,7 +233,7 @@ class TiltDepth(BasicModule):
         if "Vector" in self.outdata:
             gdf = self.outdata["Vector"][0]
             ims = axes.scatter(gdf["x"], gdf["y"], c=gdf["depth"], cmap=cmap)
-            self.mmc.figure.colorbar(ims, format=frm, label="Depth (m)")
+            self.mmc.set_colorbar(axes, ims, label="Depth (m)")
 
         self.mmc.set_map_axes(axes, zout.crs)
 

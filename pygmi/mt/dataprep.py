@@ -33,13 +33,11 @@ from contextlib import redirect_stdout
 
 import numpy as np
 from matplotlib.backend_bases import MouseEvent, PickEvent, ResizeEvent
-from matplotlib.backends.backend_qt import NavigationToolbar2QT
-from matplotlib.backends.backend_qtagg import FigureCanvasQTAgg
-from matplotlib.figure import Figure
 from matplotlib.patches import Rectangle
 from numpy.typing import NDArray
 from PySide6 import QtCore, QtGui, QtWidgets
 
+from pygmi.maps import CanvasModule, CustomToolbar
 from pygmi.misc import BasicModule, ContextModule
 from pygmi.mt.mtpyold.core.mt import MT
 from pygmi.mt.mtpyold.core.z import Tipper, Z
@@ -253,137 +251,6 @@ class Metadata(ContextModule):
         return True
 
 
-class MyMplCanvas(FigureCanvasQTAgg):
-    """Matplotlib canvas widget for the actual plot."""
-
-    def __init__(self):
-        fig = Figure(layout="tight")
-        super().__init__(fig)
-
-    def update_line(
-        self,
-        data: dict,
-        ival: str,
-        itype: str,
-    ):
-        """
-        Update the plot from point data.
-
-        Parameters
-        ----------
-        data
-            Dictionary of EDI data.
-        ival
-            EDI data dictionary key.
-        itype
-            Graph type.
-
-        """
-        data1 = data[ival]
-
-        self.figure.clear()
-
-        ax1 = self.figure.add_subplot(211, label="Profile")
-
-        ax1.set_title(ival)
-        ax1.grid(True, "both")
-
-        x = 1 / data1.Z.freq
-
-        if itype == "xy, yx":
-            res1 = data1.Z.resistivity[:, 0, 1]
-            res1_err = data1.Z.resistivity_err[:, 0, 1]
-            res2 = data1.Z.resistivity[:, 1, 0]
-            res2_err = data1.Z.resistivity_err[:, 1, 0]
-            pha1 = data1.Z.phase[:, 0, 1]
-            pha1_err = data1.Z.phase_err[:, 0, 1]
-            pha2 = data1.Z.phase[:, 1, 0]
-            pha2_err = data1.Z.phase_err[:, 1, 0]
-            label1 = r"$\rho_{xy}$"
-            label2 = r"$\rho_{yx}$"
-            label3 = r"$\varphi_{xy}$"
-            label4 = r"$\varphi_{yx}$"
-
-        else:
-            res1 = data1.Z.resistivity[:, 0, 0]
-            res1_err = data1.Z.resistivity_err[:, 0, 1]
-            res2 = data1.Z.resistivity[:, 1, 1]
-            res2_err = data1.Z.resistivity_err[:, 1, 0]
-            pha1 = data1.Z.phase[:, 0, 0]
-            pha1_err = data1.Z.phase_err[:, 0, 1]
-            pha2 = data1.Z.phase[:, 1, 1]
-            pha2_err = data1.Z.phase_err[:, 1, 0]
-            label1 = r"$\rho_{xx}$"
-            label2 = r"$\rho_{yy}$"
-            label3 = r"$\varphi_{xx}$"
-            label4 = r"$\varphi_{yy}$"
-
-        ax1.errorbar(
-            x,
-            res1,
-            yerr=res1_err,
-            label=label1,
-            ls=" ",
-            marker=".",
-            mfc="b",
-            mec="b",
-            ecolor="b",
-        )
-        ax1.errorbar(
-            x,
-            res2,
-            yerr=res2_err,
-            label=label2,
-            ls=" ",
-            marker=".",
-            mfc="r",
-            mec="r",
-            ecolor="r",
-        )
-
-        ax1.set_xscale("log")
-        ax1.set_yscale("log")
-        ax1.legend(loc="upper left")
-        ax1.set_xlabel("Period (s)")
-        ax1.set_ylabel(r"App. Res. ($\Omega.m$)")
-
-        ax2 = self.figure.add_subplot(212, sharex=ax1)
-        ax2.grid(True, "both")
-
-        ax2.errorbar(
-            x,
-            pha1,
-            yerr=pha1_err,
-            label=label3,
-            ls=" ",
-            marker=".",
-            mfc="b",
-            mec="b",
-            ecolor="b",
-        )
-        ax2.errorbar(
-            x,
-            pha2,
-            yerr=pha2_err,
-            label=label4,
-            ls=" ",
-            marker=".",
-            mfc="r",
-            mec="r",
-            ecolor="r",
-        )
-
-        ax2.set_ylim(-180.0, 180.0)
-
-        ax2.set_xscale("log")
-        ax2.set_yscale("linear")
-        ax2.legend(loc="upper left")
-        ax2.set_xlabel("Period (s)")
-        ax2.set_ylabel(r"Phase (Degrees)")
-
-        self.figure.canvas.draw()
-
-
 class StaticShiftEDI(BasicModule):
     """
     Static shift EDI data.
@@ -409,8 +276,8 @@ class StaticShiftEDI(BasicModule):
         hbl = QtWidgets.QHBoxLayout()
         hbl_2 = QtWidgets.QHBoxLayout()
         hbl_3 = QtWidgets.QHBoxLayout()
-        self.mmc = MyMplCanvas()
-        mpl_toolbar = NavigationToolbar2QT(self.mmc, self.parent)
+        self.mmc = CanvasModule()
+        mpl_toolbar = CustomToolbar(self.mmc, self)
 
         self.cmb_1 = QtWidgets.QComboBox()
         self.cmb_2 = QtWidgets.QComboBox()
@@ -482,6 +349,12 @@ class StaticShiftEDI(BasicModule):
 
         self.change_band()
 
+    def change_band(self):
+        """Combo to change band."""
+        i = self.cmb_1.currentText()
+        i2 = self.cmb_2.currentText()
+        self.update_line(self.data, i, i2)
+
     def reset_data(self):
         """Reset data."""
         i = self.cmb_1.currentText()
@@ -493,11 +366,128 @@ class StaticShiftEDI(BasicModule):
 
         self.change_band()
 
-    def change_band(self):
-        """Combo to change band."""
-        i = self.cmb_1.currentText()
-        i2 = self.cmb_2.currentText()
-        self.mmc.update_line(self.data, i, i2)
+    def update_line(
+        self,
+        data: dict,
+        ival: str,
+        itype: str,
+    ):
+        """
+        Update the plot from point data.
+
+        Parameters
+        ----------
+        data
+            Dictionary of EDI data.
+        ival
+            EDI data dictionary key.
+        itype
+            Graph type.
+
+        """
+        data1 = data[ival]
+
+        self.mmc.figure.clear()
+
+        ax1 = self.mmc.figure.add_subplot(211, label="Profile")
+
+        ax1.set_title(ival)
+        ax1.grid(True, "both")
+
+        x = 1 / data1.Z.freq
+
+        if itype == "xy, yx":
+            res1 = data1.Z.resistivity[:, 0, 1]
+            res1_err = data1.Z.resistivity_err[:, 0, 1]
+            res2 = data1.Z.resistivity[:, 1, 0]
+            res2_err = data1.Z.resistivity_err[:, 1, 0]
+            pha1 = data1.Z.phase[:, 0, 1]
+            pha1_err = data1.Z.phase_err[:, 0, 1]
+            pha2 = data1.Z.phase[:, 1, 0]
+            pha2_err = data1.Z.phase_err[:, 1, 0]
+            label1 = r"$\rho_{xy}$"
+            label2 = r"$\rho_{yx}$"
+            label3 = r"$\varphi_{xy}$"
+            label4 = r"$\varphi_{yx}$"
+
+        else:
+            res1 = data1.Z.resistivity[:, 0, 0]
+            res1_err = data1.Z.resistivity_err[:, 0, 1]
+            res2 = data1.Z.resistivity[:, 1, 1]
+            res2_err = data1.Z.resistivity_err[:, 1, 0]
+            pha1 = data1.Z.phase[:, 0, 0]
+            pha1_err = data1.Z.phase_err[:, 0, 1]
+            pha2 = data1.Z.phase[:, 1, 1]
+            pha2_err = data1.Z.phase_err[:, 1, 0]
+            label1 = r"$\rho_{xx}$"
+            label2 = r"$\rho_{yy}$"
+            label3 = r"$\varphi_{xx}$"
+            label4 = r"$\varphi_{yy}$"
+
+        ax1.errorbar(
+            x,
+            res1,
+            yerr=res1_err,
+            label=label1,
+            ls=" ",
+            marker=".",
+            mfc="b",
+            mec="b",
+            ecolor="b",
+        )
+        ax1.errorbar(
+            x,
+            res2,
+            yerr=res2_err,
+            label=label2,
+            ls=" ",
+            marker=".",
+            mfc="r",
+            mec="r",
+            ecolor="r",
+        )
+
+        ax1.set_xscale("log")
+        ax1.set_yscale("log")
+        ax1.legend(loc="upper left")
+        ax1.set_xlabel("Period (s)")
+        ax1.set_ylabel(r"App. Res. ($\Omega.m$)")
+
+        ax2 = self.mmc.figure.add_subplot(212, sharex=ax1)
+        ax2.grid(True, "both")
+
+        ax2.errorbar(
+            x,
+            pha1,
+            yerr=pha1_err,
+            label=label3,
+            ls=" ",
+            marker=".",
+            mfc="b",
+            mec="b",
+            ecolor="b",
+        )
+        ax2.errorbar(
+            x,
+            pha2,
+            yerr=pha2_err,
+            label=label4,
+            ls=" ",
+            marker=".",
+            mfc="r",
+            mec="r",
+            ecolor="r",
+        )
+
+        ax2.set_ylim(-180.0, 180.0)
+
+        ax2.set_xscale("log")
+        ax2.set_yscale("linear")
+        ax2.legend(loc="upper left")
+        ax2.set_xlabel("Period (s)")
+        ax2.set_ylabel(r"Phase (Degrees)")
+
+        self.mmc.draw_idle()
 
     def settings(
         self,
@@ -570,8 +560,8 @@ class RotateEDI(BasicModule):
         vbl = QtWidgets.QVBoxLayout(self)
         hbl = QtWidgets.QHBoxLayout()
         hbl_2 = QtWidgets.QHBoxLayout()
-        self.mmc = MyMplCanvas()
-        mpl_toolbar = NavigationToolbar2QT(self.mmc, self.parent)
+        self.mmc = CanvasModule()
+        mpl_toolbar = CustomToolbar(self.mmc, self)
 
         self.cmb_1 = QtWidgets.QComboBox()
         self.cmb_2 = QtWidgets.QComboBox()
@@ -636,6 +626,12 @@ class RotateEDI(BasicModule):
 
         self.change_band()
 
+    def change_band(self):
+        """Combo to change band."""
+        i = self.cmb_1.currentText()
+        i2 = self.cmb_2.currentText()
+        self.update_line(self.data, i, i2)
+
     def reset_data(self):
         """Reset data."""
         i = self.cmb_1.currentText()
@@ -649,11 +645,128 @@ class RotateEDI(BasicModule):
 
         self.change_band()
 
-    def change_band(self):
-        """Combo to change band."""
-        i = self.cmb_1.currentText()
-        i2 = self.cmb_2.currentText()
-        self.mmc.update_line(self.data, i, i2)
+    def update_line(
+        self,
+        data: dict,
+        ival: str,
+        itype: str,
+    ):
+        """
+        Update the plot from point data.
+
+        Parameters
+        ----------
+        data
+            Dictionary of EDI data.
+        ival
+            EDI data dictionary key.
+        itype
+            Graph type.
+
+        """
+        data1 = data[ival]
+
+        self.mmc.figure.clear()
+
+        ax1 = self.mmc.figure.add_subplot(211, label="Profile")
+
+        ax1.set_title(ival)
+        ax1.grid(True, "both")
+
+        x = 1 / data1.Z.freq
+
+        if itype == "xy, yx":
+            res1 = data1.Z.resistivity[:, 0, 1]
+            res1_err = data1.Z.resistivity_err[:, 0, 1]
+            res2 = data1.Z.resistivity[:, 1, 0]
+            res2_err = data1.Z.resistivity_err[:, 1, 0]
+            pha1 = data1.Z.phase[:, 0, 1]
+            pha1_err = data1.Z.phase_err[:, 0, 1]
+            pha2 = data1.Z.phase[:, 1, 0]
+            pha2_err = data1.Z.phase_err[:, 1, 0]
+            label1 = r"$\rho_{xy}$"
+            label2 = r"$\rho_{yx}$"
+            label3 = r"$\varphi_{xy}$"
+            label4 = r"$\varphi_{yx}$"
+
+        else:
+            res1 = data1.Z.resistivity[:, 0, 0]
+            res1_err = data1.Z.resistivity_err[:, 0, 1]
+            res2 = data1.Z.resistivity[:, 1, 1]
+            res2_err = data1.Z.resistivity_err[:, 1, 0]
+            pha1 = data1.Z.phase[:, 0, 0]
+            pha1_err = data1.Z.phase_err[:, 0, 1]
+            pha2 = data1.Z.phase[:, 1, 1]
+            pha2_err = data1.Z.phase_err[:, 1, 0]
+            label1 = r"$\rho_{xx}$"
+            label2 = r"$\rho_{yy}$"
+            label3 = r"$\varphi_{xx}$"
+            label4 = r"$\varphi_{yy}$"
+
+        ax1.errorbar(
+            x,
+            res1,
+            yerr=res1_err,
+            label=label1,
+            ls=" ",
+            marker=".",
+            mfc="b",
+            mec="b",
+            ecolor="b",
+        )
+        ax1.errorbar(
+            x,
+            res2,
+            yerr=res2_err,
+            label=label2,
+            ls=" ",
+            marker=".",
+            mfc="r",
+            mec="r",
+            ecolor="r",
+        )
+
+        ax1.set_xscale("log")
+        ax1.set_yscale("log")
+        ax1.legend(loc="upper left")
+        ax1.set_xlabel("Period (s)")
+        ax1.set_ylabel(r"App. Res. ($\Omega.m$)")
+
+        ax2 = self.mmc.figure.add_subplot(212, sharex=ax1)
+        ax2.grid(True, "both")
+
+        ax2.errorbar(
+            x,
+            pha1,
+            yerr=pha1_err,
+            label=label3,
+            ls=" ",
+            marker=".",
+            mfc="b",
+            mec="b",
+            ecolor="b",
+        )
+        ax2.errorbar(
+            x,
+            pha2,
+            yerr=pha2_err,
+            label=label4,
+            ls=" ",
+            marker=".",
+            mfc="r",
+            mec="r",
+            ecolor="r",
+        )
+
+        ax2.set_ylim(-180.0, 180.0)
+
+        ax2.set_xscale("log")
+        ax2.set_yscale("linear")
+        ax2.legend(loc="upper left")
+        ax2.set_xlabel("Period (s)")
+        ax2.set_ylabel(r"Phase (Degrees)")
+
+        self.mmc.draw_idle()
 
     def settings(
         self,
@@ -705,17 +818,63 @@ class RotateEDI(BasicModule):
         self.saveobj(self.cb_applyall)
 
 
-class MyMplCanvasPick(FigureCanvasQTAgg):
+class EditEDI(BasicModule):
     """
-    Matplotlib canvas widget for the actual plot.
+    Edit EDI Class.
 
-    This routine will also allow the picking and movement of nodes of data.
+    Parameters
+    ----------
+    parent
+        Reference to the parent routine. The default is None.
+
     """
 
-    def __init__(self):
-        fig = Figure(layout="tight")
+    def __init__(
+        self,
+        parent=None,
+    ):
+        super().__init__(parent)
+        self.data = None
 
-        self.axes = fig.add_subplot(111)
+        self.setWindowTitle("Mask and Interpolate")
+        self.buttonbox.htmlfile = "mt.dm.mask"
+
+        vbl = QtWidgets.QVBoxLayout(self)
+        hbl = QtWidgets.QHBoxLayout()
+        hbl_2 = QtWidgets.QHBoxLayout()
+        self.mmc = CanvasModule()
+        mpl_toolbar = CustomToolbar(self.mmc, self)
+
+        self.cmb_1 = QtWidgets.QComboBox()
+        self.cmb_2 = QtWidgets.QComboBox()
+        self.cmb_2.addItems(["xy, yx", "xx, yy"])
+        self.cmb_2.setCurrentIndex(0)
+
+        lbl_1 = QtWidgets.QLabel("Station Name:")
+        lbl_2 = QtWidgets.QLabel("Graph Type:")
+        pb_apply = QtWidgets.QPushButton("Mask and Interpolate")
+        pb_reset = QtWidgets.QPushButton("Reset data")
+
+        hbl.addWidget(lbl_1, 0, QtCore.Qt.AlignmentFlag.AlignRight)
+        hbl.addWidget(self.cmb_1)
+        hbl.addWidget(lbl_2, 0, QtCore.Qt.AlignmentFlag.AlignRight)
+        hbl.addWidget(self.cmb_2)
+
+        hbl_2.addWidget(pb_reset)
+        hbl_2.addWidget(pb_apply)
+
+        vbl.addWidget(self.mmc)
+        vbl.addWidget(mpl_toolbar)
+        vbl.addLayout(hbl)
+        vbl.addLayout(hbl_2)
+        vbl.addWidget(self.buttonbox)
+
+        pb_apply.clicked.connect(self.apply)
+        pb_reset.clicked.connect(self.reset_data)
+        self.cmb_2.currentIndexChanged.connect(self.change_band)
+        self.cmb_1.currentIndexChanged.connect(self.change_band)
+
+        self.axes = None
         self.line = None
         self.ind = None
         self.background = None
@@ -726,17 +885,62 @@ class MyMplCanvasPick(FigureCanvasQTAgg):
         self.axes2 = None
         self.line2 = None
 
-        super().__init__(fig)
-
-        self.figure.canvas.mpl_connect("pick_event", self.onpick)
-        self.figure.canvas.mpl_connect("button_press_event", self.button_press_callback)
-        self.figure.canvas.mpl_connect(
+        self.mmc.figure.canvas.mpl_connect("pick_event", self.onpick)
+        self.mmc.figure.canvas.mpl_connect(
+            "button_press_event", self.button_press_callback
+        )
+        self.mmc.figure.canvas.mpl_connect(
             "button_release_event", self.button_release_callback
         )
-        self.figure.canvas.mpl_connect(
+        self.mmc.figure.canvas.mpl_connect(
             "motion_notify_event", self.motion_notify_callback
         )
-        self.figure.canvas.mpl_connect("resize_event", self.revent)
+        self.mmc.figure.canvas.mpl_connect("resize_event", self.revent)
+
+    def acceptall(self):
+        """
+        Accept option.
+
+        Updates self.outdata, which is used as input to other modules.
+
+        """
+        self.outdata["MT - EDI"] = self.data
+
+    def apply(self):
+        """Apply edited data."""
+        if self.maskrange is None:
+            return
+
+        i = self.cmb_1.currentText()
+
+        x0 = self.maskrange[0]
+        x1 = self.maskrange[1]
+
+        xcrds = 1 / self.data[i].Z.freq
+
+        mask = ~np.logical_and(xcrds > x0, xcrds < x1)
+
+        mt_obj = self.data[i]
+
+        mt_obj.Z = Z(
+            z_array=mt_obj.Z.z[mask],
+            z_err_array=mt_obj.Z.z_err[mask],
+            freq=mt_obj.Z.freq[mask],
+        )
+
+        mt_obj.Tipper = Tipper(
+            tipper_array=mt_obj.Tipper.tipper[mask],
+            tipper_err_array=mt_obj.Tipper.tipper_err[mask],
+            freq=mt_obj.Tipper.freq[mask],
+        )
+
+        if x1 < xcrds.max():
+            new_freq_list = 1 / xcrds
+            new_Z_obj, new_Tipper_obj = mt_obj.interpolate(new_freq_list)
+            self.data[i].Z = new_Z_obj
+            self.data[i].Tipper = new_Tipper_obj
+
+        self.change_band()
 
     def button_press_callback(
         self,
@@ -776,6 +980,12 @@ class MyMplCanvasPick(FigureCanvasQTAgg):
             return
         self.ind = None
 
+    def change_band(self):
+        """Combo to choose band."""
+        i = self.cmb_1.currentText()
+        i2 = self.cmb_2.currentText()
+        self.update_line(self.data, i, i2)
+
     def motion_notify_callback(
         self,
         event: MouseEvent,
@@ -809,7 +1019,7 @@ class MyMplCanvasPick(FigureCanvasQTAgg):
             rect2 = Rectangle((xxx[0], yyy[0]), event.xdata - xxx[0], yyy[1] - yyy[0])
             self.maskrange = np.sort([xxx[0], event.xdata])
 
-        self.figure.canvas.restore_region(self.background)
+        self.mmc.figure.canvas.restore_region(self.background)
         self.axes.draw_artist(self.line)
         self.axes.draw_artist(self.line2)
         if rect is not None:
@@ -818,7 +1028,7 @@ class MyMplCanvasPick(FigureCanvasQTAgg):
             self.axes.add_patch(rect)
             self.axes2.add_patch(rect2)
 
-        self.figure.canvas.draw()
+        self.mmc.draw_idle()
 
     def onpick(
         self,
@@ -849,6 +1059,12 @@ class MyMplCanvasPick(FigureCanvasQTAgg):
         self.ind = self.ind[len(self.ind) // 2]  # get center-ish value
 
         return True
+
+    def reset_data(self):
+        """Reset data."""
+        i = self.cmb_1.currentText()
+        self.data[i] = copy.deepcopy(self.indata["MT - EDI"][i])
+        self.change_band()
 
     def revent(
         self,
@@ -892,9 +1108,9 @@ class MyMplCanvasPick(FigureCanvasQTAgg):
 
         data1 = data[ival]
 
-        self.figure.clear()
+        self.mmc.figure.clear()
 
-        ax1 = self.figure.add_subplot(211, label="Profile")
+        ax1 = self.mmc.figure.add_subplot(211, label="Profile")
         ax1.grid(True, "both")
 
         ax1.set_title(ival)
@@ -958,7 +1174,7 @@ class MyMplCanvasPick(FigureCanvasQTAgg):
         ax1.set_xlabel("Period (s)")
         ax1.set_ylabel(r"App. Res. ($\Omega.m$)")
 
-        ax2 = self.figure.add_subplot(212, sharex=ax1)
+        ax2 = self.mmc.figure.add_subplot(212, sharex=ax1)
         ax2.grid(True, "both")
 
         self.axes2 = ax2
@@ -994,8 +1210,8 @@ class MyMplCanvasPick(FigureCanvasQTAgg):
         ax2.set_xlabel("Period (s)")
         ax2.set_ylabel(r"Phase (Degrees)")
 
-        self.figure.canvas.draw()
-        self.background = self.figure.canvas.copy_from_bbox(self.figure.bbox)
+        self.mmc.figure.canvas.draw()
+        self.background = self.mmc.figure.canvas.copy_from_bbox(self.mmc.figure.bbox)
 
         x0 = self.axes.get_xlim()[0]
         y0, y1 = self.axes.get_ylim()
@@ -1005,121 +1221,7 @@ class MyMplCanvasPick(FigureCanvasQTAgg):
         y0, y1 = self.axes2.get_ylim()
         (self.line2,) = self.axes2.plot([x0, x0], [y0, y1])
 
-        self.figure.canvas.draw()
-
-
-class EditEDI(BasicModule):
-    """
-    Edit EDI Class.
-
-    Parameters
-    ----------
-    parent
-        Reference to the parent routine. The default is None.
-
-    """
-
-    def __init__(
-        self,
-        parent=None,
-    ):
-        super().__init__(parent)
-        self.data = None
-
-        self.setWindowTitle("Mask and Interpolate")
-        self.buttonbox.htmlfile = "mt.dm.mask"
-
-        vbl = QtWidgets.QVBoxLayout(self)
-        hbl = QtWidgets.QHBoxLayout()
-        hbl_2 = QtWidgets.QHBoxLayout()
-        self.mmc = MyMplCanvasPick()
-        mpl_toolbar = NavigationToolbar2QT(self.mmc, self.parent)
-
-        self.cmb_1 = QtWidgets.QComboBox()
-        self.cmb_2 = QtWidgets.QComboBox()
-        self.cmb_2.addItems(["xy, yx", "xx, yy"])
-        self.cmb_2.setCurrentIndex(0)
-
-        lbl_1 = QtWidgets.QLabel("Station Name:")
-        lbl_2 = QtWidgets.QLabel("Graph Type:")
-        pb_apply = QtWidgets.QPushButton("Mask and Interpolate")
-        pb_reset = QtWidgets.QPushButton("Reset data")
-
-        hbl.addWidget(lbl_1, 0, QtCore.Qt.AlignmentFlag.AlignRight)
-        hbl.addWidget(self.cmb_1)
-        hbl.addWidget(lbl_2, 0, QtCore.Qt.AlignmentFlag.AlignRight)
-        hbl.addWidget(self.cmb_2)
-
-        hbl_2.addWidget(pb_reset)
-        hbl_2.addWidget(pb_apply)
-
-        vbl.addWidget(self.mmc)
-        vbl.addWidget(mpl_toolbar)
-        vbl.addLayout(hbl)
-        vbl.addLayout(hbl_2)
-        vbl.addWidget(self.buttonbox)
-
-        pb_apply.clicked.connect(self.apply)
-        pb_reset.clicked.connect(self.reset_data)
-        self.cmb_2.currentIndexChanged.connect(self.change_band)
-        self.cmb_1.currentIndexChanged.connect(self.change_band)
-
-    def acceptall(self):
-        """
-        Accept option.
-
-        Updates self.outdata, which is used as input to other modules.
-
-        """
-        self.outdata["MT - EDI"] = self.data
-
-    def apply(self):
-        """Apply edited data."""
-        if self.mmc.maskrange is None:
-            return
-
-        i = self.cmb_1.currentText()
-
-        x0 = self.mmc.maskrange[0]
-        x1 = self.mmc.maskrange[1]
-
-        xcrds = 1 / self.data[i].Z.freq
-
-        mask = ~np.logical_and(xcrds > x0, xcrds < x1)
-
-        mt_obj = self.data[i]
-
-        mt_obj.Z = Z(
-            z_array=mt_obj.Z.z[mask],
-            z_err_array=mt_obj.Z.z_err[mask],
-            freq=mt_obj.Z.freq[mask],
-        )
-
-        mt_obj.Tipper = Tipper(
-            tipper_array=mt_obj.Tipper.tipper[mask],
-            tipper_err_array=mt_obj.Tipper.tipper_err[mask],
-            freq=mt_obj.Tipper.freq[mask],
-        )
-
-        if x1 < xcrds.max():
-            new_freq_list = 1 / xcrds
-            new_Z_obj, new_Tipper_obj = mt_obj.interpolate(new_freq_list)
-            self.data[i].Z = new_Z_obj
-            self.data[i].Tipper = new_Tipper_obj
-
-        self.change_band()
-
-    def reset_data(self):
-        """Reset data."""
-        i = self.cmb_1.currentText()
-        self.data[i] = copy.deepcopy(self.indata["MT - EDI"][i])
-        self.change_band()
-
-    def change_band(self):
-        """Combo to choose band."""
-        i = self.cmb_1.currentText()
-        i2 = self.cmb_2.currentText()
-        self.mmc.update_line(self.data, i, i2)
+        self.mmc.draw_idle()
 
     def settings(
         self,
@@ -1221,92 +1323,6 @@ class MySlider(QtWidgets.QSlider):
         )
 
 
-class MyMplCanvas2(FigureCanvasQTAgg):
-    """Matplotlib canvas widget for the actual plot."""
-
-    def __init__(self):
-        fig = Figure(layout="tight")
-        super().__init__(fig)
-
-    def update_line(
-        self,
-        x: NDArray,
-        pdata: NDArray,
-        rdata: NDArray,
-        *,
-        depths: NDArray | None = None,
-        res: NDArray | None = None,
-        title: str | None = None,
-    ):
-        """
-        Update the plot from data.
-
-        Parameters
-        ----------
-        x : numpy array
-            X coordinates (period).
-        pdata : numpy array
-            Phase data.
-        rdata : numpy array
-            Apparent resistivity data.
-        depths : numpy array, optional
-            Model depths. The default is None.
-        res : numpy array, optional
-            Resistivities. The default is None.
-        title : str or None, optional
-            Title text. The default is None.
-
-        """
-        self.figure.clear()
-        gs = self.figure.add_gridspec(3, 3)
-
-        ax1 = self.figure.add_subplot(gs[:2, :2], label="Profile")
-        self.figure.suptitle(title)
-        ax1.grid(True, "both")
-
-        res1 = rdata[0]
-        res2 = rdata[1]
-        pha1 = pdata[0]
-        pha2 = pdata[1]
-        label1 = r"Measured"
-        label2 = r"Modelled"
-
-        ax1.plot(x, res1, "b.", label=label1)
-        ax1.plot(x, res2, "r.", label=label2)
-
-        ax1.set_xscale("log")
-        if res1.any() > 0 and res2.any() > 0:
-            ax1.set_yscale("log")
-        ax1.legend(loc="upper left")
-        ax1.set_xlabel("Period (s)")
-        ax1.set_ylabel(r"App. Res. ($\Omega.m$)")
-
-        ax2 = self.figure.add_subplot(gs[2:, :2], sharex=ax1)
-        ax2.grid(True, "both")
-
-        ax2.plot(x, pha1, "b.")
-        ax2.plot(x, pha2, "r.")
-
-        ax2.set_ylim(-180.0, 180.0)
-
-        ax2.set_xscale("log")
-        ax2.set_yscale("linear")
-        ax2.set_xlabel("Period (s)")
-        ax2.set_ylabel(r"Phase (Degrees)")
-
-        ax3 = self.figure.add_subplot(gs[:, 2])
-        ax3.grid(True, "both")
-        ax3.yaxis.tick_right()
-        ax3.yaxis.set_label_position("right")
-        ax3.set_xlabel(r"Res. ($\Omega.m$)")
-        ax3.set_ylabel(r"Depth (km)")
-
-        if depths is not None:
-            ax3.plot(res, np.array(depths) / 1000)
-
-        self.figure.canvas.draw()
-
-
 class Occam1D(BasicModule):
     """
     Occam 1D inversion.
@@ -1335,8 +1351,8 @@ class Occam1D(BasicModule):
         hbl_2 = QtWidgets.QHBoxLayout()
         gl_1 = QtWidgets.QGridLayout()
         gl_1.setSizeConstraint(QtWidgets.QLayout.SizeConstraint.SetFixedSize)
-        self.mmc = MyMplCanvas2()
-        mpl_toolbar = NavigationToolbar2QT(self.mmc, self.parent)
+        self.mmc = CanvasModule(self)
+        mpl_toolbar = CustomToolbar(self.mmc, self)
 
         self.le_occfile = QtWidgets.QLineEdit("")
         self.cmb_1 = QtWidgets.QComboBox()
@@ -1442,11 +1458,6 @@ class Occam1D(BasicModule):
         pb_apply.clicked.connect(self.apply)
         self.cmb_1.currentIndexChanged.connect(self.change_band)
         self.hs_profnum.valueChanged.connect(self.snum)
-
-    def snum(self):
-        """Change solution graph."""
-        self.lbl_profnum.setText("Solution: " + str(self.hs_profnum.sliderPosition()))
-        self.change_band()
 
     def acceptall(self):
         """
@@ -1559,38 +1570,6 @@ class Occam1D(BasicModule):
 
         self.change_band()
 
-    def get_occfile(
-        self,
-        filename: str = "",
-    ):
-        """
-        Get Occam executable filename.
-
-        Parameters
-        ----------
-        filename
-            Occam executable filename. The default is ''.
-
-        """
-        ext = "Occam executable (*.exe *.)"
-
-        if filename == "":
-            filename, _ = QtWidgets.QFileDialog.getOpenFileName(
-                self.parent, "Open File", ".", ext
-            )
-            if filename == "":
-                return
-
-        os.chdir(os.path.dirname(filename))
-
-        self.le_occfile.setText(filename)
-
-    def reset_data(self):
-        """Reset data."""
-        i = self.cmb_1.currentText()
-        self.data[i] = copy.deepcopy(self.indata["MT - EDI"][i])
-        self.change_band()
-
     def change_band(self):
         """Combo to change band."""
         i = self.cmb_1.currentText()
@@ -1642,7 +1621,122 @@ class Occam1D(BasicModule):
         rdata = [oc1d.data["resxy"][0], oc1d.data["resxy"][2]]
         pdata = [oc1d.data["phasexy"][0], oc1d.data["phasexy"][2]]
 
-        self.mmc.update_line(x, pdata, rdata, depths=depths, res=res, title=title)
+        self.update_line(x, pdata, rdata, depths=depths, res=res, title=title)
+
+    def get_occfile(
+        self,
+        filename: str = "",
+    ):
+        """
+        Get Occam executable filename.
+
+        Parameters
+        ----------
+        filename
+            Occam executable filename. The default is ''.
+
+        """
+        ext = "Occam executable (*.exe *.)"
+
+        if filename == "":
+            filename, _ = QtWidgets.QFileDialog.getOpenFileName(
+                self.parent, "Open File", ".", ext
+            )
+            if filename == "":
+                return
+
+        os.chdir(os.path.dirname(filename))
+
+        self.le_occfile.setText(filename)
+
+    def reset_data(self):
+        """Reset data."""
+        i = self.cmb_1.currentText()
+        self.data[i] = copy.deepcopy(self.indata["MT - EDI"][i])
+        self.change_band()
+
+    def snum(self):
+        """Change solution graph."""
+        self.lbl_profnum.setText("Solution: " + str(self.hs_profnum.sliderPosition()))
+        self.change_band()
+
+    def update_line(
+        self,
+        x: NDArray,
+        pdata: NDArray,
+        rdata: NDArray,
+        *,
+        depths: NDArray | None = None,
+        res: NDArray | None = None,
+        title: str | None = None,
+    ):
+        """
+        Update the plot from data.
+
+        Parameters
+        ----------
+        x : numpy array
+            X coordinates (period).
+        pdata : numpy array
+            Phase data.
+        rdata : numpy array
+            Apparent resistivity data.
+        depths : numpy array, optional
+            Model depths. The default is None.
+        res : numpy array, optional
+            Resistivities. The default is None.
+        title : str or None, optional
+            Title text. The default is None.
+
+        """
+        self.mmc.figure.clear()
+        gs = self.mmc.figure.add_gridspec(3, 3)
+
+        ax1 = self.mmc.figure.add_subplot(gs[:2, :2], label="Profile")
+        self.mmc.figure.suptitle(title)
+        ax1.grid(True, "both")
+
+        res1 = rdata[0]
+        res2 = rdata[1]
+        pha1 = pdata[0]
+        pha2 = pdata[1]
+        label1 = r"Measured"
+        label2 = r"Modelled"
+
+        ax1.plot(x, res1, "b.", label=label1)
+        ax1.plot(x, res2, "r.", label=label2)
+
+        ax1.set_xscale("log")
+        if res1.any() > 0 and res2.any() > 0:
+            ax1.set_yscale("log")
+        ax1.legend(loc="upper left")
+        ax1.set_xlabel("Period (s)")
+        ax1.set_ylabel(r"App. Res. ($\Omega.m$)")
+
+        ax2 = self.mmc.figure.add_subplot(gs[2:, :2], sharex=ax1)
+        ax2.grid(True, "both")
+
+        ax2.plot(x, pha1, "b.")
+        ax2.plot(x, pha2, "r.")
+
+        ax2.set_ylim(-180.0, 180.0)
+
+        ax2.set_xscale("log")
+        ax2.set_yscale("linear")
+        ax2.set_xlabel("Period (s)")
+        ax2.set_ylabel(r"Phase (Degrees)")
+
+        ax3 = self.mmc.figure.add_subplot(gs[:, 2])
+        ax3.grid(True, "both")
+        ax3.yaxis.tick_right()
+        ax3.yaxis.set_label_position("right")
+        ax3.set_xlabel(r"Res. ($\Omega.m$)")
+        ax3.set_ylabel(r"Depth (km)")
+
+        if depths is not None:
+            ax3.plot(res, np.array(depths) / 1000)
+
+        self.mmc.draw_idle()
 
     def settings(
         self,
@@ -1785,13 +1879,13 @@ def _testfn():
     app = QtWidgets.QApplication(sys.argv)
     app.setStyle(QtWidgets.QStyleFactory.create("Fusion"))
 
-    # test = StaticShiftEDI(None)
-    test = Metadata()
+    test = StaticShiftEDI(None)
+    # test = Metadata()
     test.indata["MT - EDI"] = {"SYNTH02": mt_obj, "SYNTH01": mt_obj1}
-    # test.settings()
+    test.settings()
 
-    test.run()
+    # test.run()
 
 
 if __name__ == "__main__":
-    _testfn_occam()
+    _testfn()

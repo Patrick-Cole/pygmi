@@ -48,7 +48,7 @@ from sklearn.neighbors import KNeighborsClassifier
 from sklearn.svm import SVC
 from sklearn.tree import DecisionTreeClassifier
 
-from pygmi.maps import frm, set_axes
+from pygmi.maps import set_axes
 from pygmi.misc import BasicModule
 from pygmi.raster.datatypes import Data
 from pygmi.raster.modest_image import imshow

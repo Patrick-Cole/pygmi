@@ -28,10 +28,9 @@ import datetime
 
 import matplotlib.animation as manimation
 import pandas as pd
-from matplotlib.backends.backend_qt import NavigationToolbar2QT
 from PySide6 import QtCore, QtWidgets
 
-from pygmi.maps import CanvasModule
+from pygmi.maps import CanvasModule, CustomToolbar
 from pygmi.misc import BasicModule
 from pygmi.raster.datatypes import Data
 from pygmi.raster.modest_ioimage import imshow
@@ -68,7 +67,7 @@ class SceneViewer(BasicModule):
         self.fig = self.mmc.figure
         self.ax1 = self.fig.add_subplot(111)
 
-        self.mpl_toolbar = NavigationToolbar2QT(self.mmc, self)
+        self.mpl_toolbar = CustomToolbar(self.mmc, self)
         self.slider = QtWidgets.QSlider()
         self.slider.setOrientation(QtCore.Qt.Orientation.Horizontal)
 

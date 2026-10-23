@@ -27,13 +27,11 @@
 import numpy as np
 import pwlf
 from matplotlib import gridspec
-from matplotlib.backends.backend_qt import NavigationToolbar2QT
-from matplotlib.backends.backend_qtagg import FigureCanvasQTAgg
-from matplotlib.figure import Figure
 from numpy.typing import NDArray
 from PySide6 import QtWidgets
 from scipy import signal
 
+from pygmi.maps import CanvasModule, CustomToolbar
 from pygmi.misc import BasicModule
 from pygmi.raster.fft import calculate_raps, fftprep
 from pygmi.raster.misc import lstack
@@ -63,8 +61,7 @@ class MatchedFilt(BasicModule):
         self.datamedian = 0
         self.sos = None
 
-        self.figure = Figure()
-        self.mmc = FigureCanvasQTAgg(self.figure)
+        self.mmc = CanvasModule(self)
 
         self.cmb_band1 = QtWidgets.QComboBox()
         self.sb_nsegs = QtWidgets.QSpinBox()
@@ -87,7 +84,7 @@ class MatchedFilt(BasicModule):
         hbl_all = QtWidgets.QHBoxLayout(self)
         vbl_right = QtWidgets.QVBoxLayout()
 
-        mpl_toolbar = NavigationToolbar2QT(self.mmc, self)
+        mpl_toolbar = CustomToolbar(self.mmc, self)
         spacer = QtWidgets.QSpacerItem(
             20,
             40,
@@ -228,9 +225,9 @@ class MatchedFilt(BasicModule):
         self.depth = d
 
         # Plotting
-        self.figure.clear()
-        gs = gridspec.GridSpec(3, 1)
-        axes = self.figure.add_subplot(gs[:2, 0])
+        self.mmc.figure.clear()
+        gs = gridspec.GridSpec(3, 1, figure=self.mmc.figure)
+        axes = self.mmc.figure.add_subplot(gs[:2, 0])
         axes.scatter(x_data, y_data, label="Data", color="blue", s=2)
 
         for i in range(nsegs):
@@ -252,7 +249,7 @@ class MatchedFilt(BasicModule):
         axes.tick_params(axis="x", labelsize=8)
         axes.tick_params(axis="y", labelsize=8)
 
-        axes = self.figure.add_subplot(gs[2, 0])
+        axes = self.mmc.figure.add_subplot(gs[2, 0])
         axes.tick_params(axis="x", labelsize=8)
         axes.tick_params(axis="y", labelsize=8)
         axes.set_title("FFT Filters", fontsize=10)
@@ -260,8 +257,8 @@ class MatchedFilt(BasicModule):
             axes.plot(x_data, abs(fi), f"C{i + 1}")
         axes.set_xlabel("$Wavenumbers (k)$", fontsize=10)
 
-        self.figure.tight_layout()
-        self.figure.canvas.draw()
+        # self.figure.tight_layout()
+        self.mmc.draw_idle()
 
     def fftprep(self):
         """FFT preparation when choosing band."""

@@ -29,12 +29,11 @@ from collections.abc import Callable
 
 import numpy as np
 import pandas as pd
-from matplotlib.backends.backend_qt import NavigationToolbar2QT
-from matplotlib.backends.backend_qtagg import FigureCanvasQTAgg
 from numpy.typing import NDArray
 from PySide6 import QtCore, QtGui, QtWidgets
 
 from pygmi.maggrv import iodefs
+from pygmi.maps import CanvasModule, CustomToolbar
 from pygmi.misc import BasicModule, ContextModule
 
 
@@ -62,8 +61,8 @@ class PlotDrift(ContextModule):
         self.setWindowTitle("Drift Plot")
 
         vbl = QtWidgets.QVBoxLayout(self)
-        self.mmc = FigureCanvasQTAgg()
-        mpl_toolbar = NavigationToolbar2QT(self.mmc)
+        self.mmc = CanvasModule(self)
+        mpl_toolbar = CustomToolbar(self.mmc, self)
         self.mmc.figure.set_layout_engine("compressed")
 
         self.buttonbox.hide()
@@ -348,7 +347,7 @@ def gravcor(
         Dictionary containing information for drift plots.
 
     """
-    pdat.sort_values(by=["DECTIMEDATE"], inplace=True)
+    pdat = pdat.sort_values(by=["DECTIMEDATE"])
 
     if kstat == "":
         kstat = -1.0
@@ -443,7 +442,7 @@ def gravcor(
     pdat = pdat.assign(gSB=gSB)
     pdat = pdat.assign(BOUGUER=gba)
 
-    pdat.sort_values(by=["LINE", "STATION"], inplace=True)
+    pdat = pdat.sort_values(by=["LINE", "STATION"])
 
     drift = {"xp2": xp2, "fp": fp, "ix": ix, "dday": dday, "drate": drate}
 

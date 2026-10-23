@@ -42,12 +42,11 @@ from typing import IO
 import numpy as np
 from matplotlib import colormaps
 from matplotlib.axes import Axes
-from matplotlib.backends.backend_qt import NavigationToolbar2QT
 from numba import jit, prange
 from numpy.typing import NDArray
 from PySide6 import QtCore, QtGui, QtWidgets
 
-from pygmi.maps import CanvasModule, frm
+from pygmi.maps import CanvasModule, CustomToolbar
 from pygmi.misc import ContextModule, PTime
 from pygmi.pfmod.datatypes import LithModel
 from pygmi.raster.datatypes import Data
@@ -65,21 +64,26 @@ class PlotTest(ContextModule):
 
         vbl = QtWidgets.QVBoxLayout(self)
         self.mmc = CanvasModule(self)
-        mpl_toolbar = NavigationToolbar2QT(self.mmc)
+        self.mpl_toolbar = CustomToolbar(self.mmc, self)
+
+        self.data = data
 
         self.buttonbox.hide()
         vbl.addWidget(self.mmc)
-        vbl.addWidget(mpl_toolbar)
+        vbl.addWidget(self.mpl_toolbar)
 
         self.setFocus()
 
         self.show()
         if data is not None:
-            self.update_raster(data)
+            self.mpl_toolbar.add_map_btn(
+                self.update_raster, data.griddata["Calculated Gravity"].crs
+            )
+            self.update_raster()
 
     def update_raster(
         self,
-        lmod2: LithModel,
+        # lmod2: LithModel,
     ):
         """
         Update the raster plot.
@@ -90,6 +94,7 @@ class PlotTest(ContextModule):
             Lithology dataset to be used.
 
         """
+        lmod2 = self.data
         self.mmc.figure.clear()
 
         magtmp = lmod2.griddata["Calculated Magnetics"].data
@@ -109,12 +114,11 @@ class PlotTest(ContextModule):
             axes.contour(
                 magtmp, levels=csrange, colors="b", extent=etmp, linewidths=0.5
             )
-        cbar = self.mmc.figure.colorbar(ims, orientation="horizontal", format=frm)
-        cbar.set_label("nT")
+
+        self.mmc.set_colorbar(axes, ims, location="bottom", label="nT")
         self.mmc.set_map_axes(axes, crs)
 
         axes = self.mmc.figure.add_subplot(122)
-        # etmp = dat_extent(lmod2.griddata["Calculated Gravity"], axes)
         axes.set_title("Gravity Data")
         ims = axes.imshow(grvtmp, extent=etmp)
         mmin = grvtmp.mean() - 2 * grvtmp.std()
@@ -126,8 +130,8 @@ class PlotTest(ContextModule):
             axes.contour(
                 grvtmp, levels=csrange, colors="y", extent=etmp, linewidths=0.5
             )
-        cbar = self.mmc.figure.colorbar(ims, orientation="horizontal", format=frm)
-        cbar.set_label("mGal")
+
+        self.mmc.set_colorbar(axes, ims, location="bottom", label="mGal")
         self.mmc.set_map_axes(axes, crs)
         self.mmc.draw_idle()
 

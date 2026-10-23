@@ -32,7 +32,6 @@ import pandas as pd
 from geopandas import GeoDataFrame
 from matplotlib import rcParams
 from matplotlib.axes import Axes
-from matplotlib.backends.backend_qt import NavigationToolbar2QT
 from matplotlib.colorbar import Colorbar
 from matplotlib.colors import BoundaryNorm
 from matplotlib.image import AxesImage
@@ -42,7 +41,7 @@ from PySide6 import QtCore, QtWidgets
 from scipy.stats import median_abs_deviation
 from sklearn.cluster import KMeans
 
-from pygmi.maps import CanvasModule, CustomToolbar, discrete_colorbar, frm
+from pygmi.maps import CanvasModule, CustomToolbar, frm
 from pygmi.misc import ContextModule
 from pygmi.raster.colormaps import colormaps
 
@@ -77,7 +76,7 @@ class PlotCCoef(ContextModule):
         hbl = QtWidgets.QHBoxLayout()
         self.mmc = CanvasModule(self)
 
-        mpl_toolbar = NavigationToolbar2QT(self.mmc, self.parent)
+        mpl_toolbar = CustomToolbar(self.mmc, self)
 
         self.cmb_1 = QtWidgets.QComboBox()
         lbl_1 = QtWidgets.QLabel("Style:")
@@ -262,7 +261,7 @@ class PlotHist(ContextModule):
         vbl = QtWidgets.QVBoxLayout(self)
         hbl = QtWidgets.QHBoxLayout()
         self.mmc = CanvasModule(self)
-        mpl_toolbar = NavigationToolbar2QT(self.mmc, self.parent)
+        mpl_toolbar = CustomToolbar(self.mmc, self)
 
         self.cmb_1 = QtWidgets.QComboBox()
         lbl_1 = QtWidgets.QLabel("Bands:")
@@ -382,7 +381,7 @@ class PlotLines(ContextModule):
         hbl = QtWidgets.QHBoxLayout()
         self.mmc = CanvasModule(self)
 
-        mpl_toolbar = NavigationToolbar2QT(self.mmc, self.parent)
+        mpl_toolbar = CustomToolbar(self.mmc, self)
 
         self.cmb_1 = QtWidgets.QComboBox()
         self.cmb_2 = QtWidgets.QComboBox()
@@ -1074,7 +1073,7 @@ class PlotVector(ContextModule):
                     cmap=self.cmap,
                     marker=".",
                 )
-                fig.colorbar(scat, ax=axes, format=frm)
+                self.mmc.set_colorbar(axes, scat)
             elif col != "" and "Standard" in style:
                 m3 = data[col].mean()
                 s3 = data[col].std()
@@ -1095,7 +1094,7 @@ class PlotVector(ContextModule):
                 scat = axes.scatter(
                     data.geometry.x, data.geometry.y, c=z3, cmap=self.cmap, marker="."
                 )
-                discrete_colorbar(axes, scat, z3, lbls)
+                self.mmc.set_discrete_colorbar(axes, scat, z3, lbls)
 
             elif col != "" and "Quartile" in style:
                 z3 = pd.qcut(data[col], 4, labels=False, duplicates="drop")
@@ -1107,7 +1106,7 @@ class PlotVector(ContextModule):
                     cmap=self.cmap,
                     marker=".",
                 )
-                discrete_colorbar(axes, scat, z3 + 1)
+                self.mmc.set_discrete_colorbar(axes, scat, z3 + 1)
 
             elif col != "" and "K-Means" in style:
                 z1 = np.array(data[col]).reshape(-1, 1)
@@ -1119,7 +1118,7 @@ class PlotVector(ContextModule):
                     cmap=self.cmap,
                     marker=".",
                 )
-                discrete_colorbar(axes, scat, z3 + 1)
+                self.mmc.set_discrete_colorbar(axes, scat, z3 + 1)
             else:
                 self.axes.scatter(data.geometry.x, data.geometry.y)
 

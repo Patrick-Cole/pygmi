@@ -32,9 +32,6 @@ from contextlib import redirect_stdout
 import numpy as np
 import simpeg.data as Sdata
 from discretize import CylindricalMesh, TensorMesh
-from matplotlib.backends.backend_qt import NavigationToolbar2QT
-from matplotlib.backends.backend_qtagg import FigureCanvasQTAgg
-from matplotlib.figure import Figure
 from numpy.typing import NDArray
 from PySide6 import QtGui, QtWidgets
 from simpeg import (
@@ -49,111 +46,8 @@ from simpeg import (
 from simpeg.electromagnetics import time_domain
 from simpeg.utils import get_default_solver
 
+from pygmi.maps import CanvasModule, CustomToolbar
 from pygmi.misc import BasicModule, QVStack2Layout
-
-
-class MyMplCanvas(FigureCanvasQTAgg):
-    """Matplotlib canvas widget for the actual plot."""
-
-    def __init__(self):
-        fig = Figure(layout="tight")
-        super().__init__(fig)
-
-    def update_line(
-        self,
-        sigma: NDArray,
-        z: NDArray,
-        times_off: NDArray,
-        zobs: NDArray,
-        zpred: NDArray,
-    ):
-        """
-        Update the plot from data.
-
-        Parameters
-        ----------
-        sigma
-            Conductivity values.
-        z
-            Depth values.
-        times_off
-            Time.
-        zobs
-            Observed dBz/dt.
-        zpred
-            Predicted dBz/dt.
-
-        """
-        self.figure.clear()
-
-        ax1 = self.figure.add_subplot(121, label="Profile")
-        ax1.semilogx(sigma, z, "b", lw=2)
-        ax1.grid(True)
-        ax1.set_ylabel("Depth (m)")
-        ax1.set_xlabel("Conductivity (S/m)")
-        ax1.set_title("Recovered Model")
-        ax1.tick_params(axis="x", which="major", labelsize=6, labelrotation=90)
-        ax1.tick_params(axis="x", which="minor", labelsize=6, labelrotation=90)
-        ax1.tick_params(axis="y", which="major", labelsize=6)
-        ax1.tick_params(axis="y", which="minor", labelsize=6)
-
-        ax2 = self.figure.add_subplot(122)
-        ax2.grid(True, "both")
-        ax2.loglog(times_off, zobs, "b-", label="Observed")
-        ax2.loglog(
-            times_off,
-            zpred,
-            "bo",
-            ms=4,
-            markeredgecolor="k",
-            markeredgewidth=0.5,
-            label="Predicted",
-        )
-        ax2.set_xlim(times_off.min() * 1.2, times_off.max() * 1.1)
-        ax2.set_xlabel(r"Time ($\mu s$)")
-        ax2.set_ylabel("dBz / dt (V/A-m$^4$)")
-        ax2.set_title("High-moment")
-        ax2.grid(True)
-        ax2.legend(loc=3)
-        ax2.tick_params(axis="x", which="major", labelsize=6, labelrotation=90)
-        ax2.tick_params(axis="x", which="minor", labelsize=6, labelrotation=90)
-        ax2.tick_params(axis="y", which="major", labelsize=6)
-        ax2.tick_params(axis="y", which="minor", labelsize=6)
-
-        self.figure.canvas.draw()
-
-    def disp_wave(
-        self,
-        times: NDArray,
-        wave: NDArray,
-        title: str,
-    ):
-        """
-        Display waveform.
-
-        Parameters
-        ----------
-        times
-            Times.
-        wave
-            Waveform amplitude.
-        title
-            Title.
-
-        """
-        self.figure.clear()
-
-        ax1 = self.figure.add_subplot(111)
-        ax1.grid(True)
-        ax1.set_ylabel("Amplitude")
-        ax1.set_xlabel("Time (s)")
-        ax1.set_title(title)
-        ax1.tick_params(axis="both", which="major", labelsize=6)
-        ax1.tick_params(axis="both", which="minor", labelsize=6)
-
-        ax1.plot(times, wave)
-
-        self.figure.canvas.draw()
 
 
 class TDEM1D(BasicModule):
@@ -184,9 +78,9 @@ class TDEM1D(BasicModule):
         hbl = QtWidgets.QHBoxLayout(self)
         vsl = QVStack2Layout()
 
-        self.mmc1 = MyMplCanvas()
-        self.mmc = MyMplCanvas()
-        mpl_toolbar = NavigationToolbar2QT(self.mmc, self.parent)
+        self.mmc1 = CanvasModule(self)
+        self.mmc = CanvasModule(self)
+        mpl_toolbar = CustomToolbar(self.mmc, self)
 
         self.cmb_stype = QtWidgets.QComboBox()
         self.cmb_stype.addItems(["CircularLoop", "MagDipole"])
@@ -527,7 +421,7 @@ class TDEM1D(BasicModule):
         zobs = dobs_sky / txarea
         zpred = -dpred_sky / txarea
 
-        self.mmc.update_line(sigma, z, times_off, zobs, zpred)
+        self.update_line(sigma, z, times_off, zobs, zpred)
 
     def change_source(self):
         """Change Source."""
@@ -569,7 +463,103 @@ class TDEM1D(BasicModule):
 
         wave = [wform.eval(t) for t in times]
 
-        self.mmc1.disp_wave(times, wave, title)
+        self.disp_wave_plot(times, wave, title)
+
+    def update_line(
+        self,
+        sigma: NDArray,
+        z: NDArray,
+        times_off: NDArray,
+        zobs: NDArray,
+        zpred: NDArray,
+    ):
+        """
+        Update the plot from data.
+
+        Parameters
+        ----------
+        sigma
+            Conductivity values.
+        z
+            Depth values.
+        times_off
+            Time.
+        zobs
+            Observed dBz/dt.
+        zpred
+            Predicted dBz/dt.
+
+        """
+        self.mmc.figure.clear()
+
+        ax1 = self.mmc.figure.add_subplot(121, label="Profile")
+        ax1.semilogx(sigma, z, "b", lw=2)
+        ax1.grid(True)
+        ax1.set_ylabel("Depth (m)")
+        ax1.set_xlabel("Conductivity (S/m)")
+        ax1.set_title("Recovered Model")
+        ax1.tick_params(axis="x", which="major", labelsize=6, labelrotation=90)
+        ax1.tick_params(axis="x", which="minor", labelsize=6, labelrotation=90)
+        ax1.tick_params(axis="y", which="major", labelsize=6)
+        ax1.tick_params(axis="y", which="minor", labelsize=6)
+
+        ax2 = self.mmc.figure.add_subplot(122)
+        ax2.grid(True, "both")
+        ax2.loglog(times_off, zobs, "b-", label="Observed")
+        ax2.loglog(
+            times_off,
+            zpred,
+            "bo",
+            ms=4,
+            markeredgecolor="k",
+            markeredgewidth=0.5,
+            label="Predicted",
+        )
+        ax2.set_xlim(times_off.min() * 1.2, times_off.max() * 1.1)
+        ax2.set_xlabel(r"Time ($\mu s$)")
+        ax2.set_ylabel("dBz / dt (V/A-m$^4$)")
+        ax2.set_title("High-moment")
+        ax2.grid(True)
+        ax2.legend(loc=3)
+        ax2.tick_params(axis="x", which="major", labelsize=6, labelrotation=90)
+        ax2.tick_params(axis="x", which="minor", labelsize=6, labelrotation=90)
+        ax2.tick_params(axis="y", which="major", labelsize=6)
+        ax2.tick_params(axis="y", which="minor", labelsize=6)
+
+        self.mmc.draw_idle()
+
+    def disp_wave_plot(
+        self,
+        times: NDArray,
+        wave: NDArray,
+        title: str,
+    ):
+        """
+        Display waveform.
+
+        Parameters
+        ----------
+        times
+            Times.
+        wave
+            Waveform amplitude.
+        title
+            Title.
+
+        """
+        self.mmc1.figure.clear()
+
+        ax1 = self.mmc1.figure.add_subplot(111)
+        ax1.grid(True)
+        ax1.set_ylabel("Amplitude")
+        ax1.set_xlabel("Time (s)")
+        ax1.set_title(title)
+        ax1.tick_params(axis="both", which="major", labelsize=6)
+        ax1.tick_params(axis="both", which="minor", labelsize=6)
+
+        ax1.plot(times, wave)
+
+        self.mmc1.draw_idle()
 
     def update_wave(self) -> object:
         """
@@ -614,7 +604,7 @@ class TDEM1D(BasicModule):
             )
 
         elif wtype == "RampOffWaveform":
-            wform = time_domain.sources.RampOffWaveform(offTime=offtime)
+            wform = time_domain.sources.RampOffWaveform(offtime)
 
         return wform
 

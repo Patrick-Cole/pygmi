@@ -26,7 +26,6 @@
 
 import numpy as np
 from matplotlib import colormaps
-from matplotlib.backends.backend_qt import NavigationToolbar2QT
 from matplotlib.ticker import MaxNLocator
 from numpy.typing import NDArray
 from PySide6 import QtCore, QtWidgets
@@ -113,7 +112,7 @@ class PlotRaster(ContextModule):
         self.mmc.custom_resize = True
         fig = self.mmc.figure
         fig.clear()
-        axes = fig.add_subplot(111, label="map")
+        axes = fig.add_subplot(111, label="Map")
 
         cdat = data1.data
 
@@ -135,7 +134,7 @@ class PlotRaster(ContextModule):
             lbls = None
 
         if len(vals) > 1:
-            cbar = axes.figure.colorbar(csp, boundaries=bnds)
+            cbar = self.mmc.set_colorbar(axes, csp, boundaries=bnds, label="Class")
             cbar.set_ticks(vals, labels=lbls)
 
         self.mmc.set_map_axes(axes, data1.crs)
@@ -165,7 +164,7 @@ class PlotBars(ContextModule):
         vbl = QtWidgets.QVBoxLayout(self)
         hbl = QtWidgets.QHBoxLayout()
         self.mmc = CanvasModule(self)
-        mpl_toolbar = NavigationToolbar2QT(self.mmc, self.parent)
+        mpl_toolbar = CustomToolbar(self.mmc, self)
 
         self.cmb_1 = QtWidgets.QComboBox()
         lbl_1 = QtWidgets.QLabel("Bands:")
@@ -382,9 +381,8 @@ class PlotMembership(ContextModule):
             interpolation="nearest",
         )
 
-        fig.colorbar(rdata)
-
         self.mmc.set_map_axes(axes, data1.crs)
+        self.mmc.set_colorbar(axes, rdata)
         self.mmc.draw_idle()
 
 
@@ -411,7 +409,7 @@ class PlotVRCetc(ContextModule):
         vbl = QtWidgets.QVBoxLayout(self)
         hbl = QtWidgets.QHBoxLayout()
         self.mmc = CanvasModule(self)
-        mpl_toolbar = NavigationToolbar2QT(self.mmc, self.parent)
+        mpl_toolbar = CustomToolbar(self.mmc, self)
 
         self.cmb_1 = QtWidgets.QComboBox()
         lbl_1 = QtWidgets.QLabel("Graph Type:")
@@ -677,7 +675,7 @@ def _testfn():
 
     dat = DM.outdata
 
-    tmp2 = PlotMembership()
+    tmp2 = PlotRaster()
     tmp2.indata = dat
     tmp2.run()
 

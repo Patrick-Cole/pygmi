@@ -1519,9 +1519,6 @@ class PlotInterp(BasicModule):
         axes.xaxis.set_visible(True)
         axes.yaxis.set_visible(True)
 
-        set_axes(axes, crs)
-        set_northscale(axes, crs, self.showlog)
-
         if dtype == "Single Colour Map":
             cax = divider.append_axes("right", size="7%", pad=0.25)
             cbar = fig.colorbar(
@@ -1685,6 +1682,9 @@ class PlotInterp(BasicModule):
 
         for i in range(3):
             self.mmc.argb[i].set_visible(False)
+
+        set_northscale(axes, crs, self.showlog)
+        set_axes(axes, crs)
 
         fig.savefig(filename, bbox_inches="tight", pad_inches="layout", dpi=300)
         self.change_dtype()
@@ -2192,6 +2192,7 @@ def _testfn():
     app.setStyle(QtWidgets.QStyleFactory.create("Fusion"))
 
     ifile = r"D:\workdata\PyGMI Test Data\Raster\small.tif"
+    ifile = r"D:\Workdata\PyGMI Test Data\Raster\testdata.tif"
     # ifile = r"D:\workdata\PyGMI Test Data\Remote Sensing\Import\ASTER\ratios\AST_07102005_081903_ratio.tif"
 
     data = iodefs.get_raster(ifile)
