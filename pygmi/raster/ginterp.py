@@ -61,7 +61,7 @@ from numpy.typing import NDArray
 from PySide6 import QtCore, QtGui, QtWidgets
 from scipy import ndimage
 
-from pygmi.maps import set_axes, set_northscale
+from pygmi.maps import set_axes, set_north, set_scale
 from pygmi.misc import BasicModule
 from pygmi.raster import dataprep, iodefs
 from pygmi.raster.colormaps import colormaps
@@ -1683,8 +1683,9 @@ class PlotInterp(BasicModule):
         for i in range(3):
             self.mmc.argb[i].set_visible(False)
 
-        set_northscale(axes, crs, self.showlog)
+        set_north(axes, crs)
         set_axes(axes, crs)
+        set_scale(axes, crs, self.showlog)
 
         fig.savefig(filename, bbox_inches="tight", pad_inches="layout", dpi=300)
         self.change_dtype()

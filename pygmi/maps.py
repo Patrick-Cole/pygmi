@@ -246,8 +246,6 @@ class CanvasModule(FigureCanvasQTAgg):
         """
         if self.show_north_arrow is True:
             set_north(axes, crs, self.showlog)
-        if self.show_scalebar is True:
-            set_scale(axes, crs, self.showlog)
 
         set_axes(
             axes,
@@ -261,6 +259,9 @@ class CanvasModule(FigureCanvasQTAgg):
             self.yleft,
             self.yright,
         )
+
+        if self.show_scalebar is True:
+            set_scale(axes, crs, self.showlog)
 
     def set_colorbar(
         self, axes: Axes, mappable, location="right", boundaries=None, label=None
@@ -835,71 +836,6 @@ def ylabels_m(ax, pad=15, num=10):
         num -= 1
 
 
-def set_northscale(
-    ax: Axes,
-    crs: CRS | None,
-    showlog: Callable[..., None] = print,
-):
-    """
-    Set the north arrow and the scale bar.
-
-    Parameters
-    ----------
-    ax
-        Primary Matplotlib axes.
-    crs
-        PyProj crs of data
-    showlog
-        Show information using a function, by default print
-    """
-    if crs is None:
-        crs = CRS.from_string(
-            'LOCAL_CS["Arbitrary",UNIT["metre",1,'
-            'AUTHORITY["EPSG","9001"]],'
-            'AXIS["Easting",EAST],'
-            'AXIS["Northing",NORTH]]'
-        )
-    else:
-        crs = CRS.from_wkt(crs.to_wkt())
-    north_arrow(
-        ax,
-        scale=0.2,
-        location="upper right",
-        label={"fontsize": 10},
-        aob={
-            "bbox_to_anchor": (0.05, -0.05),
-            "bbox_transform": ax.transAxes,
-            "pad": 0.0,
-        },
-        shadow=False,
-    )
-
-    tmp = patches.Rectangle(
-        (0, -0.25),
-        0.1,
-        0.1,
-        transform=ax.transAxes,
-        color="white",
-        zorder=0,
-        clip_on=False,
-    )
-    ax.add_patch(tmp)
-
-    if crs.axis_info[0].unit_name not in units_standard and not crs.is_geographic:
-        showlog("Problem with projection unit. Try redefining the projection.")
-        return
-
-    if not crs.is_geographic:
-        scale_bar(
-            ax,
-            location="upper left",
-            style="ticks",
-            bar={"projection": crs},
-            text={"fontsize": 7},
-            aob={"bbox_to_anchor": (0.05, -0.05), "bbox_transform": ax.transAxes},
-        )
-
-
 def set_north(
     ax: Axes,
     crs: CRS | None,
@@ -1057,8 +993,9 @@ def _testfn():
     # plt.imshow(data[0].data, extent=data[0].extent)
     # plt.colorbar()
 
+    set_north(ax, crs)
     set_axes(ax, crs)
-    set_northscale(ax, crs)
+    set_scale(ax, crs)
 
     ax.set_xlabel("")
     ax.set_ylabel("")
