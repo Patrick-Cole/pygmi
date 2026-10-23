@@ -29,12 +29,9 @@ import glob
 import os
 
 import numpy as np
-from matplotlib.backend_bases import MouseEvent, PickEvent
-from matplotlib.backends.backend_qt import NavigationToolbar2QT
-from matplotlib.backends.backend_qtagg import FigureCanvasQTAgg
-from matplotlib.figure import Figure
 from PySide6 import QtCore, QtWidgets
 
+from pygmi.maps import CanvasModule, CustomToolbar
 from pygmi.misc import ContextModule
 from pygmi.mt.mtpyold.core.edi_collection import EdiCollection
 from pygmi.mt.mtpyold.imaging.phase_tensor_maps import PlotPhaseTensorMaps
@@ -45,118 +42,71 @@ np.float = float
 np.complex = complex
 
 
-class MyMplCanvas(FigureCanvasQTAgg):
+class PlotPoints(ContextModule):
     """
-    Matplotlib canvas widget for the actual plot.
-
-    This routine will also allow the picking and movement of nodes of data.
+    Plot points class.
 
     Parameters
     ----------
     parent
         Reference to the parent routine. The default is None.
-    width
-        Canvas width.
-    height
-        Canvas height.
-    dpi
-        Canvas dpi.
 
     """
 
-    def __init__(self, width: float = 8, height: float = 6, dpi: int = 100):
-        fig = Figure(layout="constrained", figsize=(width, height), dpi=dpi)
-        self.axes = fig.add_subplot(111)
-        self.line = None
-        self.ind = None
-        self.background = None
-
-        super().__init__(fig)
-
-        self.figure.canvas.mpl_connect("pick_event", self.onpick)
-        self.figure.canvas.mpl_connect(
-            "button_release_event", self.button_release_callback
-        )
-        self.figure.canvas.mpl_connect(
-            "motion_notify_event", self.motion_notify_callback
-        )
-
-    def button_release_callback(
+    def __init__(
         self,
-        event: MouseEvent,
+        parent=None,
     ):
-        """
-        Mouse button release callback.
+        super().__init__(parent)
+        self.setAttribute(QtCore.Qt.WidgetAttribute.WA_DeleteOnClose)
+        self.setWindowTitle("Graph Window")
 
-        Parameters
-        ----------
-        event
-            event variable.
+        vbl = QtWidgets.QVBoxLayout(self)
+        hbl = QtWidgets.QHBoxLayout()
+        self.mmc = CanvasModule(self)
+        mpl_toolbar = CustomToolbar(self.mmc, self)
 
-        """
-        if event.inaxes is None:
-            return
-        if event.button != 1:
-            return
-        self.ind = None
+        self.cmb_1 = QtWidgets.QComboBox()
+        self.cmb_2 = QtWidgets.QComboBox()
+        self.lbl_1 = QtWidgets.QLabel("Station Name:")
+        self.lbl_2 = QtWidgets.QLabel("Graph Type:")
 
-    def motion_notify_callback(
-        self,
-        event: MouseEvent,
-    ):
-        """
-        Move mouse callback.
+        self.buttonbox.buttonbox.hide()
+        self.buttonbox.htmlfile = "mt.cm.showgraphs"
 
-        Parameters
-        ----------
-        event
-            event variable.
+        hbl.addWidget(self.buttonbox)
+        hbl.addWidget(self.lbl_1, 0, QtCore.Qt.AlignmentFlag.AlignRight)
+        hbl.addWidget(self.cmb_1)
+        hbl.addWidget(self.lbl_2, 0, QtCore.Qt.AlignmentFlag.AlignRight)
+        hbl.addWidget(self.cmb_2)
 
-        """
-        if event.inaxes is None:
-            return
-        if event.button != 1:
-            return
-        if self.ind is None:
-            return
+        vbl.addWidget(self.mmc)
+        vbl.addWidget(mpl_toolbar)
+        vbl.addLayout(hbl)
 
-        dtmp = self.line.get_data()
-        dtmp[1][self.ind] = event.ydata
-        self.line.set_data(dtmp[0], dtmp[1])
+        self.setFocus()
 
-        self.figure.canvas.restore_region(self.background)
-        self.axes.draw_artist(self.line)
-        self.figure.canvas.update()
+        self.cmb_1.currentIndexChanged.connect(self.change_band)
+        self.cmb_2.currentIndexChanged.connect(self.change_band)
 
-    def onpick(
-        self,
-        event: PickEvent,
-    ) -> bool:
-        """
-        Picker event.
+    def change_band(self):
+        """Combo to choose band."""
+        data = self.indata["MT - EDI"]
+        i = self.cmb_1.currentText()
+        i2 = self.cmb_2.currentText()
+        self.update_line(data, i, i2)
 
-        Parameters
-        ----------
-        event
-            event variable.
+    def run(self):
+        """Entry point into the routine, used to run context menu item."""
+        self.show()
+        data = self.indata["MT - EDI"]
+        for i in data:
+            self.cmb_1.addItem(i)
+        for i in ["xy, yx", "xx, yy"]:
+            self.cmb_2.addItem(i)
 
-        Returns
-        -------
-        bool
-            True if successful, False otherwise.
-
-        """
-        if event.mouseevent.inaxes is None:
-            return False
-        if event.mouseevent.button != 1:
-            return False
-        if event.artist != self.line:
-            return True
-
-        self.ind = event.ind
-        self.ind = self.ind[len(self.ind) // 2]  # get center-ish value
-
-        return True
+        self.cmb_1.setCurrentIndex(0)
+        self.cmb_2.setCurrentIndex(0)
 
     def update_line(
         self,
@@ -179,11 +129,9 @@ class MyMplCanvas(FigureCanvasQTAgg):
         """
         data1 = data[ival]
 
-        self.figure.clear()
+        self.mmc.figure.clear()
 
-        ax1 = self.figure.add_subplot(411, label="Profile")
-
-        self.axes = ax1
+        ax1 = self.mmc.figure.add_subplot(411, label="Profile")
         x = 1 / data1.Z.freq
 
         if itype == "xy, yx":
@@ -244,7 +192,7 @@ class MyMplCanvas(FigureCanvasQTAgg):
         ax1.tick_params(labelbottom=False)
         ax1.grid(True)
 
-        ax2 = self.figure.add_subplot(412, sharex=ax1)
+        ax2 = self.mmc.figure.add_subplot(412, sharex=ax1)
 
         ax2.errorbar(
             x,
@@ -278,7 +226,7 @@ class MyMplCanvas(FigureCanvasQTAgg):
         ax2.tick_params(labelbottom=False)
         ax2.grid(True)
 
-        ax3 = self.figure.add_subplot(413, sharex=ax1)
+        ax3 = self.mmc.figure.add_subplot(413, sharex=ax1)
 
         ax3.plot(x, data1.Tipper.mag_real, "b.", label="real")
         ax3.plot(x, data1.Tipper.mag_imag, "r.", label="imaginary")
@@ -290,7 +238,7 @@ class MyMplCanvas(FigureCanvasQTAgg):
         ax3.tick_params(labelbottom=False)
         ax3.grid(True)
 
-        ax4 = self.figure.add_subplot(414, sharex=ax1)
+        ax4 = self.mmc.figure.add_subplot(414, sharex=ax1)
         ax4.plot(x, data1.Tipper.angle_real, "b.", label="real")
         ax4.plot(x, data1.Tipper.angle_imag, "r.", label="imaginary")
 
@@ -301,160 +249,7 @@ class MyMplCanvas(FigureCanvasQTAgg):
         ax4.set_ylabel("Tipper Angle\n(Degrees)")
         ax4.grid(True)
 
-        self.figure.canvas.draw()
-        self.background = self.figure.canvas.copy_from_bbox(ax1.bbox)
-
-        self.figure.canvas.draw()
-
-    def update_phase(
-        self,
-        edi_list: list[str],
-        plot_freq: float,
-        plot_tipper: str,
-        ellipse_colorby: str,
-        ellipse_size: float,
-        asize: float,
-        ahwidth: float,
-        ahlength: float,
-    ):
-        """
-        Update phase.
-
-        Parameters
-        ----------
-        edi_list
-            list of EDI files.
-        plot_freq
-            Frequency to plot.
-        plot_tipper
-            'y' + 'r' and/or 'i' to plot.
-        ellipse_colorby
-            Colour by "skew", "phimin", "phimax"
-        ellipse_size
-            Scaling factor for the ellipses.
-        asize
-            arrow size.
-        ahwidth
-            arrow head width.
-        ahlength
-            arrow head length.
-        """
-        edicol = EdiCollection(edi_list)
-        ptdict = edicol.get_phase_tensor_tippers(1 / plot_freq)
-
-        tmp = []
-        tmp2 = {"skew": "skew", "phimin": "phi_min", "phimax": "phi_max"}
-        for i in ptdict:
-            tmp.append(i[tmp2[ellipse_colorby]])
-
-        tmp = np.array(tmp)
-        ellipse_range = [tmp.min().round() - 1, tmp.max().round() + 1, 1]
-
-        self.figure.clear()
-
-        ptmap = PlotPhaseTensorMaps(
-            fn_list=edi_list,
-            plot_freq=plot_freq,
-            fig_size=(4, 3),
-            # pad around stations
-            xpad=0.02,
-            ypad=0.02,
-            # 'y' + 'r' and/or 'i' to plot
-            # real and/or imaginary
-            plot_tipper=plot_tipper,
-            # a matplotlib clour or None for no
-            # borders
-            edgecolor="k",
-            lw=0.5,  # linewidth for the ellipses
-            minorticks_on=False,
-            # 'phimin', 'phimax', or 'skew'
-            ellipse_colorby=ellipse_colorby,
-            ellipse_range=ellipse_range,
-            # scaling factor for the ellipses
-            ellipse_size=ellipse_size,
-            arrow_size=asize,
-            # scaling for arrows (head width)
-            arrow_head_width=ahwidth,
-            # scaling for arrows (head length)
-            arrow_head_length=ahlength,
-            ellipse_cmap="bwr",  # matplotlib colormap
-            # station_dict={'id': (5, 7)},
-            font_size=10,
-            plot_yn="n",
-        )
-
-        ptmap.plot(fig=self.figure, show=False)
-        # ax = self.figure.gca()
-        # ax.autoscale()
-        # ax.set_ylim(-40, -20)
-        ptmap.update_plot()
-
-
-class PlotPoints(ContextModule):
-    """
-    Plot points class.
-
-    Parameters
-    ----------
-    parent
-        Reference to the parent routine. The default is None.
-
-    """
-
-    def __init__(
-        self,
-        parent=None,
-    ):
-        super().__init__(parent)
-        self.setAttribute(QtCore.Qt.WidgetAttribute.WA_DeleteOnClose)
-        self.setWindowTitle("Graph Window")
-
-        vbl = QtWidgets.QVBoxLayout(self)
-        hbl = QtWidgets.QHBoxLayout()
-        self.mmc = MyMplCanvas()
-        mpl_toolbar = NavigationToolbar2QT(self.mmc, self.parent)
-
-        self.cmb_1 = QtWidgets.QComboBox()
-        self.cmb_2 = QtWidgets.QComboBox()
-        self.lbl_1 = QtWidgets.QLabel("Station Name:")
-        self.lbl_2 = QtWidgets.QLabel("Graph Type:")
-
-        self.buttonbox.buttonbox.hide()
-        self.buttonbox.htmlfile = "mt.cm.showgraphs"
-
-        hbl.addWidget(self.buttonbox)
-        hbl.addWidget(self.lbl_1, 0, QtCore.Qt.AlignmentFlag.AlignRight)
-        hbl.addWidget(self.cmb_1)
-        hbl.addWidget(self.lbl_2, 0, QtCore.Qt.AlignmentFlag.AlignRight)
-        hbl.addWidget(self.cmb_2)
-
-        vbl.addWidget(self.mmc)
-        vbl.addWidget(mpl_toolbar)
-        vbl.addLayout(hbl)
-
-        self.setFocus()
-
-        self.cmb_1.currentIndexChanged.connect(self.change_band)
-        self.cmb_2.currentIndexChanged.connect(self.change_band)
-
-    def change_band(self):
-        """Combo to choose band."""
-        data = self.indata["MT - EDI"]
-        i = self.cmb_1.currentText()
-        i2 = self.cmb_2.currentText()
-        self.mmc.update_line(data, i, i2)
-
-    def run(self):
-        """Entry point into the routine, used to run context menu item."""
-        self.show()
-        data = self.indata["MT - EDI"]
-        for i in data:
-            self.cmb_1.addItem(i)
-        for i in ["xy, yx", "xx, yy"]:
-            self.cmb_2.addItem(i)
-
-        self.cmb_1.setCurrentIndex(0)
-        self.cmb_2.setCurrentIndex(0)
+        self.mmc.draw_idle()
 
 
 class PlotPhaseTensor(ContextModule):
@@ -485,8 +280,8 @@ class PlotPhaseTensor(ContextModule):
         hbl = QtWidgets.QHBoxLayout(self)
         gl_1 = QtWidgets.QGridLayout()
         gl_1.setSizeConstraint(QtWidgets.QLayout.SizeConstraint.SetFixedSize)
-        self.mmc = MyMplCanvas()
-        mpl_toolbar = NavigationToolbar2QT(self.mmc, self.parent)
+        self.mmc = CanvasModule(self)
+        mpl_toolbar = CustomToolbar(self.mmc, self)
 
         self.cmb_1 = QtWidgets.QComboBox()
         self.cb_realtipper = QtWidgets.QCheckBox(r"Plot real tipper")
@@ -594,7 +389,7 @@ class PlotPhaseTensor(ContextModule):
         ahwidth = self.dsb_arrowhwidth.value()
         ahlength = self.dsb_arrowhlength.value()
 
-        self.mmc.update_phase(
+        self.update_phase(
             self.edi_list, freq, tipper, ecol, esize, asize, ahwidth, ahlength
         )
 
@@ -649,6 +444,89 @@ class PlotPhaseTensor(ContextModule):
         self.saveobj(self.dsb_arrowhlength)
         self.saveobj(self.cb_imagtipper)
         self.saveobj(self.cb_realtipper)
+
+    def update_phase(
+        self,
+        edi_list: list[str],
+        plot_freq: float,
+        plot_tipper: str,
+        ellipse_colorby: str,
+        ellipse_size: float,
+        asize: float,
+        ahwidth: float,
+        ahlength: float,
+    ):
+        """
+        Update phase.
+
+        Parameters
+        ----------
+        edi_list
+            list of EDI files.
+        plot_freq
+            Frequency to plot.
+        plot_tipper
+            'y' + 'r' and/or 'i' to plot.
+        ellipse_colorby
+            Colour by "skew", "phimin", "phimax"
+        ellipse_size
+            Scaling factor for the ellipses.
+        asize
+            arrow size.
+        ahwidth
+            arrow head width.
+        ahlength
+            arrow head length.
+        """
+        edicol = EdiCollection(edi_list)
+        ptdict = edicol.get_phase_tensor_tippers(1 / plot_freq)
+
+        tmp = []
+        tmp2 = {"skew": "skew", "phimin": "phi_min", "phimax": "phi_max"}
+        for i in ptdict:
+            tmp.append(i[tmp2[ellipse_colorby]])
+
+        tmp = np.array(tmp)
+        ellipse_range = [tmp.min().round() - 1, tmp.max().round() + 1, 1]
+
+        self.mmc.figure.clear()
+
+        ptmap = PlotPhaseTensorMaps(
+            fn_list=edi_list,
+            plot_freq=plot_freq,
+            fig_size=(4, 3),
+            # pad around stations
+            xpad=0.02,
+            ypad=0.02,
+            # 'y' + 'r' and/or 'i' to plot
+            # real and/or imaginary
+            plot_tipper=plot_tipper,
+            # a matplotlib clour or None for no
+            # borders
+            edgecolor="k",
+            lw=0.5,  # linewidth for the ellipses
+            minorticks_on=False,
+            # 'phimin', 'phimax', or 'skew'
+            ellipse_colorby=ellipse_colorby,
+            ellipse_range=ellipse_range,
+            # scaling factor for the ellipses
+            ellipse_size=ellipse_size,
+            arrow_size=asize,
+            # scaling for arrows (head width)
+            arrow_head_width=ahwidth,
+            # scaling for arrows (head length)
+            arrow_head_length=ahlength,
+            ellipse_cmap="bwr",  # matplotlib colormap
+            # station_dict={'id': (5, 7)},
+            font_size=10,
+            plot_yn="n",
+        )
+
+        ptmap.plot(fig=self.mmc.figure, show=False)
+        # ax = self.figure.gca()
+        # ax.autoscale()
+        # ax.set_ylim(-40, -20)
+        ptmap.update_plot()
 
 
 def _testfn_phase():

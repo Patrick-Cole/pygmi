@@ -1,6 +1,5 @@
-# -*- coding: utf-8 -*-
 """
-Plot phase tensor map in Lat-Lon Coordinate System
+Plot phase tensor map in Lat-Lon Coordinate System.
 
 Revision History:
     Created by @author: jpeacock-pr on Thu May 30 18:20:04 2013
@@ -15,17 +14,15 @@ import glob
 import os
 
 import matplotlib.colorbar as mcb
-import matplotlib.colors as colors
-import matplotlib.patches as patches
 import matplotlib.pyplot as plt
-import matplotlib.tri as tri
 import numpy as np
+from matplotlib import colors, patches, tri
 from matplotlib.ticker import FormatStrFormatter
 
 import pygmi.mt.mtpyold.analysis.pt as MTpt
 import pygmi.mt.mtpyold.imaging.mtcolors as mtcl
 import pygmi.mt.mtpyold.imaging.mtplottools as mtpl
-import pygmi.mt.mtpyold.utils.gis_tools as gis_tools
+from pygmi.mt.mtpyold.utils import gis_tools
 from pygmi.mt.mtpyold.utils.mtpylog import MtPyLog
 
 # from pygmi.mt.mtpyold.utils.plot_geotiff_imshow import plot_geotiff_on_axes
@@ -38,7 +35,7 @@ _logger = MtPyLog.get_mtpy_logger(__name__)
 
 class PlotPhaseTensorMaps(mtpl.PlotSettings):
     """
-    Plots phase tensor ellipses in map view from a list of edi files
+    Plots phase tensor ellipses in map view from a list of edi files.
 
     Arguments:
     -------------
@@ -288,9 +285,8 @@ class PlotPhaseTensorMaps(mtpl.PlotSettings):
         >>> ptmap.ax.grid(which='major', color=(.5,1,0))
         >>> ptmap.update_plot()
 
-    Attributes:
-    --------------
-
+    Attributes
+    ----------
         -arrow_color_imag         imaginary induction arrow color
         -arrow_color_real         real induction arrow color
         -arrow_direction          directional convention of arrows
@@ -353,9 +349,8 @@ class PlotPhaseTensorMaps(mtpl.PlotSettings):
         -ypad                 padding between furthes station in y-direction
                               and axes edge
 
-    Methods:
-    ----------
-
+    Methods
+    -------
         -plot                 plots the pseudo section
         -redraw_plot          on call redraws the plot from scratch
         -save_figure          saves figure to a file of given format
@@ -366,10 +361,11 @@ class PlotPhaseTensorMaps(mtpl.PlotSettings):
 
     def __init__(self, **kwargs):
         """
-        Initialise the object
+        Initialise the object.
+
         :param kwargs: keyword-value pairs
         """
-        super(PlotPhaseTensorMaps, self).__init__(**kwargs)
+        super().__init__(**kwargs)
 
         fn_list = kwargs.pop("fn_list", None)
         z_object_list = kwargs.pop("z_object_list", None)
@@ -461,7 +457,7 @@ class PlotPhaseTensorMaps(mtpl.PlotSettings):
         # mt_list for plotting purposes
 
         self._rot_z = kwargs.pop("rot_z", 0)
-        if isinstance(self._rot_z, float) or isinstance(self._rot_z, int):
+        if isinstance(self._rot_z, (float, int)):
             self._rot_z = np.array([self._rot_z] * len(self.mt_list))
 
         # if the rotation angle is an array for rotation of different
@@ -527,13 +523,10 @@ class PlotPhaseTensorMaps(mtpl.PlotSettings):
 
     # ---need to rotate data on setting rotz
     def _set_rot_z(self, rot_z):
-        """
-        need to rotate data when setting z
-        """
-
+        """Need to rotate data when setting z."""
         # if rotation angle is an int or float make an array the length of
         # mt_list for plotting purposes
-        if isinstance(rot_z, float) or isinstance(rot_z, int):
+        if isinstance(rot_z, (float, int)):
             self._rot_z = np.array([rot_z] * len(self.mt_list))
 
         # if the rotation angle is an array for rotation of different
@@ -572,7 +565,8 @@ class PlotPhaseTensorMaps(mtpl.PlotSettings):
         },
     ):
         """
-        Plots the phase tensor map.
+        Plot the phase tensor map.
+
         :param fig: optional figure object
         :param save_path: path to folder for saving plots
         :param show: show plots if True
@@ -584,7 +578,6 @@ class PlotPhaseTensorMaps(mtpl.PlotSettings):
                             are the number of levels to be used in the colormap, the colormap and its
                             title, respectively.
         """
-
         # set position properties for the plot
         plt.rcParams["font.size"] = self.font_size
         plt.rcParams["figure.subplot.left"] = 0.1
@@ -710,6 +703,7 @@ class PlotPhaseTensorMaps(mtpl.PlotSettings):
         self.plot_xarr = np.zeros(len(self.mt_list))
         self.plot_yarr = np.zeros(len(self.mt_list))
 
+        zone1 = None
         for ii, mt in enumerate(self.mt_list):
             newZ = None
             newTipper = None
@@ -981,7 +975,7 @@ class PlotPhaseTensorMaps(mtpl.PlotSettings):
 
             # ==> print a message if couldn't find the freq
             else:
-                _logger.warn(
+                _logger.warning(
                     "Did not find {0:.5g} Hz for station {1}".format(
                         self.plot_freq, mt.station
                     )
@@ -1264,7 +1258,7 @@ class PlotPhaseTensorMaps(mtpl.PlotSettings):
         close_plot="y",
     ):
         """
-        save_plot will save the figure to save_fn.
+        Save_plot will save the figure to save_fn.
 
         Arguments:
         -----------
@@ -1296,7 +1290,6 @@ class PlotPhaseTensorMaps(mtpl.PlotSettings):
                              * 'y' will close the plot after saving.
                              * 'n' will leave plot open
         """
-
         sf = "_{0:.6g}".format(self.plot_freq)
 
         if fig_dpi is None:
@@ -1347,25 +1340,21 @@ class PlotPhaseTensorMaps(mtpl.PlotSettings):
 
     def update_plot(self):
         """
-        update any parameters that where changed using the built-in draw from
-        canvas.
+        Update any parameters that where changed using the built-in draw from canvas.
 
         Use this if you change an of the .fig or axes properties
         """
-
         self.fig.canvas.draw()
 
     def redraw_plot(self):
-        """
-        use this function if you updated some attributes and want to re-plot.
-        """
-
+        """Use this function if you updated some attributes and want to re-plot."""
         plt.close(self.fig)
         self.plot()
 
     def export_params_to_file(self, save_path=None):
         """
-        write text files for all the phase tensor parameters.
+        Write text files for all the phase tensor parameters.
+
         :param save_path: string path to save files into.
         File naming pattern is like save_path/PhaseTensorTipper_Params_freq.csv/table
         **Files Content **
@@ -1384,7 +1373,6 @@ class PlotPhaseTensorMaps(mtpl.PlotSettings):
 
         :return: path2savedfile
         """
-
         # create a save path for files
         if save_path is None:
             _logger.info("No save_path provided. ")
@@ -1477,7 +1465,7 @@ class PlotPhaseTensorMaps(mtpl.PlotSettings):
                     mt1.freq[j2],
                 )
             except IndexError:
-                _logger.warn(
+                _logger.warning(
                     "Did not find {0:.5g} Hz for station {1}".format(
                         self.plot_freq, mt1.station
                     )
@@ -1626,10 +1614,7 @@ class PlotPhaseTensorMaps(mtpl.PlotSettings):
         return svpath
 
     def __str__(self):
-        """
-        rewrite the string builtin to give a useful message
-        """
-
+        """Rewrite the string builtin to give a useful message."""
         return "Plots phase tensor maps for one freq"
 
 
