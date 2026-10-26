@@ -421,7 +421,7 @@ def c_correction(
     showlog("Calculating topographic c-correction...")
     adeg, _, _ = aspect2(dem.data)
 
-    px, py = np.gradient(dem.data, dem.xdim)
+    px, py = np.gradient(dem.data, dem.xdim, dem.ydim)
 
     slope = np.ma.sqrt(px**2 + py**2)
     # slope_deg = np.degrees(np.ma.arctan(slope))
@@ -510,15 +510,24 @@ def _testfn():
     # tmp1.indata['Raster'] = dat
     # tmp1.settings()
 
-    ifile = r"D:\Landslides\oneclip.tif"
-    zenith = 42.7956361279988
-    azimuth = 44.8154655713449
+    # ifile = r"D:\Landslides\oneclip.tif"
+    # zenith = 42.7956361279988
+    # azimuth = 44.8154655713449
+
+    # data = get_raster(ifile)
+    # dem = data.pop(-1)
+
+    ifile = r"D:\topocorr\2530BC_ASTER_20040810_stack.tif"
+    dfile = r"D:\topocorr\2530BC_SUDEM_utm36s.tif"
+
+    zenith = 40.300426
+    azimuth = 37.804336
 
     data = get_raster(ifile)
-    dem = data.pop(-1)
+    dem = get_raster(dfile)
 
     data = lstack(data)
-    dem = lstack(data + [dem], masterid=data[0].dataid)
+    dem = lstack(data + dem, masterid=data[0].dataid)
     dem = dem.pop(-1)
 
     data2 = c_correction(data, dem, azimuth, zenith)

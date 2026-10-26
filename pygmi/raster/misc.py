@@ -489,6 +489,8 @@ def lstack(
     resampling = rasterio.enums.Resampling[resampling]
     needsmerge = False
     rows, cols = dat[0].data.shape
+    xdim = dat[0].xdim
+    ydim = dat[0].ydim
 
     for i in dat:
         irows, icols = i.data.shape
@@ -517,8 +519,10 @@ def lstack(
 
         xmin, xmax, ymin, ymax = data.extent
 
-        if dxy is None:
-            dxy = min(data.xdim, data.ydim)
+        # if dxy is None:
+        #     dxy = min(data.xdim, data.ydim)
+        xdim = data.xdim
+        ydim = data.ydim
     else:
         data = dat[0]
 
@@ -535,9 +539,13 @@ def lstack(
             ymin = min(ymin, ymin0)
             ymax = max(ymax, ymax0)
 
-    cols = int(round((xmax - xmin) / dxy, 9))
-    rows = int(round((ymax - ymin) / dxy, 9))
-    trans = rasterio.Affine(dxy, 0, float(xmin), 0, -1 * dxy, float(ymax))
+    if masterid is None:
+        xdim = dxy
+        ydim = dxy
+
+    cols = int(round((xmax - xmin) / xdim, 9))
+    rows = int(round((ymax - ymin) / ydim, 9))
+    trans = rasterio.Affine(xdim, 0, float(xmin), 0, -1 * ydim, float(ymax))
 
     if cols == 0 or rows == 0:
         showlog("Your rows or cols are zero. Your input projection may be wrong.")
