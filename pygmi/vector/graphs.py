@@ -1009,8 +1009,8 @@ class PlotVector(ContextModule):
             self.cmb_c.hide()
             self.lbl_c.hide()
 
-        self.change_band()
         self.mpl_toolbar.add_map_btn(self.change_band, self.data.crs)
+        self.change_band()
 
         self.show()
 
@@ -1038,6 +1038,7 @@ class PlotVector(ContextModule):
         fig.clear()
 
         axes = fig.add_subplot(111, label="map")
+        # axes = fig.add_axes([0, 0.1, 0.8, 0.8])
 
         if "LineString" in data.geom_type.iloc[0]:
             tmp = []

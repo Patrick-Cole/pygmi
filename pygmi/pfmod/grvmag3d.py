@@ -115,7 +115,7 @@ class PlotTest(ContextModule):
                 magtmp, levels=csrange, colors="b", extent=etmp, linewidths=0.5
             )
 
-        self.mmc.set_colorbar(axes, ims, location="bottom", label="nT")
+        self.mmc.set_colorbar(axes, ims, label="nT")
         self.mmc.set_map_axes(axes, crs)
 
         axes = self.mmc.figure.add_subplot(122)
@@ -131,7 +131,7 @@ class PlotTest(ContextModule):
                 grvtmp, levels=csrange, colors="y", extent=etmp, linewidths=0.5
             )
 
-        self.mmc.set_colorbar(axes, ims, location="bottom", label="mGal")
+        self.mmc.set_colorbar(axes, ims, label="mGal")
         self.mmc.set_map_axes(axes, crs)
         self.mmc.draw_idle()
 

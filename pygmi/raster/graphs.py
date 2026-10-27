@@ -366,6 +366,9 @@ class PlotRaster(ContextModule):
         fig = self.mmc.figure
         fig.clear()
         axes = fig.add_subplot(111)
+        # fig.set_layout_engine("none")
+        # axes = fig.add_axes([0, 0.1, 0.8, 0.8])
+
         self.mmc.custom_resize = True
         is_section = data1.metadata["Raster"]["Section"]
 
@@ -405,13 +408,8 @@ class PlotRaster(ContextModule):
 
         rdata.set(label="Raster Display")
 
-        location = "right"
         if not data1.isrgb:
-            location = "right"
-            if is_section is True:
-                location = "bottom"
-
-            cbar = self.mmc.set_colorbar(axes, rdata, location)
+            cbar = self.mmc.set_colorbar(axes, rdata)
             cbar.set_label(data1.units)
 
         if is_section is True:

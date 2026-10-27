@@ -153,6 +153,7 @@ class CustomToolbar(NavigationToolbar2QT):
         self.canvas.yright = self.dlg.cb_yright.isChecked()
         self.canvas.cbar_pad = self.dlg.dsb_cbar_pad.value()
         self.canvas.cbar_aspect = self.dlg.sb_cbar_aspect.value()
+        self.canvas.cbar_loc = self.dlg.cmb_cbar_loc.currentText()
 
         self.canvas.xticks = 10
         self.canvas.yticks = 10
@@ -198,8 +199,9 @@ class CanvasModule(FigureCanvasQTAgg):
         self.xbottom = True
         self.yleft = True
         self.yright = True
-        self.cbar_pad = 0.1
+        self.cbar_pad = 0.2
         self.cbar_aspect = 20
+        self.cbar_loc = "Right"
 
     def resizeEvent(
         self,
@@ -263,9 +265,7 @@ class CanvasModule(FigureCanvasQTAgg):
         if self.show_scalebar is True:
             set_scale(axes, crs, self.showlog)
 
-    def set_colorbar(
-        self, axes: Axes, mappable, location="right", boundaries=None, label=None
-    ):
+    def set_colorbar(self, axes: Axes, mappable, boundaries=None, label=None):
         """
         Set the color bar.
 
@@ -276,12 +276,21 @@ class CanvasModule(FigureCanvasQTAgg):
         """
         self.has_colorbar = True
         fig = axes.get_figure()
+
+        if self.cbar_loc == "Right":
+            location = "right"
+            cax = axes.inset_axes(
+                [1.0 + self.cbar_pad, 0.0, 1.0 / self.cbar_aspect, 1.0]
+            )
+        else:
+            location = "bottom"
+            cax = axes.inset_axes([0.0, -self.cbar_pad, 1.0, 1.0 / self.cbar_aspect])
+
         cbar = fig.colorbar(
             mappable,
+            cax=cax,
             format=frm,
             location=location,
-            aspect=self.cbar_aspect,
-            pad=self.cbar_pad,
             boundaries=boundaries,
             label=label,
         )
@@ -297,7 +306,17 @@ class CanvasModule(FigureCanvasQTAgg):
     ):
         """Set discrete colour bar."""
         self.has_colorbar = True
-        cbar = discrete_colorbar(axes, mappable, cdat, lbls)
+
+        if self.cbar_loc == "Right":
+            location = "right"
+            cax = axes.inset_axes(
+                [1.0 + self.cbar_pad, 0.0, 1.0 / self.cbar_aspect, 1.0]
+            )
+        else:
+            location = "bottom"
+            cax = axes.inset_axes([0.0, -self.cbar_pad, 1.0, 1.0 / self.cbar_aspect])
+
+        cbar = discrete_colorbar(axes, cax, mappable, cdat, lbls, location)
 
         return cbar
 
@@ -342,6 +361,7 @@ class MapSettings(BasicModule):
         self.cb_yright = QtWidgets.QCheckBox("Display right y-axis")
         self.dsb_cbar_pad = QtWidgets.QDoubleSpinBox()
         self.sb_cbar_aspect = QtWidgets.QSpinBox()
+        self.cmb_cbar_loc = QtWidgets.QComboBox()
 
         self.setupui()
 
@@ -364,20 +384,21 @@ class MapSettings(BasicModule):
 
         lbl_cbar_pad = QtWidgets.QLabel("Padding:")
         lbl_cbar_aspect = QtWidgets.QLabel("Aspect:")
+        lbl_cbar_loc = QtWidgets.QLabel("Location:")
 
         self.sb_xticks.setMinimum(2)
         self.sb_xticks.setValue(3)
         self.sb_yticks.setMinimum(2)
         self.sb_yticks.setValue(3)
 
-        self.dsb_cbar_pad.setValue(0.1)
+        self.dsb_cbar_pad.setValue(0.2)
         self.dsb_cbar_pad.setSingleStep(0.1)
         self.dsb_cbar_pad.setMaximum(1.0)
         self.sb_cbar_aspect.setValue(20)
         self.sb_cbar_aspect.setMinimum(1)
         self.dsb_cbar_pad.setEnabled(False)
         self.sb_cbar_aspect.setEnabled(False)
-
+        self.cmb_cbar_loc.addItems(["Right", "Below"])
         # self.buttonbox.htmlfile = "raster.dm.layerstack"
         self.buttonbox.helpdocs.hide()
 
@@ -396,6 +417,8 @@ class MapSettings(BasicModule):
         gl_cbar.addWidget(self.dsb_cbar_pad, 1, 1, 1, 1)
         gl_cbar.addWidget(lbl_cbar_aspect, 2, 0, 1, 1)
         gl_cbar.addWidget(self.sb_cbar_aspect, 2, 1, 1, 1)
+        gl_cbar.addWidget(lbl_cbar_loc, 3, 0, 1, 1)
+        gl_cbar.addWidget(self.cmb_cbar_loc, 3, 1, 1, 1)
 
         gl_axes.addWidget(self.cb_degrees, 1, 0, 1, 2)
         gl_axes.addWidget(self.cb_metres, 2, 0, 1, 2)
@@ -500,9 +523,11 @@ def dd2txt(
 
 def discrete_colorbar(
     axes: Axes,
+    cax: Axes,
     csp,
     cdat: np.ma.MaskedArray | NDArray,
     lbls: list[str] | None = None,
+    location: str = "right",
 ):
     """
     Plot colour bar using discrete colours for a small range of values.
@@ -534,12 +559,25 @@ def discrete_colorbar(
     else:
         bnds = vals.tolist() + [vals.max() + 1]
         ticks = np.diff(bnds) / 2 + vals
-        cbar = axes.figure.colorbar(csp, boundaries=bnds, values=vals, ticks=ticks)
+        cbar = axes.figure.colorbar(
+            csp,
+            cax=cax,
+            boundaries=bnds,
+            values=vals,
+            ticks=ticks,
+            location=location,
+        )
 
-    if lbls is not None:
-        cbar.ax.set_yticklabels(lbls)
+    if location == "right":
+        if lbls is not None:
+            cbar.ax.set_yticklabels(lbls)
+        else:
+            cbar.ax.set_yticklabels(vals)
     else:
-        cbar.ax.set_yticklabels(vals)
+        if lbls is not None:
+            cbar.ax.set_xticklabels(lbls)
+        else:
+            cbar.ax.set_xticklabels(vals)
 
     return cbar
 
