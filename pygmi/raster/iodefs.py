@@ -1981,7 +1981,17 @@ def export_raster(
                 continue
 
             # Histogram section
-            dhist = np.histogram(donly, 256)
+            if np.allclose(donly, donly[0]):
+                donly[:] = np.mean(donly)
+            try:
+                dhist = np.histogram(donly, 256)
+            except ValueError:
+                showlog(
+                    f"Problem creating histogram for band {band + 1}, "
+                    "skipping statistics for this band"
+                )
+                continue
+
             dmin = str(dhist[1][0])
             dmax = str(dhist[1][-1])
             dhist = str(dhist[0].tolist()).replace(", ", "|")[1:-1]
@@ -2104,6 +2114,7 @@ def _filespeedtest():
     import sys
 
     from pygmi.misc import getinfo
+    from pygmi.raster.reproj import data_reproject
 
     app = QtWidgets.QApplication(sys.argv)
     app.setStyle(QtWidgets.QStyleFactory.create("Fusion"))
@@ -2116,10 +2127,16 @@ def _filespeedtest():
     # ifile = r"E:\LiDAR1\Northern Cape - Prieska\NC43\Imagery\GeoTIFF\NC43-1.tif"
     # ifile = r"D:\SANRAL\Remote sensing data\Buffer_250m\CarletonvilleRD2_Products\Carletonville_VD_stack.hdr"
     # ifile = r"D:\workdata\PyGMI Test Data\Raster\ER Mapper\magmicrolevel.PD.ers"
+    ifile = r"D:\topocorr\2530BC_EMIT_20250903_stack.tif"
 
     dataset = get_raster(ifile)
     # dataset = get_geopak(ifile)
+    dat = []
+    for i in dataset:
+        tmp = data_reproject(i, ocrs=CRS.from_epsg("32736"))
+        dat.append(tmp)
 
+    dataset = dat
     # getinfo('Start')
 
     # export_raster(ifile[:-4]+'_NONE.tif', dataset, 'GTiff')  # 65s
@@ -2128,7 +2145,12 @@ def _filespeedtest():
     # export_raster(ifile[:-4]+'_LZWA.tif', dataset, 'GTiff', compression='LZMA')  #>900s
     # export_raster(ifile[:-4]+'_ZSTD.tif', dataset, 'GTiff', compression='ZSTD')  # 74s
 
-    # export_raster(ifile[:-4]+'_DEFLATE.tif', dataset, 'GTiff', compression='DEFLATE', bandsort=True)  # 104s, 4,246,330
+    export_raster(
+        ifile[:-4] + "_DEFLATE.tif",
+        dataset,
+        compression="DEFLATE",
+        # bandsort=True,
+    )  # 104s, 4,246,330
     # export_raster(ifile[:-4]+'_JPEG75.tif', dataset, 'GTiff', compression='JPEG')
     # export_raster(ifile[:-4]+'_JXL.tif', dataset, 'GTiff', compression='JXL')
 
