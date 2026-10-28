@@ -269,7 +269,6 @@ def eqedit(
     indata = lstack(data, piter=piter, showlog=showlog)
 
     for j, i in enumerate(indata):
-        # self.bands[i.dataid] = 'i' + str(j)
         bandsall.append(i.data)
         localdict["i" + str(j)] = i.data
 
@@ -299,16 +298,12 @@ def eqedit(
 
     if "mosaic" in neweq:
         findat = mosaic(neweq, localdict)
-        # mask = findat.mask
     elif "mean" in neweq:
         findat = mean(neweq, localdict)
-        # mask = findat.mask
     elif "std" in neweq:
         findat = std(neweq, localdict)
-        # mask = findat.mask
     elif "detrend" in neweq:
         findat = detrend(neweq, localdict)
-        # mask = findat.mask
     else:
         try:
             findat = ne.evaluate(neweq, localdict)
@@ -318,8 +313,6 @@ def eqedit(
     if findat is None:
         showlog("Error: Nothing processed! Your equation most likely had an error.")
         return False
-
-    # mask = np.ma.getmaskarray(findat)
 
     outdata = []
 
@@ -661,23 +654,28 @@ def _test():
 
     print("Starting")
 
-    ifile = r"D:\Workdata\PyGMI Test Data\Raster\testdata.tif"
+    # ifile = r"D:\Workdata\PyGMI Test Data\Raster\testdata.tif"
+    # dat = get_raster(ifile)
 
-    dat = get_raster(ifile)
+    ifile1 = r"D:\topocorr\MinRan_NewGrav_MF3layers_utm35s.hdr"
+    ifile2 = r"D:\topocorr\MinRan_NewGrav_utm35s.hdr"
+
+    dat1 = get_raster(ifile1)
+    dat2 = get_raster(ifile2)
+    dat = dat1 + dat2
 
     app = QtWidgets.QApplication(sys.argv)
     app.setStyle(QtWidgets.QStyleFactory.create("Fusion"))
 
     EE = EquationEditor()
     EE.indata["Raster"] = dat
-    EE.textbrowser.setText("detrend(i0,40,-10)")
-    # EE.textbrowser.setText("iall*2")
+    EE.textbrowser.setText("i3-i2")
     EE.settings()
 
-    _out = EE.outdata["Raster"]
+    out = EE.outdata["Raster"]
 
     plt.figure(dpi=300)
-    plt.imshow(_out[0].data)
+    plt.imshow(out[0].data)
     plt.show()
 
 

@@ -36,6 +36,8 @@ from matplotlib import patches, rcParams
 from matplotlib.axes import Axes
 from matplotlib.backends.backend_qt import NavigationToolbar2QT
 from matplotlib.backends.backend_qtagg import FigureCanvasQTAgg
+from matplotlib.cm import ScalarMappable
+from matplotlib.colorbar import Colorbar
 from matplotlib.figure import Figure
 from matplotlib.ticker import FuncFormatter, MaxNLocator
 from matplotlib_map_utils.core.north_arrow import north_arrow
@@ -265,7 +267,13 @@ class CanvasModule(FigureCanvasQTAgg):
         if self.show_scalebar is True:
             set_scale(axes, crs, self.showlog)
 
-    def set_colorbar(self, axes: Axes, mappable, boundaries=None, label=None):
+    def set_colorbar(
+        self,
+        axes: Axes,
+        mappable: ScalarMappable,
+        boundaries: None | list = None,
+        label: str | None = None,
+    ):
         """
         Set the color bar.
 
@@ -273,6 +281,13 @@ class CanvasModule(FigureCanvasQTAgg):
         ----------
         axes
             Primary Matplotlib axes.
+        mappable
+            Mappable object
+        boundaries
+            Boundaries for colorbar.
+        label
+            Colorbar label.
+
         """
         self.has_colorbar = True
         fig = axes.get_figure()
@@ -300,11 +315,24 @@ class CanvasModule(FigureCanvasQTAgg):
     def set_discrete_colorbar(
         self,
         axes: Axes,
-        mappable,
+        mappable: ScalarMappable,
         cdat: np.ma.MaskedArray | NDArray,
         lbls: list[str] | None = None,
     ):
-        """Set discrete colour bar."""
+        """
+        Set discrete colour bar.
+
+        Parameters
+        ----------
+        axes
+            Primary Matplotlib axes.
+        mappable
+            Mappable object
+        cdat
+            Array of values.
+        lbls
+            Tick labels, by default None.
+        """
         self.has_colorbar = True
 
         if self.cbar_loc == "Right":
@@ -524,11 +552,11 @@ def dd2txt(
 def discrete_colorbar(
     axes: Axes,
     cax: Axes,
-    csp,
+    csp: ScalarMappable,
     cdat: np.ma.MaskedArray | NDArray,
     lbls: list[str] | None = None,
     location: str = "right",
-):
+) -> Colorbar | None:
     """
     Plot colour bar using discrete colours for a small range of values.
 
@@ -536,12 +564,21 @@ def discrete_colorbar(
     ----------
     axes
         Current axes.
+    cax
+        Colourbar axes.
     csp
         Handle to Matplotlib plotting routine.
     cdat
         Array of values.
     lbls
-        y tick labels, by default None
+        Tick labels, by default None.
+    location
+        Colourbar location, by default "right".
+
+    Returns
+    -------
+    Colorbar
+        Discrete colourbar.
     """
     vals = np.unique(cdat)
     if np.ma.isMaskedArray(vals):
@@ -550,7 +587,7 @@ def discrete_colorbar(
 
     if len(vals) < 2:
         print("Too few discrete values")
-        return
+        return None
 
     if hasattr(csp.norm, "boundaries"):
         bnds = csp.norm.boundaries
@@ -691,6 +728,14 @@ def set_axes(
         Maximum number of x-ticks, by default 10.
     yticks
         Maximum number of y-ticks, by default 10.
+    xtop
+        Flag for tick on the top of map axes, by default True.
+    xbottom
+        Flag for tick on the bottom of map axes, by default True.
+    yleft
+        Flag for tick on the left of map axes, by default True.
+    yright
+        Flag for tick on the right of map axes, by default True.
     """
     if crs is None:
         crs = CRS.from_string(
@@ -784,8 +829,24 @@ def set_axes(
     ylabels_dd(secax1, crs, xmin, num=yticks)
 
 
-def xlabels_dd(ax, crs, y, pad=15, num=10):
-    """Generate labels for x axis in degrees."""
+def xlabels_dd(ax: Axes, crs: CRS, y: float, pad=15, num=10):
+    """
+    Generate labels for x axis in degrees.
+
+    Parameters
+    ----------
+    ax
+        Matplotlib axes.
+    crs
+        Projection of map.
+    y
+        Y coordinate of x-axis.
+    pad, optional
+        Label padding, by default 15.
+    num, optional
+        Maximum number of labels, by default 10.
+
+    """
     fig = ax.get_figure()
 
     transformer = pyproj.Transformer.from_crs(crs, "EPSG:4326", always_xy=True)
@@ -813,8 +874,20 @@ def xlabels_dd(ax, crs, y, pad=15, num=10):
         num -= 1
 
 
-def xlabels_m(ax, pad=15, num=10):
-    """Generate labels for x axis in metres."""
+def xlabels_m(ax: Axes, pad=15, num=10):
+    """
+    Generate labels for x axis in metres.
+
+    Parameters
+    ----------
+    ax
+        Matplotlib axes
+    pad, optional
+        Label padding, by default 15.
+    num, optional
+        Maximum number of labels, by default 10.
+
+    """
     fig = ax.get_figure()
 
     while num > 1:
@@ -829,8 +902,24 @@ def xlabels_m(ax, pad=15, num=10):
         num -= 1
 
 
-def ylabels_dd(ax, crs, x, pad=20, num=10):
-    """Generate labels for y axis in degrees."""
+def ylabels_dd(ax: Axes, crs: CRS, x, pad=20, num=10):
+    """
+    Generate labels for y axis in degrees.
+
+    Parameters
+    ----------
+    ax
+        Matplotlib axes.
+    crs
+        Projection of map.
+    x
+        X coordinate of y-axis.
+    pad, optional
+        Label padding, by default 15.
+    num, optional
+        Maximum number of labels, by default 10.
+
+    """
     fig = ax.get_figure()
 
     transformer = pyproj.Transformer.from_crs(crs, "EPSG:4326", always_xy=True)
@@ -857,8 +946,19 @@ def ylabels_dd(ax, crs, x, pad=20, num=10):
         num -= 1
 
 
-def ylabels_m(ax, pad=15, num=10):
-    """Generate labels for y axis in metres."""
+def ylabels_m(ax: Axes, pad: float = 15, num: int = 10):
+    """
+    Generate labels for y axis in metres.
+
+    Parameters
+    ----------
+    ax
+        Matplotlib axes
+    pad, optional
+        Label padding, by default 15.
+    num, optional
+        Maximum number of labels, by default 10.
+    """
     fig = ax.get_figure()
 
     while num > 1:

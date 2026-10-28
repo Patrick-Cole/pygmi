@@ -38,6 +38,7 @@ menu. The following are supported:
 import numpy as np
 import pyvista as pv
 from matplotlib import colors
+from matplotlib.ticker import SymmetricalLogLocator
 from numpy.typing import NDArray
 from PySide6 import QtCore, QtWidgets
 from pyvistaqt import QtInteractor
@@ -366,11 +367,16 @@ class PlotRaster(ContextModule):
         fig = self.mmc.figure
         fig.clear()
         axes = fig.add_subplot(111)
-        # fig.set_layout_engine("none")
-        # axes = fig.add_axes([0, 0.1, 0.8, 0.8])
 
         self.mmc.custom_resize = True
         is_section = data1.metadata["Raster"]["Section"]
+
+        # Set up log colorbar stuff
+        lthres = 0.01
+        lptp = float(data1.data.max()) - float(data1.data.min())
+
+        if lptp > 0:
+            lthres = min(lthres, lptp / 100)
 
         if data1.isrgb is True:
             rdata = imshow(
@@ -381,20 +387,21 @@ class PlotRaster(ContextModule):
                 interpolation=interp,
             )
         elif plotlog is True:
-            lthres = 0.01
-            lptp = float(data1.data.max()) - float(data1.data.min())
-            if lptp > 0:
-                lthres = min(lthres, lptp / 100)
-
+            if data1.data.min() <= 0:
+                # norm = None
+                norm = colors.AsinhNorm(linear_width=lthres)
+                # self.showlog(
+                #     "Taking log not possible, you have values less than or equal to 0."
+                # )
+            else:
+                norm = colors.LogNorm()
             rdata = imshow(
                 axes,
                 data1.data,
                 extent=data1.extent,
                 cmap=colormaps[cmap],
                 interpolation=interp,
-                norm=colors.SymLogNorm(
-                    linthresh=lthres, vmin=data1.data.min(), vmax=data1.data.max()
-                ),
+                norm=norm,
             )
         else:
             rdata = imshow(
@@ -410,6 +417,7 @@ class PlotRaster(ContextModule):
 
         if not data1.isrgb:
             cbar = self.mmc.set_colorbar(axes, rdata)
+
             cbar.set_label(data1.units)
 
         if is_section is True:

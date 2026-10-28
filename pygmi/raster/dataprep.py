@@ -2019,8 +2019,6 @@ def _testfn():
     import os
     import sys
 
-    import matplotlib.pyplot as plt
-
     from pygmi.raster.iodefs import get_raster
 
     ifile = r"D:\workdata\PyGMI Test Data\Raster\testdata.tif"
@@ -2031,15 +2029,9 @@ def _testfn():
     app = QtWidgets.QApplication(sys.argv)
     app.setStyle(QtWidgets.QStyleFactory.create("Fusion"))
 
-    tmp = RasterToVectorBoundary()
+    tmp = DataReproj()
     tmp.indata["Raster"] = dat
     tmp.settings()
-
-    gdf = tmp.outdata["Vector"][0]
-
-    gdf.plot()
-
-    plt.show()
 
 
 def _testmosaic():
@@ -2063,4 +2055,4 @@ def _testmosaic():
 
 
 if __name__ == "__main__":
-    _testmosaic()
+    _testfn()
