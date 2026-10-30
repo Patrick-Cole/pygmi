@@ -624,7 +624,8 @@ class DiagramScene(QtWidgets.QGraphicsScene):
                 text += i + "\n"
                 for j in odata[i]:
                     text += os.path.basename(j.filename) + "\n"
-
+            if i in ("Raster", "Cluster"):
+                text += "\nFilename: " + os.path.basename(odata[i][0].filename)
             if i in ("Raster", "Cluster", "Vector"):
                 text += "\nProjection: " + get_crs_label(odata[i][0].crs)
 
