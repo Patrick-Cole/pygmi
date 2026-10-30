@@ -73,6 +73,12 @@ class MenuWidget:
         self.menu.addAction(self.action_cont)
         self.action_cont.triggered.connect(self.cont)
 
+        self.action_mlv = QtGui.QAction(
+            "Mean of Least Variance (MLV) Edge Preserving Filter"
+        )
+        self.menu.addAction(self.action_mlv)
+        self.action_mlv.triggered.connect(self.mlv)
+
         self.action_tilt = QtGui.QAction("Tilt Angle and Related Edge Filters")
         self.menu.addAction(self.action_tilt)
         self.action_tilt.triggered.connect(self.tilt)
@@ -104,6 +110,10 @@ class MenuWidget:
         self.parent.item_insert(
             "Step", "Tilt Depth Interpretation", tiltdepth.TiltDepth
         )
+
+    def mlv(self):
+        """Compute MLV."""
+        self.parent.item_insert("Step", "MLV", dataprep.MLV)
 
     def rtp(self):
         """Compute RTP."""

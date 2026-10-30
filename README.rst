@@ -156,8 +156,6 @@ The process to install is as follows:
 
    conda install pyside6
 
-   conda install fiona
-
    conda install matplotlib
 
    conda install psutil

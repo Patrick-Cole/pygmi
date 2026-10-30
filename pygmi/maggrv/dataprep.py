@@ -371,6 +371,184 @@ def taylorcont(
     return dat
 
 
+class MLV(BasicModule):
+    """
+    Class used to gather information via a GUI, for function mlv_filter.
+
+    Parameters
+    ----------
+    parent
+        Reference to the parent routine. The default is None.
+
+    """
+
+    def __init__(
+        self,
+        parent=None,
+    ):
+        super().__init__(parent)
+
+        self.smooth = 0
+
+        self.sb_s = QtWidgets.QSpinBox()
+
+        self.setupui()
+
+        self.sb_s.setValue(self.smooth)
+
+    def setupui(self):
+        """Set up UI."""
+        gl_1 = QtWidgets.QGridLayout(self)
+        self.buttonbox.htmlfile = "maggrv.dm.tilt"
+
+        lbl_2 = QtWidgets.QLabel("Window Size (Odd)")
+
+        self.sb_s.setPrefix("")
+        self.sb_s.setMinimum(3)
+        self.sb_s.setMaximum(100000)
+        self.sb_s.setSingleStep(1)
+
+        self.setWindowTitle("Mean of Least Variance")
+
+        gl_1.addWidget(lbl_2, 0, 0, 1, 1)
+        gl_1.addWidget(self.sb_s, 0, 1, 1, 1)
+        gl_1.addWidget(self.buttonbox, 3, 0, 1, 2)
+
+    def settings(
+        self,
+        nodialog: bool = False,
+    ) -> bool:
+        """
+        Entry point into item.
+
+        Parameters
+        ----------
+        nodialog
+            Run settings without a dialog. The default is False.
+
+        Returns
+        -------
+        bool
+            True if successful, False otherwise.
+
+        """
+        if "Raster" not in self.indata:
+            self.showlog("No Raster Data.")
+            return False
+
+        if not nodialog:
+            temp = self.exec()
+            if temp == 0:
+                return False
+
+        win = self.sb_s.value()
+
+        data = [i.copy() for i in self.indata["Raster"]]
+        data2 = []
+
+        for dat in self.piter(data):
+            ndat = dat.data
+            mask = ndat.mask
+
+            ndat = ndat.filled(ndat.mean())
+            mlv = mlv_filter(ndat, win)
+
+            dat.data = np.ma.array(mlv, mask=mask)
+
+            data2.append(dat.copy())
+            data2[-1].data = np.ma.array(mlv, mask=mask)
+            data2[-1].dataid += " MLV"
+
+        for i in data2:
+            if i.nodata is None:
+                continue
+            i.data.data[i.data.mask] = i.nodata
+
+        self.outdata["Raster"] = data2
+        return True
+
+    def saveproj(self):
+        """Save project data from class."""
+        self.saveobj(self.sb_s)
+        self.saveobj(self.sb_azi)
+        self.saveobj(self.sb_k)
+
+
+@njit(parallel=True, cache=True)
+def mlv_filter(
+    image: NDArray,
+    win_size: int = 5,
+) -> NDArray:
+    """
+    Apply a 2D Mean of Least Variance (MLV) Edge Preserving Filter.
+
+    Parameters
+    ----------
+    image
+        2D grayscale input image (float32 or float64).
+    win_size
+        Size of the square window (must be an odd integer), by default 5
+
+    Returns
+    -------
+    ndarray
+        Filtered 2D image.
+    """
+    rows, cols = image.shape
+    output = image.copy()
+    h = win_size // 2  # Half-window size
+
+    # Pre-calculate relative quadrant boundaries to avoid list creation in loops
+    # Format: (row_start, row_end, col_start, col_end) relative to center pixel
+    quad_offsets = np.array(
+        [
+            [-h, 0, -h, 0],  # Top-Left
+            [-h, 0, 0, h],  # Top-Right
+            [0, h, -h, 0],  # Bottom-Left
+            [0, h, 0, h],  # Bottom-Right
+        ],
+        dtype=np.int32,
+    )
+
+    # Parallel outer loop for maximum performance on multi-core CPUs
+    for r in prange(h, rows - h):
+        for c in range(h, cols - h):
+            min_variance = 1e15
+            best_mean = image[r, c]
+
+            # Evaluate each of the 4 overlapping sub-windows (quadrants)
+            for q in range(4):
+                r_start_off = quad_offsets[q, 0]
+                r_end_off = quad_offsets[q, 1]
+                c_start_off = quad_offsets[q, 2]
+                c_end_off = quad_offsets[q, 3]
+
+                sum_val = 0.0
+                sum_sq_val = 0.0
+                count = 0
+
+                # Iterate through pixels in the current quadrant
+                for dr in range(r_start_off, r_end_off + 1):
+                    for dc in range(c_start_off, c_end_off + 1):
+                        pixel_val = image[r + dr, c + dc]
+                        sum_val += pixel_val
+                        sum_sq_val += pixel_val * pixel_val
+                        count += 1
+
+                # Calculate statistical mean and variance
+                mean = sum_val / count
+                variance = (sum_sq_val / count) - (mean * mean)
+
+                # Select the mean of the region with the most uniform texture (least variance)
+                if variance < min_variance:
+                    min_variance = variance
+                    best_mean = mean
+
+            output[r, c] = best_mean
+
+    return output
+
+
 class Tilt1(BasicModule):
     """
     Class used to gather information via a GUI, for function tilt1.
@@ -845,81 +1023,6 @@ def rtp(
     return dat
 
 
-@njit(parallel=True, cache=True)
-def mlv_filter(
-    image: NDArray,
-    win_size: int = 5,
-) -> NDArray:
-    """
-    Apply a 2D Mean of Least Variance (MLV) Edge Preserving Filter.
-
-    Parameters
-    ----------
-    image
-        2D grayscale input image (float32 or float64).
-    win_size
-        Size of the square window (must be an odd integer), by default 5
-
-    Returns
-    -------
-    ndarray
-        Filtered 2D image.
-    """
-    rows, cols = image.shape
-    output = image.copy()
-    h = win_size // 2  # Half-window size
-
-    # Pre-calculate relative quadrant boundaries to avoid list creation in loops
-    # Format: (row_start, row_end, col_start, col_end) relative to center pixel
-    quad_offsets = np.array(
-        [
-            [-h, 0, -h, 0],  # Top-Left
-            [-h, 0, 0, h],  # Top-Right
-            [0, h, -h, 0],  # Bottom-Left
-            [0, h, 0, h],  # Bottom-Right
-        ],
-        dtype=np.int32,
-    )
-
-    # Parallel outer loop for maximum performance on multi-core CPUs
-    for r in prange(h, rows - h):
-        for c in range(h, cols - h):
-            min_variance = 1e15
-            best_mean = image[r, c]
-
-            # Evaluate each of the 4 overlapping sub-windows (quadrants)
-            for q in range(4):
-                r_start_off = quad_offsets[q, 0]
-                r_end_off = quad_offsets[q, 1]
-                c_start_off = quad_offsets[q, 2]
-                c_end_off = quad_offsets[q, 3]
-
-                sum_val = 0.0
-                sum_sq_val = 0.0
-                count = 0
-
-                # Iterate through pixels in the current quadrant
-                for dr in range(r_start_off, r_end_off + 1):
-                    for dc in range(c_start_off, c_end_off + 1):
-                        pixel_val = image[r + dr, c + dc]
-                        sum_val += pixel_val
-                        sum_sq_val += pixel_val * pixel_val
-                        count += 1
-
-                # Calculate statistical mean and variance
-                mean = sum_val / count
-                variance = (sum_sq_val / count) - (mean * mean)
-
-                # Select the mean of the region with the most uniform texture (least variance)
-                if variance < min_variance:
-                    min_variance = variance
-                    best_mean = mean
-
-            output[r, c] = best_mean
-
-    return output
-
-
 def _testfn_rtp():
     """RTP testing routine."""
     import matplotlib.pyplot as plt
@@ -956,26 +1059,29 @@ def _testfn_rtp():
 
 def _testfn():
     """Test routine."""
+    import sys
+
     import matplotlib.pyplot as plt
 
     from pygmi.raster.iodefs import get_raster
-    from pygmi.raster.modest_image import imshow
 
-    ifile = r"D:\workdata\PyGMI Test Data\Magnetics\RTP\Whole_mag_residual_modelregional_utm35s.hdr"
+    app = QtWidgets.QApplication(sys.argv)
+    app.setStyle(QtWidgets.QStyleFactory.create("Fusion"))
 
-    dat1 = get_raster(ifile)[0]
-    dat = rtp(dat1, -62.08, -14.23)
-    # dat = dat1
+    ifile = r"D:\Workdata\PyGMI Test Data\Gravity\MLV\MinRan_Grav_utm35s.hdr"
 
-    _t1, th, _t2, _ta, _tdx, _tahg, _ehga = tilt1(dat, 75, 0)
+    dat1 = get_raster(ifile)
+
+    PD = MLV()
+    PD.indata["Raster"] = dat1
+    PD.settings()
+
+    odat = PD.outdata["Raster"]
 
     plt.figure()
-    ax = plt.gca()
-    vmin = th.mean() - 2.5 * th.std()
-    vmax = th.mean() + 2.5 * th.std()
-    imshow(ax, th, extent=dat.extent, interpolation="none", vmin=vmin, vmax=vmax)
+    plt.imshow(odat[0].data, extent=odat[0].extent)
     plt.show()
 
 
 if __name__ == "__main__":
-    _testfn_rtp()
+    _testfn()
