@@ -267,13 +267,13 @@ def extendlines(
         theta = np.arctan2(p2[1] - p1[1], p2[0] - p1[0])
         dy = length * np.sin(theta)
         dx = length * np.cos(theta)
-        line[0] = (p2[0] + dx, p2[1] + dy)
+        line[0, :2] = (p2[0] + dx, p2[1] + dy)
 
         p1, p2 = line[-2:]
         theta = np.arctan2(p2[1] - p1[1], p2[0] - p1[0])
         dy = length * np.sin(theta)
         dx = length * np.cos(theta)
-        line[-1] = (p2[0] + dx, p2[1] + dy)
+        line[-1, :2] = (p2[0] + dx, p2[1] + dy)
 
         gdf2.loc[i, "geometry"] = shapely.LineString(line)
 
@@ -730,6 +730,7 @@ def _testfn():
     # sfile = r"D:\Workdata\PyGMI Test Data\Vector\Rose\2329AC_lin_wgs84sutm35.shp"
     # sfile = r"D:\VMS\Geology\VMS_MagInterp_lineaments.shp"
     sfile = r"D:\Workdata\PyGMI Test Data\Vector\Rose\2329AC_lin_wgs84sutm35.shp"
+    sfile = r"D:\Target Generation\all_lineaments.shp"
 
     app = QtWidgets.QApplication(sys.argv)
     app.setStyle(QtWidgets.QStyleFactory.create("Fusion"))

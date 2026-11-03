@@ -588,7 +588,8 @@ class ExportMod3D(ContextModule):
             os.chdir(os.path.dirname(self.ofile))
             ext = self.ofile[-3:]
 
-            self.parent.process_is_active()
+            if self.parent is not None:
+                self.parent.process_is_active()
 
             self.showlog("Saving " + self.ofile + "...")
 
@@ -600,7 +601,9 @@ class ExportMod3D(ContextModule):
                 self.mod3dtoshp()
             if ext == "csv":
                 self.mod3dtocsv()
-            self.parent.process_is_active(False)
+
+            if self.parent is not None:
+                self.parent.process_is_active(False)
 
     def savemodel(self):
         """Save model."""
@@ -1346,6 +1349,7 @@ class MessageCombo(QtWidgets.QDialog):
 def _testfn():
     """Test."""
     ifile = r"D:\Workdata\PyGMI Test Data\Potential Field Modelling\20230208_Model_OnlyWits.npz"
+    ifile = r"D:\KW8_smaller_physprop_px_mtcpx.npz"
 
     app = QtWidgets.QApplication(sys.argv)
     app.setStyle(QtWidgets.QStyleFactory.create("Fusion"))
@@ -1354,14 +1358,14 @@ def _testfn():
     DM.ifile = ifile
     DM.settings(nodialog=True)
 
-    data = DM.outdata["Raster"]
+    # data = DM.outdata["Raster"]
 
-    _data1 = data[4].copy()
-    # EM = ExportMod3D()
-    # EM.indata = DM.outdata
+    # _data1 = data[4].copy()
+    EM = ExportMod3D()
+    EM.indata = DM.outdata
     # EM.ofile = ofile
-    # EM.lmod = EM.indata["Model3D"][0]
-    # EM.mod3dtoshp(nodialog=False)
+    EM.lmod = EM.indata["Model3D"][0]
+    EM.run()
     # EM.exec()
 
 

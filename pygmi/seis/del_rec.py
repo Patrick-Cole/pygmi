@@ -51,8 +51,6 @@ class DeleteRecord(BasicModule):
     ):
         super().__init__(parent)
 
-        self.indata = {"tmp": True}
-
         self.settings()
 
     def settings(

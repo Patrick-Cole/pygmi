@@ -77,8 +77,6 @@ class BIRRP(BasicModule):
     ):
         super().__init__(parent)
 
-        self.indata = {"tmp": True}
-
         self.df_gps = None
 
         self.cmb_ilev = QtWidgets.QComboBox()

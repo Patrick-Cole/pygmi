@@ -26,8 +26,8 @@
 
 from PySide6 import QtCore, QtGui, QtWidgets
 
-import pygmi.misc as pmisc
 from pygmi import menu_default
+from pygmi.misc import ProgressBar
 from pygmi.pfmod import grvmag3d, iodefs, misc, pfmod_mext, pfmod_param, pfmod_prof
 from pygmi.pfmod.datatypes import LithModel
 
@@ -54,7 +54,7 @@ class MainWidget(QtWidgets.QMainWindow):
         else:
             self.showlog = parent.showlog
 
-        self.indata = {"tmp": True}
+        self.indata = {}
         self.inraster = {}
         self.outdata = {}
         self.parent = parent
@@ -67,14 +67,14 @@ class MainWidget(QtWidgets.QMainWindow):
         self.toolbardock = QtWidgets.QToolBar()
         self.statusbar = QtWidgets.QStatusBar()
 
-        self.pbar_sub = pmisc.ProgressBar()
-        self.pbar_main = pmisc.ProgressBar()
+        self.pbar_sub = ProgressBar()
+        self.pbar_main = ProgressBar()
         self.textbrowser = QtWidgets.QTextBrowser()
         self.actionsave = QtGui.QAction("Save Model")
 
         self.pbars = misc.ProgressBar(self.pbar_sub, self.pbar_main)
-        tmp = list(set(self.lmod1.griddata.values()))
-        self.outdata["Raster"] = tmp
+        # tmp = list(set(self.lmod1.griddata.values()))
+        # self.outdata["Raster"] = tmp
 
         self.mext = pfmod_mext.MextDisplay(self)
         self.param = pfmod_param.ParamDisplay(self)
@@ -182,9 +182,9 @@ class MainWidget(QtWidgets.QMainWindow):
         self.profile.change_defs()
         self.profile.activate()
 
-        self.outdata["Raster"] = datatmp
-
         self.show()
+
+        self.outdata["Raster"] = list(set(self.lmod1.griddata.values()))
 
         return True
 
@@ -277,6 +277,7 @@ def _testfn2():
     ifile = r"D:\Workdata\modelling\mergetest\3dmodel_test.npz"
     ifile = r"D:\workdata\modelling\regional\Model_1.npz"
     ifile = r"D:\Workdata\PyGMI Test Data\Potential Field Modelling\hope.npz"
+    ifile = r"D:\KW8_smaller_physprop_px_mtcpx.npz"
 
     IO1 = ImportMod3D()
     IO1.ifile = ifile
