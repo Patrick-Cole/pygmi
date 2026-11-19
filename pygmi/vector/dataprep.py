@@ -1100,6 +1100,7 @@ def gridxyz(
     method: str = "Nearest Neighbour",
     bdist: float | None = 4.0,
     showlog: Callable[..., None] = print,
+    extent=None,
 ) -> Data:
     """
     Grid xyz data.
@@ -1129,6 +1130,8 @@ def gridxyz(
         Output raster dataset.
 
     """
+    if extent is None:
+        extent = np.array([x.min(), x.max(), y.min(), y.max()])
     if bdist is not None and bdist < 1:
         bdist = None
         showlog("Blanking distance too small.")
@@ -1136,9 +1139,20 @@ def gridxyz(
     if method == "Minimum Curvature":
         gdat = minc(x, y, z, dxy, showlog=showlog, bdist=bdist)
         gdat = np.ma.filled(gdat, fill_value=nullvalue)
-    else:
-        extent = np.array([x.min(), x.max(), y.min(), y.max()])
+    elif method == "RBF":
+        xxx = np.arange(extent[0], extent[1] + dxy / 2, dxy)
+        yyy = np.arange(extent[2], extent[3] + dxy / 2, dxy)
 
+        xxx, yyy = np.meshgrid(xxx, yyy)
+
+        points = np.transpose([x.flatten(), y.flatten()])
+        rbf = RBFInterpolator(points, z, kernel="thin_plate_spline", neighbors=50)
+
+        grid_points = np.column_stack([xxx.ravel(), yyy.ravel()])
+        gdat = rbf(grid_points).reshape(xxx.shape)
+        gdat = gdat[::-1]
+
+    else:
         xxx = np.arange(extent[0], extent[1] + dxy / 2, dxy)
         yyy = np.arange(extent[2], extent[3] + dxy / 2, dxy)
 
@@ -1166,8 +1180,8 @@ def gridxyz(
 
     rows, _ = dat.data.shape
 
-    left = x.min() - dxy / 2
-    top = y.min() + dxy * rows - dxy / 2
+    left = extent[0] - dxy / 2
+    top = extent[2] + dxy * rows - dxy / 2
 
     dat.set_transform(dxy, left, dxy, top)
 
@@ -1700,6 +1714,8 @@ def _testfn_grid():
 
     import matplotlib.pyplot as plt
 
+    from pygmi.raster.iodefs import export_raster
+    from pygmi.raster.misc import cut_raster
     from pygmi.vector.iodefs import ImportXYZ
 
     app = QtWidgets.QApplication(sys.argv)
@@ -1707,6 +1723,7 @@ def _testfn_grid():
 
     ifile = r"D:\Gravity\Final_RSA_Old_WGS84v3.csv"
     ifile = r"D:\workdata\PyGMI Test Data\Vector\Line Data\MAGARCHIVE.XYZ"
+    ifile = r"D:\temp\SB2_Study\points.csv"
     # ifile = r"D:\UBC_Files\new_PyGMI_test_xyz_data.csv"
     # ifile = r"D:\UBC_Files\line1_segment1_rho_model.csv"
     # ifile = r"D:\workdata\PyGMI Test Data\Vector\Volume grid\all_ert_lines_Res2Dinv_inversion.XYZ"
@@ -1714,16 +1731,53 @@ def _testfn_grid():
     IO = ImportXYZ()
     IO.ifile = ifile
     IO.filt = "Comma Delimited (*.csv)"
-    IO.filt = "Geosoft XYZ (*.xyz)"
+    # IO.filt = "Geosoft XYZ (*.xyz)"
     IO.settings(True)
 
-    DR = DataGrid()
-    DR.indata = IO.outdata
-    DR.settings()
+    gdf = IO.outdata["Vector"][0]
+    x = gdf.x.to_numpy()
+    y = gdf.y.to_numpy()
+    z = gdf.z.to_numpy()
 
-    data = DR.outdata["Raster"][0]
+    wkt = (
+        'PROJCRS["Lo21", BASEGEOGCRS["Hartebeesthoek94", DATUM["Hartebeesthoek94",'
+        'ELLIPSOID["WGS 84", 6378137, 298.257223563, LENGTHUNIT["metre", 1]]],'
+        'PRIMEM["Greenwich", 0, ANGLEUNIT["degree", 0.0174532925199433]],'
+        'ID["EPSG", 4148]], CONVERSION["unnamed", '
+        'METHOD["Transverse Mercator", ID["EPSG", 9807]], PARAMETER["Latitude of natural origin", 0, '
+        'ANGLEUNIT["degree", 0.0174532925199433], ID["EPSG", 8801]], '
+        'PARAMETER["Longitude of natural origin", 21, ANGLEUNIT["degree", 0.0174532925199433], '
+        'ID["EPSG", 8802]], PARAMETER["Scale factor at natural origin", 1, '
+        'SCALEUNIT["unity", 1], ID["EPSG", 8805]], PARAMETER["False easting", 0,'
+        'LENGTHUNIT["metre", 1], ID["EPSG", 8806]], PARAMETER["False northing", 0, '
+        'LENGTHUNIT["metre", 1], ID["EPSG", 8807]]], CS[Cartesian, 2], '
+        'AXIS["easting", east, ORDER[1], LENGTHUNIT["metre", 1, ID["EPSG", 9001]]],'
+        'AXIS["northing", north, ORDER[2], LENGTHUNIT["metre", 1, ID["EPSG", 9001]]]]'
+    )
+    vfile = r"D:\temp\SB2_Study\SB2_Study.shp"
+    gdf = gpd.read_file(vfile)
+    gdf = gdf.to_crs(wkt)
 
-    plt.imshow(data.data, extent=data.extent)
+    minx, miny, maxx, maxy = gdf.total_bounds
+    extent = (minx, maxx, miny, maxy)
+
+    data = gridxyz(x, y, z, 20, method="RBF", bdist=4000, extent=extent)
+    data.crs = CRS.from_wkt(wkt)
+
+    data = cut_raster([data], gdf)[0]
+
+    ofile = r"D:\temp\SB2_Study\SB2_rain_v3.tif"
+
+    export_raster(ofile, [data])
+
+    # DR = DataGrid()
+    # DR.indata = IO.outdata
+    # DR.settings()
+
+    # data = DR.outdata["Raster"][0]
+
+    gdf.plot(zorder=3, facecolor="none")
+    plt.imshow(data.data, extent=data.extent, zorder=0)
     plt.show()
 
 
@@ -1790,4 +1844,4 @@ def _testfn_vol():
 
 
 if __name__ == "__main__":
-    _testfn()
+    _testfn_grid()
