@@ -485,14 +485,14 @@ def merge_gpsmag(
     if cren is not None:
         df_gps.rename(columns=cren, inplace=True)
 
-    if df_gps.latitude.dtype == "O":
-        filt = df_gps.latitude.str.contains("S")
-        df_gps.latitude.loc[filt] = "-" + df_gps.latitude[filt]
-        df_gps.latitude.replace("S", "", inplace=True, regex=True)
-        df_gps.latitude.replace("N", "", inplace=True, regex=True)
+    if pd.api.types.is_string_dtype(df_gps.latitude.dtype):
+        coord = df_gps.latitude
+        filt = coord.str.contains("S", na=False)
+        coord = coord.where(~filt, "-" + coord)
+        coord = coord.replace("S", "", regex=True).replace("N", "", regex=True)
 
         try:
-            df_gps.latitude = pd.to_numeric(df_gps.latitude)
+            df_gps["latitude"] = pd.to_numeric(coord)
         except ValueError:
             showlog(
                 "You have characters in your latitude"
@@ -500,14 +500,14 @@ def merge_gpsmag(
             )
             return False
 
-    if df_gps.longitude.dtype == "O":
-        filt = df_gps.longitude.str.contains("W")
-        df_gps.longitude.loc[filt] = "-" + df_gps.longitude[filt]
-        df_gps.longitude.replace("W", "", inplace=True, regex=True)
-        df_gps.longitude.replace("E", "", inplace=True, regex=True)
+    if pd.api.types.is_string_dtype(df_gps.longitude.dtype):
+        coord = df_gps.longitude
+        filt = coord.str.contains("W", na=False)
+        coord = coord.where(~filt, "-" + coord)
+        coord = coord.replace("W", "", regex=True).replace("E", "", regex=True)
 
         try:
-            df_gps.longitude = pd.to_numeric(df_gps.longitude)
+            df_gps["longitude"] = pd.to_numeric(coord)
         except ValueError:
             showlog(
                 "You have characters in your longitude"
