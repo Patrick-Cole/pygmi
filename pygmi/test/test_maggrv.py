@@ -27,6 +27,7 @@
 import os
 
 import numpy as np
+import pandas as pd
 from pyproj.crs import CRS
 
 from pygmi.maggrv import dataprep, gravproc, igrf, iodefs, tiltdepth
@@ -100,6 +101,26 @@ def test_process_data():
     )
 
     np.testing.assert_array_almost_equal(datout2, boug)
+
+
+def test_gps_hemisphere(tmp_path):
+    """Test GPS coordinates with hemisphere letters."""
+    idir = os.path.dirname(os.path.realpath(__file__))
+
+    grvfile = os.path.join(idir, r"testdata/GravityCG5.txt")
+    gpsfile = os.path.join(idir, r"testdata/GravityDGPS.csv")
+    gpsfile2 = os.path.join(tmp_path, "GravityDGPS_SE.csv")
+
+    df = pd.read_csv(gpsfile)
+    df["Latitude"] = df["Latitude"].abs().astype(str) + "S"
+    df["Longitude"] = df["Longitude"].astype(str) + "E"
+    df.to_csv(gpsfile2, index=False)
+
+    dat1 = iodefs.merge_gpsmag(grvfile, gpsfile, basethres=10000.0)
+    dat2 = iodefs.merge_gpsmag(grvfile, gpsfile2, basethres=10000.0)
+
+    np.testing.assert_array_equal(dat2["latitude"], dat1["latitude"])
+    np.testing.assert_array_equal(dat2["longitude"], dat1["longitude"])
 
 
 def test_tilt1():
