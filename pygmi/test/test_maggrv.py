@@ -123,6 +123,23 @@ def test_gps_hemisphere(tmp_path):
     np.testing.assert_array_equal(dat2["longitude"], dat1["longitude"])
 
 
+def test_cg6_time(tmp_path):
+    """Test CG-6 time conversion."""
+    cg6file = os.path.join(tmp_path, "GravityCG6.dat")
+
+    with open(cg6file, "w", encoding="utf-8") as fno:
+        fno.write("/\t\tCG-6 Survey\n")
+        fno.write("/Station\tDate\tTime\tLine\tRawGrav\n")
+        fno.write("88888\t2019-08-16\t12:08:32\t0\t3184.569\n")
+        fno.write("88888\t2019-08-19\t11:56:01\t0\t3162.756\n")
+
+    dat = iodefs.get_cg6(cg6file)
+
+    np.testing.assert_array_almost_equal(
+        dat["DECTIMEDATE"], [18124.505925925925, 18127.497233796297]
+    )
+
+
 def test_tilt1():
     """Test tilt angle."""
     datin = Data()

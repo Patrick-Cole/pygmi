@@ -413,7 +413,7 @@ def get_cg6(filename: str) -> pd.DataFrame:
 
     df["datetime"] = df.Date + " " + df.TIME
     df["datetime"] = pd.to_datetime(df["datetime"])
-    df["DECTIMEDATE"] = df["datetime"].astype(int) // 10**9
+    df["DECTIMEDATE"] = df["datetime"].astype("datetime64[s]").astype(int)
     df["DECTIMEDATE"] = df["DECTIMEDATE"] / (24 * 3600)
 
     return df
